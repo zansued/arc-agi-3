@@ -1,1 +1,4 @@
 duck-harness/
+.env
+.env.github
+duck-harness/
