@@ -1,0 +1,37 @@
+
+============================================================
+  V60 — ARC-AGI-3 Solver (API arc_agi 0.1.0)
+============================================================
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-22 23:38:09 | INFO | Got anonymous API key: 028a4be9-84ab-4b97-bf9e-d053507d715c
+2026-06-22 23:38:09 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-22 23:38:09 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-22 23:38:09 | INFO | Created new scorecard: 717384ae-5fca-4491-9a3d-94f7e30a2bfb
+2026-06-22 23:38:10 | INFO | Successfully fetched metadata for game tu93
+2026-06-22 23:38:10 | INFO | Recording to recordings/717384ae-5fca-4491-9a3d-94f7e30a2bfb/tu93-0768757b-27b99d42-2b3e-47a9-aa79-639a2114c3fb.jsonl
+2026-06-22 23:38:10 | INFO | Successfully loaded game class Tu93 from environment_files/tu93/0768757b/tu93.py
+[V60] Jogo: tu93, níveis: 9
+
+============================================================
+  V60 Solver — tu93
+============================================================
+
+────────────────────────────────────────
+  FASE 0: RECONHECIMENTO
+────────────────────────────────────────
+[V60] FASE 0: Analisando jogo...
+  Grid: (64, 64), cores: [0, 2, 4, 5, 6, 9, 14]
+  Ações disponíveis: [1, 2, 3, 4]
+  ACTION1: diff=1 pixels, state=NOT_FINISHED, levels=0
+  ACTION2: diff=1 pixels, state=NOT_FINISHED, levels=0
+  ACTION3: diff=1 pixels, state=NOT_FINISHED, levels=0
+  ACTION4: diff=19 pixels, state=NOT_FINISHED, levels=0
+  Diagnóstico: unknown
+
+────────────────────────────────────────
+  FASE 1: BFS ARCHIVE REPLAY
+────────────────────────────────────────
+
+  --- Nível 1/9 ---
+[V60] FASE 1: BFS Archive Replay (max_states=5000)
+  Available actions (with effect): [1, 2, 3, 4]

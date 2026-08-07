@@ -1,0 +1,492 @@
+{
+  "apple": {
+    "site": "Apple",
+    "url": "https://www.apple.com",
+    "design_system": {
+      "palette": {
+        "primaria": "#000000 (preto absoluto)",
+        "secundaria": "#1d1d1f (preto texto)",
+        "accent": "#0071e3 (azul Apple)",
+        "neutra_clara": "#f5f5f7 (fundo cinza claro)",
+        "neutra_escura": "#6e6e73 (texto secundário)",
+        "branco": "#ffffff",
+        "destaque": "#ff9f0a (laranja promoção)"
+      },
+      "tipografia": {
+        "font_family": "SF Pro Display, SF Pro Text, -apple-system, sans-serif",
+        "display": "SF Pro Display (bold, 48-64px headlines)",
+        "body": "SF Pro Text (regular 17px)",
+        "subtitle": "SF Pro Text (regular 21px)"
+      },
+      "spacing": {
+        "grid": "12-column flex grid",
+        "section_padding": "60-80px vertical",
+        "card_gap": "16-24px",
+        "content_max_width": "~980px"
+      },
+      "bordas": {
+        "button_radius": "20px (pill shape)",
+        "card_radius": "12-16px",
+        "input_radius": "12px"
+      },
+      "sombras": {
+        "card": "0 2px 10px rgba(0,0,0,0.08)",
+        "hero": "0 4px 24px rgba(0,0,0,0.12)",
+        "button": "0 1px 3px rgba(0,0,0,0.1)"
+      },
+      "componentes": [
+        "NavBar",
+        "Hero Section",
+        "Product Grid",
+        "Button (pill)",
+        "Footer",
+        "Card"
+      ],
+      "regime": "PREMIUM MINIMALIST — r=2.8 (próximo do caos)"
+    }
+  },
+  "stripe": {
+    "site": "Stripe",
+    "url": "https://stripe.com",
+    "design_system": {
+      "palette": {
+        "primaria": "#0a2540 (azul escuro profundo)",
+        "secundaria": "#425466 (cinza azulado)",
+        "accent": "#635bff (roxo Stripe)",
+        "accent_hover": "#7c73ff (roxo claro)",
+        "neutra_clara": "#f6f9fc (fundo)",
+        "branco": "#ffffff",
+        "sucesso": "#24b47e (verde)",
+        "erro": "#ef5350 (vermelho)"
+      },
+      "tipografia": {
+        "font_family": "Stripe Font, 'Inter', -apple-system, sans-serif",
+        "display": "Inter ExtraBold (36-56px)",
+        "h2": "Inter Bold (28px)",
+        "body": "Inter Regular (16px)",
+        "caption": "Inter Medium (13px)"
+      },
+      "spacing": {
+        "grid": "12-column responsive",
+        "section_padding": "80-120px vertical",
+        "card_padding": "32px",
+        "content_max_width": "~1200px"
+      },
+      "bordas": {
+        "button_radius": "32px (pill)",
+        "card_radius": "12px",
+        "input_radius": "6px"
+      },
+      "sombras": {
+        "card": "0 8px 32px rgba(0,0,0,0.06)",
+        "elevated": "0 20px 60px rgba(0,0,0,0.08)"
+      },
+      "componentes": [
+        "NavBar",
+        "Code Block",
+        "API Reference",
+        "Button (pill)",
+        "Pricing Card",
+        "Testimonial Card"
+      ],
+      "regime": "PROFESSIONAL TRUST — r=2.3 (estável com pontos fixos)"
+    }
+  },
+  "notion": {
+    "site": "Notion",
+    "url": "https://www.notion.so",
+    "design_system": {
+      "palette": {
+        "primaria": "#000000 (preto)",
+        "secundaria": "#37352f (preto Notion)",
+        "accent": "#2383e2 (azul Notion)",
+        "neutra_clara": "#ffffff (branco puro)",
+        "neutra_media": "#e9e9e8 (borda)",
+        "neutra_escura": "#9b9a97 (texto placeholder)",
+        "hover": "#efefef",
+        "bg_highlight": "#f7f6f3"
+      },
+      "tipografia": {
+        "font_family": "Inter, -apple-system, sans-serif",
+        "display": "Inter Bold (36-48px)",
+        "h2": "Inter SemiBold (24px)",
+        "h3": "Inter Medium (20px)",
+        "body": "Inter Regular (16px)",
+        "small": "Inter Regular (14px)"
+      },
+      "spacing": {
+        "grid": "single-column com sidebar",
+        "section_padding": "80px vertical",
+        "card_padding": "24px",
+        "content_max_width": "~800px (centered)"
+      },
+      "bordas": {
+        "card_radius": "8px",
+        "button_radius": "8px",
+        "input_radius": "4px"
+      },
+      "sombras": {
+        "card": "0 1px 3px rgba(0,0,0,0.08)",
+        "dropdown": "0 4px 12px rgba(0,0,0,0.12)"
+      },
+      "componentes": [
+        "NavBar",
+        "Hero",
+        "Feature Grid",
+        "Template Card",
+        "Testimonial",
+        "Footer"
+      ],
+      "regime": "CLEAN PRODUCTIVITY — r=1.8 (ponto fixo estável)"
+    }
+  },
+  "linear": {
+    "site": "Linear",
+    "url": "https://linear.app",
+    "design_system": {
+      "palette": {
+        "primaria": "#1a1a2e (dark mode fundo)",
+        "secundaria": "#2a2a3e (card fundo)",
+        "accent": "#5e6ad2 (índigo Linear)",
+        "accent_hover": "#7c86e8",
+        "text_primary": "#ffffff",
+        "text_secondary": "#8a8aa0",
+        "borda": "#3a3a4e",
+        "sucesso": "#34d399",
+        "warning": "#fbbf24"
+      },
+      "tipografia": {
+        "font_family": "Inter, -apple-system, sans-serif (display), system-ui (body)",
+        "display": "Inter ExtraBold (48-64px)",
+        "h2": "Inter Bold (28px)",
+        "body": "Inter Regular (16px)",
+        "caption": "Inter Medium (14px)",
+        "mono": "JetBrains Mono (code blocks)"
+      },
+      "spacing": {
+        "grid": "12-column flex",
+        "section_padding": "80-120px vertical",
+        "card_gap": "24px",
+        "content_max_width": "~1120px"
+      },
+      "bordas": {
+        "button_radius": "8px",
+        "card_radius": "12px",
+        "input_radius": "8px",
+        "pill_radius": "999px"
+      },
+      "sombras": {
+        "card": "0 2px 8px rgba(0,0,0,0.3)",
+        "elevated": "0 8px 32px rgba(0,0,0,0.4)",
+        "glow_accent": "0 0 20px rgba(94,106,210,0.15)"
+      },
+      "componentes": [
+        "NavBar",
+        "Hero Dashboard",
+        "Feature Card",
+        "Roadmap Section",
+        "Button",
+        "Pricing Card"
+      ],
+      "regime": "DARK MODE PRODUCT — r=2.1 (estável com bifurcação suave)"
+    }
+  },
+  "vercel": {
+    "site": "Vercel",
+    "url": "https://vercel.com",
+    "design_system": {
+      "palette": {
+        "primaria": "#000000 (preto absoluto)",
+        "secundaria": "#111111 (preto Vercel)",
+        "accent": "#ffffff (branco puro como primary action)",
+        "destaque": "#50e3c2 (verde menta/teal destaque)",
+        "text_secondary": "#888888",
+        "borda": "#222222",
+        "card_bg": "#0a0a0a",
+        "gradient_accent": "linear-gradient(to right, #50e3c2, #5b8def)"
+      },
+      "tipografia": {
+        "font_family": "Inter, -apple-system, sans-serif",
+        "display": "Inter Bold (48-72px)",
+        "h2": "Inter SemiBold (32px)",
+        "body": "Inter Regular (16px)",
+        "caption": "Inter Medium (14px)",
+        "mono": "JetBrains Mono (code)"
+      },
+      "spacing": {
+        "grid": "12-column com gap variável",
+        "section_padding": "100-140px vertical",
+        "card_padding": "24px",
+        "content_max_width": "~1280px"
+      },
+      "bordas": {
+        "button_radius": "8px",
+        "card_radius": "12px",
+        "badge_radius": "4px"
+      },
+      "sombras": {
+        "card": "0 1px 3px rgba(255,255,255,0.05)",
+        "elevated": "0 8px 32px rgba(0,0,0,0.5)"
+      },
+      "componentes": [
+        "NavBar",
+        "Hero Section",
+        "Logo Cloud",
+        "Feature Card",
+        "Button",
+        "Code Snippet",
+        "Pricing"
+      ],
+      "regime": "DARK MONOCHROME — r=2.5 (próximo da bifurcação)"
+    }
+  },
+  "airbnb": {
+    "site": "Airbnb",
+    "url": "https://www.airbnb.com",
+    "design_system": {
+      "palette": {
+        "primaria": "#ff385c (Airbnb red/rausch)",
+        "secundaria": "#222222 (preto texto)",
+        "accent": "#ff385c (vermelho característico)",
+        "neutra_clara": "#f7f7f7 (fundo claro)",
+        "neutra_escura": "#717171 (texto secundário)",
+        "branco": "#ffffff",
+        "borda": "#dddddd",
+        "sucesso": "#00a699 (verde teal)"
+      },
+      "tipografia": {
+        "font_family": "Circular, -apple-system, BlinkMacSystemFont, sans-serif",
+        "display": "Circular Bold (32-48px)",
+        "body": "Circular Book (16px)",
+        "caption": "Circular Book (14px)",
+        "price": "Circular Bold (22px)"
+      },
+      "spacing": {
+        "grid": "12-column responsive",
+        "section_padding": "40-64px vertical",
+        "card_gap": "24px",
+        "content_max_width": "~1440px"
+      },
+      "bordas": {
+        "button_radius": "8px",
+        "card_radius": "12-16px",
+        "input_radius": "8px",
+        "pill_radius": "24px"
+      },
+      "sombras": {
+        "card": "0 2px 8px rgba(0,0,0,0.08)",
+        "elevated": "0 6px 20px rgba(0,0,0,0.12)",
+        "button": "0 1px 2px rgba(0,0,0,0.05)"
+      },
+      "componentes": [
+        "NavBar",
+        "Hero Search",
+        "Card Grid",
+        "Listing Card",
+        "Footer",
+        "Button",
+        "Date Picker",
+        "Filter Bar"
+      ],
+      "regime": "HOSPITALITY WARM — r=2.0 (estável com atrator fixo)"
+    }
+  },
+  "spotify": {
+    "site": "Spotify",
+    "url": "https://open.spotify.com",
+    "design_system": {
+      "palette": {
+        "primaria": "#191414 (preto Spotify)",
+        "secundaria": "#121212 (fundo dark)",
+        "accent": "#1db954 (verde Spotify)",
+        "accent_hover": "#1ed760 (verde claro)",
+        "text_primary": "#ffffff",
+        "text_secondary": "#b3b3b3",
+        "borda": "#282828",
+        "destaque": "#ff6437 (laranja playlist)",
+        "card_bg": "#181818"
+      },
+      "tipografia": {
+        "font_family": "Spotify Circular, -apple-system, sans-serif",
+        "display": "Circular Black (40-64px)",
+        "h2": "Circular Bold (28px)",
+        "body": "Circular Book (16px)",
+        "caption": "Circular Book (14px)",
+        "small": "Circular Book (12px)"
+      },
+      "spacing": {
+        "grid": "flex grid, gap variável",
+        "section_padding": "32-48px",
+        "card_padding": "16px",
+        "content_max_width": "~1600px"
+      },
+      "bordas": {
+        "button_radius": "500px (pill absoluto)",
+        "card_radius": "8px",
+        "album_cover": "0px (quadrado)"
+      },
+      "sombras": {
+        "card": "0 2px 4px rgba(0,0,0,0.3)",
+        "elevated": "0 8px 24px rgba(0,0,0,0.5)"
+      },
+      "componentes": [
+        "Sidebar",
+        "NavBar",
+        "Playlist Card",
+        "Player Bar",
+        "Button",
+        "Search",
+        "Track List"
+      ],
+      "regime": "DARK IMMERSIVE — r=2.6 (próximo do caos, pulsação verde)"
+    }
+  },
+  "figma": {
+    "site": "Figma",
+    "url": "https://www.figma.com",
+    "design_system": {
+      "palette": {
+        "primaria": "#000000 (preto)",
+        "secundaria": "#2c2c2c (cinza escuro)",
+        "accent": "#9747ff (roxo Figma)",
+        "accent_hover": "#a855f7",
+        "neutra_clara": "#f5f5f5 (fundo claro hero)",
+        "neutra_escura": "#7e7e7e",
+        "branco": "#ffffff",
+        "green": "#09cf83",
+        "blue": "#0d99ff",
+        "pink": "#ff4267"
+      },
+      "tipografia": {
+        "font_family": "Inter, -apple-system, sans-serif",
+        "display": "Inter ExtraBold (48-64px)",
+        "h2": "Inter Bold (32px)",
+        "body": "Inter Regular (16px)",
+        "caption": "Inter Medium (14px)"
+      },
+      "spacing": {
+        "grid": "12-column flex",
+        "section_padding": "80-120px vertical",
+        "card_gap": "24px",
+        "content_max_width": "~1200px"
+      },
+      "bordas": {
+        "button_radius": "8px",
+        "card_radius": "12px",
+        "input_radius": "6px",
+        "pill_radius": "999px"
+      },
+      "sombras": {
+        "card": "0 1px 3px rgba(0,0,0,0.1)",
+        "elevated": "0 8px 30px rgba(0,0,0,0.12)"
+      },
+      "componentes": [
+        "NavBar",
+        "Hero",
+        "Feature Grid",
+        "Plugin Card",
+        "Button",
+        "Pricing Card"
+      ],
+      "regime": "CREATIVE TOOL — r=2.4 (bifurcação criativa estável)"
+    }
+  },
+  "github": {
+    "site": "GitHub",
+    "url": "https://github.com",
+    "design_system": {
+      "palette": {
+        "primaria": "#000000 (preto fundo)",
+        "secundaria": "#0d1117 (preto azulado)",
+        "accent": "#2ea043 (verde GitHub)",
+        "accent_blue": "#58a6ff (azul links)",
+        "text_primary": "#f0f6fc",
+        "text_secondary": "#8b949e",
+        "borda": "#30363d",
+        "card_bg": "#161b22",
+        "danger": "#f85149",
+        "accent_orange": "#d29922"
+      },
+      "tipografia": {
+        "font_family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        "display": "system-ui, -apple-system, BlinkMacSystemFont, sans-serif (bold 48px)",
+        "h2": "system-ui bold (32px)",
+        "body": "system-ui regular (14-16px)",
+        "mono": "'JetBrains Mono', monospace (code)"
+      },
+      "spacing": {
+        "grid": "12-column flex (Primer)",
+        "section_padding": "80px vertical",
+        "card_padding": "16px",
+        "content_max_width": "~1280px"
+      },
+      "bordas": {
+        "button_radius": "6px",
+        "card_radius": "6px",
+        "input_radius": "6px",
+        "badge_radius": "2em"
+      },
+      "sombras": {
+        "card": "0 1px 0 rgba(255,255,255,0.03)",
+        "elevated": "0 8px 24px rgba(0,0,0,0.4)"
+      },
+      "componentes": [
+        "NavBar",
+        "Hero Beta",
+        "Product Card",
+        "Button",
+        "Code Block",
+        "Footer"
+      ],
+      "regime": "DEVELOPER DARK — r=1.5 (ponto fixo ultra-estável)"
+    }
+  },
+  "dribbble": {
+    "site": "Dribbble",
+    "url": "https://dribbble.com",
+    "design_system": {
+      "palette": {
+        "primaria": "#ea4c89 (rosa Dribbble)",
+        "secundaria": "#0d0c22 (preto Dribbble)",
+        "accent": "#ea4c89 (rosa pink)",
+        "neutra_clara": "#f8f8f8",
+        "neutra_escura": "#6e6d7a",
+        "branco": "#ffffff",
+        "destaque": "#9d64f5 (roxo destaque)",
+        "borda": "#e7e7e9"
+      },
+      "tipografia": {
+        "font_family": "Inter, -apple-system, sans-serif",
+        "display": "Inter Bold (36-48px)",
+        "h2": "Inter SemiBold (24px)",
+        "body": "Inter Regular (16px)",
+        "caption": "Inter Medium (14px)"
+      },
+      "spacing": {
+        "grid": "masonry grid (3-4 columns)",
+        "section_padding": "40px vertical",
+        "card_gap": "24px",
+        "content_max_width": "~1280px"
+      },
+      "bordas": {
+        "button_radius": "999px (pill puro)",
+        "card_radius": "8px",
+        "avatar_radius": "50%"
+      },
+      "sombras": {
+        "card": "0 1px 3px rgba(0,0,0,0.04)",
+        "elevated": "0 8px 24px rgba(0,0,0,0.08)"
+      },
+      "componentes": [
+        "NavBar",
+        "Hero",
+        "Shot Grid (masonry)",
+        "Shot Card",
+        "Button",
+        "Filter Bar",
+        "Search"
+      ],
+      "regime": "CREATIVE COMMUNITY — r=3.2 (caótico, pulsação rosa)"
+    }
+  }
+}

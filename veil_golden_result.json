@@ -1,0 +1,12 @@
+{
+  "best_fitness_s2": -30572,
+  "baseline_fitness": -30628,
+  "validation": {
+    "lzma_size": 30572,
+    "rp_fft_power": 5.422761539350787e-29,
+    "lz_complexity": 1077,
+    "mrf_pl": -9545.202980121736,
+    "gridness": 1.0
+  },
+  "elapsed_seconds": 296.90897727012634
+}

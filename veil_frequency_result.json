@@ -1,0 +1,7 @@
+{
+  "n": 4096,
+  "has_significant_frequency_structure": false,
+  "spectral_flatness": 0.5363610859656003,
+  "n_significant_acf_lags": 0,
+  "acf_lag1": 0.00747383478192762
+}

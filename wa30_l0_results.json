@@ -1,0 +1,17 @@
+{
+  "game": "wa30",
+  "level": 0,
+  "movement": {
+    "UP": true,
+    "DOWN": true,
+    "LEFT": true,
+    "RIGHT": true,
+    "SPACE_PICKUP": false
+  },
+  "step_size": 4,
+  "truck_tag": "wbmdvjhthc",
+  "box_tag": "geezpjgiyd",
+  "platform_tag": "fsjjayjoeg",
+  "goal_ysysltqlke": "target for boxes",
+  "win_method": "ymzfopzgbq: all boxes at goal and not in zmqreragji"
+}

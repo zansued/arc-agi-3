@@ -1,0 +1,178 @@
+{
+  "sub_agent": "HEURÍSTICO (Cross-Entropy Method & Combinatorial Optimization Specialist)",
+  "problem": {
+    "description": "VEIL competition: N=4096 scalar values Z={z_1, ..., z_n} from range [-7.0457, 11.3477]. Need to reconstruct original 2D matrix from 1D flattened+permuted form.",
+    "fitness_signal": {
+      "lzma_compression": "15σ gap between true and random permutations",
+      "lz_complexity": "15σ gap",
+      "recurrence_plot_fft": "8× power at correct period",
+      "spectral_gap": "0.15-0.30 (true) vs <0.05 (random)",
+      "louvain_q_on_recurrence_network": "0.4-0.7 (true) vs <0.2 (random)"
+    },
+    "challenge": "Search space of 4096! ≈ 10^13000 permutations; need efficient combinatorial optimization"
+  },
+  "approach_1": {
+    "name": "Cross-Entropy Method with Sinkhorn Permutation Sampling and Adaptive Temperature",
+    "rationale": "CEM is ideal when we have a strong fitness function but need to learn the distribution of good permutations. The key is representing a distribution over permutations tractably.",
+    "algorithm_design": {
+      "representation": {
+        "type": "Doubly Stochastic Matrix via Sinkhorn-Knopp",
+        "detail": "Represent permutation probabilities as an N×N matrix P where P[i][j] = probability that element i is assigned to position j. Initialize near-uniform (all P[i][j] ≈ 1/N + small noise). Apply Sinkhorn normalization: alternately normalize rows and columns to sum to 1. This gives a valid doubly stochastic matrix (Birkhoff-von Neumann theorem guarantees it's a convex combination of permutations).",
+        "sampling": "Sample from P using the Gumbel-Sinkhorn trick: P_sampled = Sinkhorn(P + G/τ) where G ∼ Gumbel(0,1) and τ controls temperature. As τ→0, this yields exact permutations. Use Hungarian algorithm as deterministic fallback."
+      },
+      "fitness_evaluation": {
+        "primary": "lzma compression ratio of the 2D matrix constructed from the candidate permutation",
+        "secondary": "LZ complexity (normalized), spectral gap λ₂/λ₃ of k-NN graph Laplacian (k=7-15)",
+        "cost": "O(N log N + Nk + kd²) per evaluation with Laplacian, O(N) for compression only",
+        "strategy": "Use compression-only for initial screening (cheaper), add spectral gap for top candidates"
+      },
+      "cem_iteration": {
+        "elite_fraction": 0.02,
+        "sample_size_per_iter": "500-2000",
+        "update_rule": "P_new = (1-α)P_old + α * (1/|E|) * Σ_{π∈E} one_hot(π), where E is the elite set (top 2%). α=0.7 initially, decay to 0.3.",
+        "temperature_schedule": "τ(t) = max(τ_min, τ_0 * exp(-β*t)). τ_0=1.0, τ_min=0.01, β chosen so τ reaches τ_min in 50 iterations.",
+        "noise_injection": "Add N(0, σ_noise²) to P before each Sinkhorn iteration, with σ_noise decaying from 0.1 to 0.001.",
+        "convergence_criterion": "Stop when max change in P entries < 1e-6 or 100 iterations reached."
+      },
+      "complexity_analysis": {
+        "per_iteration": "O(M * N²) for Sinkhorn on M samples + O(M * N) for compression fitness",
+        "optimization": "Use batched Sinkhorn on GPU, or reduce to O(M * N log N) using top-k Sinkhorn approximation",
+        "total": "O(T * M * N²) where T=100 iterations, M=2000 samples, N=4096 → roughly 3.3×10^11 operations. With GPU, ~30 seconds per iteration, ~50 minutes total."
+      },
+      "expected_convergence": {
+        "burn_in": "10-20 iterations to focus from uniform to structured distribution",
+        "compression_signal_detection": "By iteration 15-25, compression gap should exceed 5σ",
+        "convergence_to_high_quality": "40-60 iterations to approach near-optimal permutation",
+        "theoretical_guarantee": "CEM converges to global optimum exponentially fast under mild regularity conditions (Rubinstein & Kroese, 2004). The 15σ signal suggests favorable landscape."
+      },
+      "optimization_ideas": [
+        "Use hierarchical CEM: first learn block structure (64×64 blocks), then refine within blocks",
+        "Warm-start P from Row-Distance Matrix (RDM) or Diffusion Map eigenvectors",
+        "Use Latin Hypercube Sampling in early iterations for better coverage",
+        "Parallel evaluation on GPU: M=2000 samples evaluated in one forward pass"
+      ]
+    }
+  },
+  "approach_2": {
+    "name": "Hybrid Genetic Algorithm with 2D Map Crossover, Simulated Annealing Local Search, and Island Model",
+    "rationale": "GA excels at exploring multiple regions of the permutation landscape simultaneously. The 2D structure suggests specialized crossover operators that preserve spatial locality. Hybrid with SA for fine-grained local refinement.",
+    "algorithm_design": {
+      "population": {
+        "size": 500,
+        "initialization": "Mix of random permutations (80%), RDM-based permutations (10%), and small perturbations of known good permutations (10%)",
+        "representation": "Direct integer array π[0..N-1], where π[i] = position of element i in the grid (row-major). Also store inverse mapping π_inv for faster fitness evaluation."
+      },
+      "fitness_evaluation": {
+        "primary": "lzma compression ratio (fast, O(N) amortized with incremental update)",
+        "secondary": "LZ complexity + spectral gap λ₂/λ₃ (every 5 generations for diversity)",
+        "caching": "Hash table for evaluated permutations to avoid redundant computation"
+      },
+      "selection": {
+        "method": "Tournament selection with size 3",
+        "elite_count": 10,
+        "fitness_sharing_to_maintain_diversity": "Use compression ratio similarity between individuals; reduce fitness of individuals too similar to elites (phenotypic sharing with threshold = 0.05 compression ratio)"
+      },
+      "crossover_operators": [
+        {
+          "name": "2D Map Crossover (2DMX)",
+          "description": "Given two parent permutations, randomly select a 2D subgrid region (e.g., 32×32 block). Copy the mapping within this region from parent A to child. Fill remaining positions from parent B, respecting that each element can only appear once.",
+          "rationale": "Preserves local 2D structure (adjacent-in-value elements should be adjacent in space). The 2D grid has spatial autocorrelation; block crossover exploits this.",
+          "probability": 0.5
+        },
+        {
+          "name": "Edge-Recombination Crossover (ERX)",
+          "description": "Build adjacency lists from both parents (in the 2D grid sense: elements adjacent in the 2D layout). Walk through the child, always preferring shared adjacencies. This preserves the neighborhood structure discovered by both parents.",
+          "rationale": "The 2D grid creates a graph of ~8000 edges (each element has up to 4 neighbors). ERX preserves these adjacency relationships better than PMX or OX.",
+          "probability": 0.3
+        },
+        {
+          "name": "Partially Mapped Crossover (PMX)",
+          "description": "Standard PMX with two crossover points. Used for exploration when the other operators converge.",
+          "probability": 0.2
+        }
+      ],
+      "mutation_operators": [
+        {
+          "name": "2-opt swap (local neighborhood swap)",
+          "probability": 0.1,
+          "description": "Swap two elements if they are within Euclidean distance d in the grid positions they map to. d decays from 64 to 4 over generations. This is a 'local' move that preserves spatial structure."
+        },
+        {
+          "name": "Block transposition",
+          "probability": 0.05,
+          "description": "Transpose a small block (4×4 to 16×16) of the 2D mapping. Exploits the possibility that the correct arrangement has block structure."
+        },
+        {
+          "name": "Random remote swap (exploration)",
+          "probability": 0.02,
+          "description": "Swap two randomly chosen elements. Forces exploration when the population gets stuck."
+        }
+      ],
+      "local_search_sa_hybrid": {
+        "frequency": "Every 5 generations, apply SA to the top 20 individuals",
+        "sa_parameters": {
+          "initial_temperature": "T_0 = std dev of compression ratios in current population",
+          "cooling_schedule": "T(t) = T_0 * exp(-γ*t), γ=0.01",
+          "moves_per_temp": 100,
+          "max_steps": 1000,
+          "move_types": "2-opt swaps only (focused local search)",
+          "acceptance": "Metropolis: accept worse with probability exp(-Δ/T), better always accepted"
+        },
+        "rationale": "SA with 2-opt explores the local neighborhood efficiently. The 15σ gap means SA can find the valley even from mediocre starting points."
+      },
+      "island_model": {
+        "num_islands": 5,
+        "island_population_size": 100,
+        "migration_rate": "Every 10 generations, exchange top 5 individuals between neighboring islands (ring topology)",
+        "diversity_by_temperature": "Each island uses a different crossover probability mixture (island 1: more 2DMX, island 5: more PMX for exploration)",
+        "rationale": "Prevents premature convergence, explores different regions of the landscape in parallel"
+      },
+      "complexity_analysis": {
+        "per_generation": "O(P * (crossover + mutation + fitness)) where P=500",
+        "crossover": "O(N) per crossover (4096 operations)",
+        "fitness_evaluation": "O(N) amortized with incremental compression updates, full O(N log N) every 5 generations for spectral gap",
+        "total_runtime": "~100 generations × 500 individuals × N operations ≈ 2×10^8 operations, ~3-5 minutes on CPU, ~30 seconds on GPU"
+      },
+      "expected_convergence": {
+        "initial_diversity_phase": "1-10 generations: population explores via random remote swaps",
+        "exploitation_phase": "10-40 generations: 2DMX and ERX exploit spatial structure, compression gap grows to 5-8σ",
+        "refinement_phase": "40-100 generations: SA local search fine-tunes the top candidates",
+        "final_gap": "Expected to reach 12-15σ compression gap, matching the known true signal"
+      }
+    }
+  },
+  "implementation_notes": {
+    "language": "Python 3.13 with numba JIT for hot loops",
+    "gpu_acceleration": "Use CuPy for Sinkhorn-CEM batched matrix operations; use torch for GA tensor operations",
+    "key_libraries": [
+      "numpy",
+      "numba",
+      "scipy (sparse.linalg.eigsh for spectral gap)",
+      "lzma (built-in)",
+      "lz4 (for fast compression)",
+      "scikit-learn (neighbors.KDTree for k-NN)",
+      "cupy (GPU Sinkhorn)"
+    ],
+    "parallelization": {
+      "cem": "Batch all M samples, evaluate fitness in parallel",
+      "ga": "Evaluate population fitness in parallel via multiprocessing.Pool",
+      "island_model": "Run islands on separate CPU cores"
+    },
+    "stopping_criterion": "Stop when max(|Δfitness|) < 1e-4 over 10 iterations/generations, or when compression gap > 12σ"
+  },
+  "recommendation": {
+    "primary_pipeline": "Stage 1 (10 min): Run CEM with 500 samples/iteration for 30 iterations to learn a rough distribution. Stage 2 (5 min): Seed the GA population with 50 best CEM samples + 450 random. Run GA for 100 generations. Stage 3 (2 min): Validate top 10 with full lzma compression (15σ gap) and spectral gap.",
+    "expected_success_probability": "80-90% based on the strength of the compression signal",
+    "risk_factors": [
+      "Sinkhorn normalization is O(N²) per sample; need GPU for practical speed",
+      "GA might converge prematurely on local optima if compression landscape has false valleys",
+      "Incremental compression evaluation requires careful implementation to avoid corruption"
+    ],
+    "mitigation_strategies": [
+      "Use hierarchical CEM with block size 64 to reduce N from 4096 to 64",
+      "Use island model with diverse crossover strategies",
+      "Use independent random restarts if convergence stalls"
+    ]
+  },
+  "creation_timestamp": "2026-05-14T23:10:49-03:00"
+}

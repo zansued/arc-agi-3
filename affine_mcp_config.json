@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "affine_workspace_4376b4e7-0399-4b70-a21f-7664d5426e98": {
+      "type": "streamable-http",
+      "url": "https://affine.techstorebrasil.com/api/workspaces/4376b4e7-0399-4b70-a21f-7664d5426e98/mcp",
+      "note": "Read docs from AFFiNE workspace \"Wonder Academy\"",
+      "headers": {
+        "Authorization": "Bearer ut_z1cD9AUculXKjnS996bbnTrxFep1rGaxZrUGVlKg2q4"
+      }
+    }
+  }
+}

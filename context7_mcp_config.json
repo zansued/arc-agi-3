@@ -1,0 +1,13 @@
+{
+  "mcp_servers": {
+    "context7": {
+      "command": "python",
+      "args": [
+        "/a0/usr/workdir/context7_mcp.py"
+      ],
+      "env": {
+        "CONTEXT7_API_KEY": "ctx7sk-795674f5-4964-453b-a05c-b14d36cafc07"
+      }
+    }
+  }
+}

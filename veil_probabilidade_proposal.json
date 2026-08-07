@@ -1,0 +1,47 @@
+{
+  "agent": "PROBABILIDADE (MLE & Generative Models Specialist)",
+  "target": "VEIL Hidden Permutation Problem (N=4096, 1D flattened + permuted from unknown 2D matrix)",
+  "approaches": [
+    {
+      "name": "GMM-BIC Permutation Scoring (Row-Structured Gaussian Mixture)",
+      "concept": "The true 2D matrix has rows as i.i.d. samples from a mixture of low-dimensional Gaussians. Random permutations destroy row structure, producing samples that are less 'clustered' in feature space \u2014 i.e., a GMM fit to true rows will have LOWER BIC (better fit) than GMM fit to fake rows.",
+      "formulation": {
+        "hypothesis": "Let X_true \u2208 R^{R\u00d7C} be the true 2D matrix (R \u00d7 C \u2248 4096). Each row x_i \u2208 R^C is drawn from a GMM: x_i ~ \u03a3_{k=1}^K \u03c0_k N(\u03bc_k, \u03a3_k). Let X_rand be a random permutation reshaped to R\u00d7C. Then: BIC(GMM_fit(X_true)) << BIC(GMM_fit(X_rand)).",
+        "why_it_works": "Random permutations assign unrelated points to the same 'row', increasing within-row variance and destroying cluster structure. The GMM must use more components or more complex covariances to fit random rows, incurring BIC penalty.",
+        "implementation_steps": [
+          "1. Given N=4096, try candidate row lengths C \u2208 [32, 64, 128, 256] such that C divides N.",
+          "2. For each C, reshape Z into X \u2208 R^{R\u00d7C} where R = N/C.",
+          "3. Fit GMM with K=2..10 components, diagonal covariance, using EM (100 iters, 5 restarts).",
+          "4. Compute BIC = -2*log_likelihood + K*log(N)*d where d = C*(C+1)/2 or C for diag.",
+          "5. True permutation should give lowest BIC across C candidates.",
+          "6. Use BIC as fitness function for permutation search (SA or beam search)."
+        ],
+        "complexity": "O(R*C*K*iters) per permutation \u2248 O(4096*10*100) \u2248 4M ops \u2014 fast for single evaluation",
+        "search_strategy": "Use BIC as fitness in simulated annealing. Propose permutations via substring reversals (2-opt moves). Accept if BIC decreases or with exp(-\u0394/T) probability.",
+        "expected_differentiation": "Based on compression signals (15\u03c3 gap), GMM likelihood structure should show 3-5\u03c3 differentiation between true and random permutations at correct C."
+      }
+    },
+    {
+      "name": "Grid MRF Pseudo-Likelihood (2D Conditional Dependency Structure)",
+      "concept": "The original 2D matrix has spatial structure: each cell is conditionally dependent on its 4 (or 8) neighbors. A Markov Random Field over the 2D grid models this as: p(z_{i,j} | neighbors) = N(\u03bc_{i,j}^{local}, \u03c3\u00b2) where mean = weighted average of neighbors. Under the true permutation, the pseudo-likelihood is HIGH (neighbors explain each other). Under random permutation, neighbors are unrelated, so conditional variance is HIGH and pseudo-likelihood is LOW.",
+      "formulation": {
+        "model": "Pairwise Gaussian MRF on 2D grid. Energy: E(z) = \u03a3_{i,j} (z_{i,j} - \u03bc_{i,j})\u00b2 / (2\u03c3\u00b2) + \u03b2 \u03a3_{(i,j)~(p,q)} (z_{i,j} - z_{p,q})\u00b2. Pseudo-likelihood: PL = \u03a0_{i,j} p(z_{i,j} | z_{N(i,j)}) where conditional mean = (\u03a3_{neighbors} z_n + \u03b2*\u03bc_global) / (|N| + \u03b2).",
+        "why_it_works": "The 2D structure induces local smoothness \u2014 adjacent cells are correlated. The MRF conditional model captures this: each cell's value is predictable from its neighbors. Under random permutation, neighbor values are uncorrelated \u2192 high conditional variance \u2192 low pseudo-likelihood.",
+        "implementation_steps": [
+          "1. For candidate C, reshape Z to R\u00d7C grid.",
+          "2. Define 4-neighborhood (top, bottom, left, right) with periodic or reflective boundaries.",
+          "3. Estimate \u03b2 (smoothness) via maximum pseudo-likelihood on a small random subsample.",
+          "4. Compute total pseudo-likelihood: PL = \u03a3_{i,j} log N(z_{i,j} | mean_of_neighbors, \u03c3\u00b2).",
+          "5. Use PL as fitness function: higher PL = better permutation.",
+          "6. Can be computed O(N) per evaluation \u2014 extremely fast."
+        ],
+        "complexity": "O(N) per permutation evaluation \u2014 O(4096) ops, essentially free",
+        "search_strategy": "Fast enough for beam search: evaluate 10,000+ candidate permutations/min. Use as primary searcher, then validate top candidates with GMM-BIC.",
+        "expected_differentiation": "If true grid has even weak local correlation (\u03c1 > 0.2), MRF pseudo-likelihood will show 5-10\u03c3 separation vs random."
+      }
+    }
+  ],
+  "combined_strategy": "1. Grid MRF Pseudo-Likelihood for fast permutation search (beam/search SA with 100K+ candidates). 2. GMM-BIC for validation and fine-tuning of top-100 candidates. 3. Cross-validate with compression (lzma) as independent check.",
+  "mathematical_justification": "Both approaches exploit the SAME underlying principle: the 2D matrix has structure that is destroyed by random permutation. GMM captures row-wise cluster structure (coarse, global). MRF captures cell-wise local smoothness (fine, local). Together they span both scales of 2D organization.",
+  "note": "Unlike PCA or autocorrelation (which failed), GMM-BIC and MRF pseudo-likelihood are NON-LINEAR, position-aware, and sensitive to the multivariate joint distribution \u2014 exactly what's needed when linear methods are permutation-invariant."
+}

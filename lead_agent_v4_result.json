@@ -1,0 +1,15 @@
+{
+  "status": "success",
+  "timestamp": "2026-07-23T19:01:11.917982",
+  "stats": {
+    "leads": 4,
+    "emails": 8,
+    "phones": 8,
+    "errors": 0
+  },
+  "niches": [
+    "advogado",
+    "dentista"
+  ],
+  "total_leads": 4
+}

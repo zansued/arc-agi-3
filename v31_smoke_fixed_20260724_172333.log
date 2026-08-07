@@ -1,0 +1,100 @@
+
+============================================================
+Solving tn36...
+============================================================
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-07-24 17:23:38 | INFO | Got anonymous API key: 224f6df3-e114-45c3-ba33-d47553ac036c
+2026-07-24 17:23:38 | INFO | You can register for an API key at https://three.arcprize.org
+2026-07-24 17:23:38 | INFO | Successfully fetched 25 environment(s) from API
+2026-07-24 17:23:38 | INFO | Created new scorecard: 930a6a44-821b-46b9-8007-5f947c781140
+2026-07-24 17:23:39 | INFO | Successfully fetched metadata for game tn36
+2026-07-24 17:23:39 | INFO | Successfully loaded game class Tn36 from environment_files/tn36/ef4dde99/tn36.py
+[2026-07-24T20:23:39.444330+00:00] Phase 1: Exploring tn36...
+[2026-07-24T20:23:49.568083+00:00] Phase 2: Backtesting model for tn36...
+  Model certified! 100 transitions verified.
+[2026-07-24T20:23:49.569647+00:00] Phase 3: Planning inside model for tn36...
+  Found plan of 100 actions. Executing...
+  Found plan of 99 actions. Executing...
+ERROR in tn36: 'int' object is not subscriptable
+Result: tn36 - 1 levels, 0 states
+
+============================================================
+Solving sp80...
+============================================================
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-07-24 17:23:50 | INFO | Got anonymous API key: 744d2846-4686-4f14-bd2d-e6b42a0a0ea3
+2026-07-24 17:23:50 | INFO | You can register for an API key at https://three.arcprize.org
+2026-07-24 17:23:50 | INFO | Successfully fetched 25 environment(s) from API
+2026-07-24 17:23:50 | INFO | Created new scorecard: 4cddab83-8dbb-40f5-bb82-138ae8399873
+2026-07-24 17:23:51 | INFO | Successfully fetched metadata for game sp80
+2026-07-24 17:23:51 | INFO | Successfully loaded game class Sp80 from environment_files/sp80/589a99af/sp80.py
+[2026-07-24T20:23:51.432648+00:00] Phase 1: Exploring sp80...
+[2026-07-24T20:23:57.037483+00:00] Phase 2: Backtesting model for sp80...
+  Model certified! 250 transitions verified.
+[2026-07-24T20:23:57.037969+00:00] Phase 3: Planning inside model for sp80...
+  Found plan of 3 actions. Executing...
+  Found plan of 2 actions. Executing...
+ERROR in sp80: 'int' object is not subscriptable
+Result: sp80 - 1 levels, 0 states
+
+============================================================
+Solving bp35...
+============================================================
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-07-24 17:23:57 | INFO | Got anonymous API key: cff0646a-89cc-4869-9c85-e6926b8da1b9
+2026-07-24 17:23:57 | INFO | You can register for an API key at https://three.arcprize.org
+2026-07-24 17:23:58 | INFO | Successfully fetched 25 environment(s) from API
+2026-07-24 17:23:58 | INFO | Created new scorecard: d4374619-4a86-4a69-968d-292635de6661
+2026-07-24 17:23:58 | INFO | Successfully fetched metadata for game bp35
+2026-07-24 17:23:58 | INFO | Successfully loaded game class Bp35 from environment_files/bp35/0a0ad940/bp35.py
+[2026-07-24T20:23:58.870701+00:00] Phase 1: Exploring bp35...
+2026-07-24 17:24:09 | ERROR | Error performing step with action ACTION7: maximum recursion depth exceeded
+Traceback (most recent call last):
+  File "/a0/usr/workdir/.venv/lib/python3.13/site-packages/arc_agi/local_wrapper.py", line 239, in step
+    FrameDataRaw, self._game.perform_action(action_input, raw=True)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/a0/usr/workdir/.venv/lib/python3.13/site-packages/arcengine/base_game.py", line 231, in perform_action
+    self.step()
+    ~~~~~~~~~^^
+  File "<string>", line 4504, in step
+  File "<string>", line 4547, in urzvqcxbsz
+  File "<string>", line 1480, in svmaaixutx
+  File "<string>", line 1255, in srlqyenmue
+  File "<string>", line 1244, in upiapwkxxz
+  File "<string>", line 1241, in xlbvewsbto
+  File "<string>", line 1241, in xlbvewsbto
+  File "<string>", line 1241, in xlbvewsbto
+  [Previous line repeated 986 more times]
+  File "<string>", line 1239, in xlbvewsbto
+RecursionError: maximum recursion depth exceeded
+[2026-07-24T20:24:14.491416+00:00] Phase 2: Backtesting model for bp35...
+  Model certified! 249 transitions verified.
+[2026-07-24T20:24:14.492012+00:00] Phase 3: Planning inside model for bp35...
+  Found plan of 4 actions. Executing...
+  Found plan of 3 actions. Executing...
+ERROR in bp35: 'int' object is not subscriptable
+Result: bp35 - 1 levels, 0 states
+
+============================================================
+Solving cn04...
+============================================================
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-07-24 17:24:15 | INFO | Got anonymous API key: 14ea7e37-f06f-4287-a629-aea7097e0d8b
+2026-07-24 17:24:15 | INFO | You can register for an API key at https://three.arcprize.org
+2026-07-24 17:24:15 | INFO | Successfully fetched 25 environment(s) from API
+2026-07-24 17:24:15 | INFO | Created new scorecard: b01244ab-2350-4034-ad27-633f58be199d
+2026-07-24 17:24:16 | INFO | Successfully fetched metadata for game cn04
+2026-07-24 17:24:16 | INFO | Successfully loaded game class Cn04 from environment_files/cn04/2fe56bfb/cn04.py
+[2026-07-24T20:24:16.302061+00:00] Phase 1: Exploring cn04...
+[2026-07-24T20:24:17.894501+00:00] Phase 2: Backtesting model for cn04...
+  Model certified! 250 transitions verified.
+[2026-07-24T20:24:17.894990+00:00] Phase 3: Planning inside model for cn04...
+  Found plan of 3 actions. Executing...
+  Found plan of 2 actions. Executing...
+ERROR in cn04: 'int' object is not subscriptable
+Result: cn04 - 1 levels, 0 states
+
+Summary written to /a0/usr/workdir/arc_runs/summary_v31_2026-07-24T20-24-17.csv
+Report written to /a0/usr/workdir/arc_runs/report_v31_2026-07-24T20-24-17.json
+
+Total: 4 levels, 0 states, 4 crashes

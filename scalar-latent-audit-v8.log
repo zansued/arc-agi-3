@@ -1,0 +1,109 @@
+[{"stream_name":"stderr","time":9.750867308,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.750940129,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.750948891,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.750952896,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":10.620865779,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.620923201,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.620931176,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.620935871,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":13.883339942,"data":"Imports OK\n"}
+,{"stream_name":"stdout","time":13.883389974,"data":"numpy 2.0.2\n"}
+,{"stream_name":"stdout","time":15.234224738,"data":"Loaded: intercepted_data.csv, N=4096, mean=0.1026, std=2.1501\n"}
+,{"stream_name":"stdout","time":15.270138087,"data":"Baseline shape: (4096, 2)\n"}
+,{"stream_name":"stdout","time":15.270196383,"data":"Baseline: scalar duplicated into 2 columns\n"}
+,{"stream_name":"stdout","time":15.270203389,"data":"Limitation: no new information extracted\n"}
+,{"stream_name":"stdout","time":15.296474694,"data":"Reshape: 4096 -\u003e (2048, 2)\n"}
+,{"stream_name":"stdout","time":15.296537443,"data":"Problem: N changed from {len(z)} to {z_reshaped.shape[0]}\n"}
+,{"stream_name":"stdout","time":15.296545998,"data":"Valid as diagnostic view: yes\n"}
+,{"stream_name":"stdout","time":15.296551123,"data":"Valid as final reconstruction: NO\n"}
+,{"stream_name":"stdout","time":15.296556705,"data":"\n"}
+,{"stream_name":"stdout","time":15.296561244,"data":"RESHAPE CONCLUSION: Useful for visualization but invalid for submission\n"}
+,{"stream_name":"stdout","time":15.553953956,"data":"Shape: (4096, 4)  |  D_hat = 4 (candidate)\n"}
+,{"stream_name":"stdout","time":15.554003852,"data":"  type: PASS\n"}
+,{"stream_name":"stdout","time":15.554010157,"data":"  shape_N_D: PASS\n"}
+,{"stream_name":"stdout","time":15.554015121,"data":"  finite: PASS\n"}
+,{"stream_name":"stdout","time":15.554115245,"data":"  determinism: PASS\n"}
+,{"stream_name":"stdout","time":15.554135616,"data":"  input_dep: PASS\n"}
+,{"stream_name":"stdout","time":15.55415354,"data":"  permutation_equiv: PASS\n"}
+,{"stream_name":"stdout","time":15.554161225,"data":"\n"}
+,{"stream_name":"stdout","time":15.554166163,"data":"D4 v3 tie-aware: 6/6 passed\n"}
+,{"stream_name":"stdout","time":15.596471544,"data":"=== DESCRIPTIVE STATISTICS ===\n"}
+,{"stream_name":"stdout","time":15.596528892,"data":"  skewness = 0.5752\n"}
+,{"stream_name":"stdout","time":15.596536875,"data":"  kurtosis = 0.8939\n"}
+,{"stream_name":"stdout","time":15.596542467999999,"data":"  KS vs N(0,1): stat=0.1753, p=0.0000\n"}
+,{"stream_name":"stdout","time":15.596546987,"data":"  Shannon entropy (50 bins) = 4.5458\n"}
+,{"stream_name":"stdout","time":15.596551527999999,"data":"\n"}
+,{"stream_name":"stdout","time":15.596556718,"data":"Key finding: highly consistent with Gaussian, no strong deviation\n"}
+,{"stream_name":"stdout","time":15.627052714,"data":"=== AUTOCORRELATION (ACF) ===\n"}
+,{"stream_name":"stdout","time":15.627094888,"data":"  ACF[1]  = 0.0075\n"}
+,{"stream_name":"stdout","time":15.627133171,"data":"  ACF[5]  = -0.0168\n"}
+,{"stream_name":"stdout","time":15.627138489,"data":"  ACF[20] = -0.0019\n"}
+,{"stream_name":"stdout","time":15.627160905,"data":"\n"}
+,{"stream_name":"stdout","time":15.627164472,"data":"=== FFT ===\n"}
+,{"stream_name":"stdout","time":15.627167877,"data":"  FFT[0] magnitude = 420.4033\n"}
+,{"stream_name":"stdout","time":15.627171337,"data":"  Peak freq bin    = 1228\n"}
+,{"stream_name":"stdout","time":15.627174776,"data":"\n"}
+,{"stream_name":"stdout","time":15.627178335,"data":"Key finding: ACF near zero at all lags, no periodicity\n"}
+,{"stream_name":"stdout","time":15.651345109,"data":"=== DISTRIBUTION + LOGIT + TAILS ===\n"}
+,{"stream_name":"stdout","time":15.651401903,"data":"  mean(sigmoid(z)) = 0.4973\n"}
+,{"stream_name":"stdout","time":15.651408461,"data":"  % near 0 (\u003c0.1): 12.1%\n"}
+,{"stream_name":"stdout","time":15.651413252,"data":"  % near 1 (\u003e0.9): 15.3%\n"}
+,{"stream_name":"stdout","time":15.65141789,"data":"  Q1% = -4.1788, Q99% = 5.9977\n"}
+,{"stream_name":"stdout","time":15.651421624,"data":"\n"}
+,{"stream_name":"stdout","time":15.651425349,"data":"Key finding: No strong polarization toward 0 or 1\n"}
+,{"stream_name":"stdout","time":15.671822908,"data":"=== GAPS + CLUSTERS + PCA ===\n"}
+,{"stream_name":"stdout","time":15.671872995,"data":"  N gaps = 4095\n"}
+,{"stream_name":"stdout","time":15.67187915,"data":"  Mean gap = 0.004492\n"}
+,{"stream_name":"stdout","time":15.671883449,"data":"  Max gap = 1.062583\n"}
+,{"stream_name":"stdout","time":15.671887337,"data":"  Top 5 gap positions: [4094 4091 4092    1    4]\n"}
+,{"stream_name":"stdout","time":15.671890951,"data":"\n"}
+,{"stream_name":"stdout","time":15.671894805,"data":"Key finding: No obvious cluster structure\n"}
+,{"stream_name":"stdout","time":15.753728767,"data":"=== 1D TOPOLOGY ===\n"}
+,{"stream_name":"stdout","time":15.753775307,"data":"  Distance matrix shape: (4096 x 4096)\n"}
+,{"stream_name":"stdout","time":15.753779455,"data":"  Mean distance = 2.3832\n"}
+,{"stream_name":"stdout","time":15.753782093,"data":"  Min distance = 0.000000\n"}
+,{"stream_name":"stdout","time":15.753784655,"data":"  Max distance = 18.3934\n"}
+,{"stream_name":"stdout","time":15.75378711,"data":"\n"}
+,{"stream_name":"stdout","time":15.753789704,"data":"Key finding: Continuous manifold, no distinct clusters\n"}
+,{"stream_name":"stdout","time":15.824322763,"data":"=== D4 v3 CONTRACT TESTS SUMMARY ===\n"}
+,{"stream_name":"stdout","time":15.824373767,"data":"D4 v3 passed 11/11 contract tests:\n"}
+,{"stream_name":"stdout","time":15.824378971,"data":"  type, shape, finite, determinism\n"}
+,{"stream_name":"stdout","time":15.824383045,"data":"  input_dependence, permutation_equiv\n"}
+,{"stream_name":"stdout","time":15.82438715,"data":"  repeated_values, N=1, extremes\n"}
+,{"stream_name":"stdout","time":15.824391374,"data":"  float32_compat, zero_input\n"}
+,{"stream_name":"stdout","time":15.824395013,"data":"\n"}
+,{"stream_name":"stdout","time":15.824399162,"data":"D4 v3 is the final candidate for submission\n"}
+,{"stream_name":"stdout","time":15.872405623,"data":"Synthetic SDR demo: N=4096, D=10\n"}
+,{"stream_name":"stdout","time":15.872454338,"data":"  R2(z, Y) = 0.7986  (predictive for target)\n"}
+,{"stream_name":"stdout","time":16.410970512,"data":"  R2(z_hat, z) from X = 0.9976  (X poorly reconstructs z)\n"}
+,{"stream_name":"stdout","time":16.411020681,"data":"\n"}
+,{"stream_name":"stdout","time":16.411025588,"data":"Demo: Z is more predictive of Y than X is of Z\n"}
+,{"stream_name":"stdout","time":16.459607486,"data":"Two valid D=4 reconstructions from same Z: (100, 4) each\n"}
+,{"stream_name":"stdout","time":16.45964696,"data":"Max absolute disagreement: 4.7587\n"}
+,{"stream_name":"stdout","time":16.459651398,"data":"\n"}
+,{"stream_name":"stdout","time":16.459655621,"data":"Without encoder/ground truth, choosing either is arbitrary\n"}
+,{"stream_name":"stdout","time":16.544034731,"data":"=== FINAL CHECKS ===\n"}
+,{"stream_name":"stdout","time":16.544091402,"data":"Narrative language: cautious and qualified\n"}
+,{"stream_name":"stdout","time":16.544098344,"data":"Submission framing: partial signal extraction, not full reconstruction\n"}
+,{"stream_name":"stdout","time":16.544102706,"data":"D4 v3 intact check: PASS\n"}
+,{"stream_name":"stdout","time":16.544106295,"data":"Benchmark execution: NOT executed\n"}
+,{"stream_name":"stdout","time":16.544109919,"data":"Final submission: NOT selected\n"}
+,{"stream_name":"stdout","time":16.544114027,"data":"Notebook ready for manual review\n"}
+,{"stream_name":"stdout","time":16.564057808,"data":"Summary saved to reports/narrative_notebook_summary.json\n"}
+,{"stream_name":"stdout","time":16.584605226,"data":"=== NARRATIVE NOTEBOOK EXECUTION CHECK ===\n"}
+,{"stream_name":"stdout","time":16.584660018,"data":"  Total cells: 33\n"}
+,{"stream_name":"stdout","time":16.584665699,"data":"  Markdown: 17\n"}
+,{"stream_name":"stdout","time":16.584669282,"data":"  Code: 16\n"}
+,{"stream_name":"stdout","time":16.584672696,"data":"  End-to-end execution: OK\n"}
+,{"stream_name":"stdout","time":16.584676804,"data":"  Benchmark: NOT executed\n"}
+,{"stream_name":"stdout","time":16.584680309,"data":"  Public: NO\n"}
+,{"stream_name":"stdout","time":16.584684083,"data":"  Final submission: NOT selected\n"}
+,{"stream_name":"stderr","time":20.300720728,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":20.300771001,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":20.566596665,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":20.566649275,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":21.439734619,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":21.868441918,"data":"[NbConvertApp] Writing 39615 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":25.329812584,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":26.488056651,"data":"[NbConvertApp] Writing 358296 bytes to __results__.html\n"}
+]

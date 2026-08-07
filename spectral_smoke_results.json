@@ -1,0 +1,57 @@
+{
+  "results": [
+    {
+      "game": "sp80",
+      "states": 6,
+      "levels": 0,
+      "steps": 5,
+      "crashes": 0,
+      "archive_replay_states": 0,
+      "archive_replay_success": false,
+      "fallbacks_triggered": 0,
+      "stagnated": false,
+      "strategy": "spectral_smart_random",
+      "spectral_ranking": true,
+      "time": 2.7
+    },
+    {
+      "game": "cn04",
+      "states": 5,
+      "levels": 0,
+      "steps": 4,
+      "crashes": 0,
+      "archive_replay_states": 0,
+      "archive_replay_success": false,
+      "fallbacks_triggered": 0,
+      "stagnated": false,
+      "strategy": "spectral_smart_random",
+      "spectral_ranking": true,
+      "time": 1.8
+    },
+    {
+      "game": "bp35",
+      "states": 7,
+      "levels": 0,
+      "steps": 6,
+      "crashes": 0,
+      "archive_replay_states": 0,
+      "archive_replay_success": false,
+      "fallbacks_triggered": 0,
+      "stagnated": false,
+      "strategy": "spectral_smart_random",
+      "spectral_ranking": true,
+      "time": 2.9
+    }
+  ],
+  "summary": {
+    "total_states": 18,
+    "total_levels": 0,
+    "total_crashes": 0,
+    "total_steps": 15
+  },
+  "config": {
+    "spectral": true,
+    "workers": 1,
+    "n_frames": 300
+  }
+}

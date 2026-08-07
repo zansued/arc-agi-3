@@ -1,0 +1,64 @@
+{
+  "results": [
+    {
+      "game": "sp80",
+      "states": 405,
+      "levels": 1,
+      "steps": 1504,
+      "crashes": 130,
+      "archive_ok": false,
+      "spectral_ok": true,
+      "time": 7.57,
+      "error": null
+    },
+    {
+      "game": "cd82",
+      "states": 369,
+      "levels": 1,
+      "steps": 1504,
+      "crashes": 115,
+      "archive_ok": false,
+      "spectral_ok": true,
+      "time": 7.77,
+      "error": null
+    },
+    {
+      "game": "bp35",
+      "states": 342,
+      "levels": 0,
+      "steps": 1500,
+      "crashes": 85,
+      "archive_ok": false,
+      "spectral_ok": true,
+      "time": 23.9,
+      "error": null
+    },
+    {
+      "game": "cn04",
+      "states": 394,
+      "levels": 0,
+      "steps": 1503,
+      "crashes": 132,
+      "archive_ok": false,
+      "spectral_ok": true,
+      "time": 8.46,
+      "error": null
+    }
+  ],
+  "total": {
+    "states": 1510,
+    "levels": 2,
+    "steps": 6011,
+    "crashes": 462,
+    "time": 47.7
+  },
+  "config": {
+    "crash_limit": 200,
+    "beam_width": 6,
+    "max_steps": 1500,
+    "spectral": true,
+    "stagnation_window": 100,
+    "archive_limit": 6
+  },
+  "timestamp": "2026-07-16 08:36 BRT"
+}

@@ -1,0 +1,43 @@
+
+============================================================
+  V60 — ARC-AGI-3 Solver (API arc_agi 0.1.0)
+============================================================
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-22 22:19:31 | INFO | Got anonymous API key: bc3d52f9-8479-4efe-a1cb-44ebe0159b05
+2026-06-22 22:19:31 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-22 22:19:32 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-22 22:19:32 | INFO | Created new scorecard: 99f112aa-e0a3-409e-b14c-7956bdaf6a28
+2026-06-22 22:19:33 | INFO | Successfully fetched metadata for game tu93
+2026-06-22 22:19:33 | INFO | Recording to recordings/99f112aa-e0a3-409e-b14c-7956bdaf6a28/tu93-0768757b-bca61088-b7e2-4e3b-8438-9b1d93c8dbd6.jsonl
+2026-06-22 22:19:33 | INFO | Successfully loaded game class Tu93 from environment_files/tu93/0768757b/tu93.py
+[V60] Jogo: tu93, níveis: 9
+
+============================================================
+  V60 Solver — tu93
+============================================================
+
+────────────────────────────────────────
+  FASE 0: RECONHECIMENTO
+────────────────────────────────────────
+[V60] FASE 0: Analisando jogo...
+  Grid: (64, 64), cores: [0, 2, 4, 5, 6, 9, 14]
+  Ações disponíveis: [1, 2, 3, 4]
+  ACTION1: diff=1 pixels, state=NOT_FINISHED, levels=0
+  ACTION2: diff=1 pixels, state=NOT_FINISHED, levels=0
+  ACTION3: diff=1 pixels, state=NOT_FINISHED, levels=0
+  ACTION4: diff=19 pixels, state=NOT_FINISHED, levels=0
+  Diagnóstico: unknown
+
+────────────────────────────────────────
+  FASE 1: BFS ARCHIVE REPLAY
+────────────────────────────────────────
+
+  --- Nível 1/9 ---
+[V60] FASE 1: BFS Archive Replay (max_states=5000)
+  Available actions (with effect): [1, 2, 3, 4]
+  ✅ LEVEL WON! 18 steps, levels=1
+  ✅ Nível 1 resolvido! 18 ações: [4, 2, 2, 4, 1, 4, 2, 2, 3, 3]...
+
+  --- Nível 2/9 ---
+[V60] FASE 1: BFS Archive Replay (max_states=5000)
+  Available actions (with effect): [1, 2, 3, 4]

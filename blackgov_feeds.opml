@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>BLACKGOV AI & Tech Feeds</title>
+    <dateCreated>2026-05-13</dateCreated>
+    <ownerName>zansued</ownerName>
+  </head>
+  <body>
+    <!-- CATEGORIA: AI & LLMs (id=2) -->
+    <outline text="AI &amp; LLMs" title="AI &amp; LLMs">
+      <outline type="rss" text="AI Insider" title="AI Insider" xmlUrl="https://theaiinsider.tech/feed/" htmlUrl="https://theaiinsider.tech"/>
+      <outline type="rss" text="AI Business" title="AI Business" xmlUrl="https://aibusiness.com/rss.xml" htmlUrl="https://aibusiness.com"/>
+      <outline type="rss" text="Towards AI" title="Towards AI" xmlUrl="https://pub.towardsai.net/feed" htmlUrl="https://pub.towardsai.net"/>
+      <outline type="rss" text="NVIDIA Technical Blog" title="NVIDIA Technical Blog" xmlUrl="https://developer.nvidia.com/blog/feed/" htmlUrl="https://developer.nvidia.com/blog"/>
+      <outline type="rss" text="Apple ML Research" title="Apple ML Research" xmlUrl="https://machinelearning.apple.com/rss.xml" htmlUrl="https://machinelearning.apple.com"/>
+      <outline type="rss" text="LangChain Blog" title="LangChain Blog" xmlUrl="https://blog.langchain.com/rss/" htmlUrl="https://blog.langchain.com"/>
+      <outline type="rss" text="Microsoft Research" title="Microsoft Research" xmlUrl="https://www.microsoft.com/en-us/research/feed/" htmlUrl="https://www.microsoft.com/en-us/research"/>
+      <outline type="rss" text="Clarifai Blog" title="Clarifai Blog" xmlUrl="https://www.clarifai.com/blog/rss.xml" htmlUrl="https://www.clarifai.com/blog"/>
+      <outline type="rss" text="Analytics Vidhya" title="Analytics Vidhya" xmlUrl="https://www.analyticsvidhya.com/feed/" htmlUrl="https://www.analyticsvidhya.com"/>
+      <outline type="rss" text="Inside AI News" title="Inside AI News" xmlUrl="http://insideainews.com/feed/" htmlUrl="https://insidebigdata.com"/>
+      <outline type="rss" text="The Rundown AI" title="The Rundown AI" xmlUrl="https://rss.beehiiv.com/feeds/2R3C6Bt5wj.xml" htmlUrl="https://www.therundown.ai"/>
+    </outline>
+
+    <!-- CATEGORIA: Research & Benchmarks (id=7) -->
+    <outline text="Research &amp; Benchmarks" title="Research &amp; Benchmarks">
+      <outline type="rss" text="arXiv stat.ML" title="arXiv stat.ML" xmlUrl="http://arxiv.org/rss/stat.ML" htmlUrl="https://arxiv.org"/>
+      <outline type="rss" text="Towards Data Science" title="Towards Data Science" xmlUrl="https://towardsdatascience.com/feed/" htmlUrl="https://towardsdatascience.com"/>
+      <outline type="rss" text="Gradient Flow" title="Gradient Flow" xmlUrl="https://gradientflow.com/feed/" htmlUrl="https://gradientflow.com"/>
+      <outline type="rss" text="The Conversation AI" title="The Conversation AI" xmlUrl="https://theconversation.com/topics/artificial-intelligence-ai-90/articles.atom" htmlUrl="https://theconversation.com"/>
+      <outline type="rss" text="Life Science AI" title="Life Science AI" xmlUrl="https://www.livescience.com/feeds/tag/artificial-intelligence" htmlUrl="https://www.livescience.com"/>
+      <outline type="rss" text="Sonarworks Blog" title="Sonarworks Blog" xmlUrl="https://www.sonarworks.com/blog/feed" htmlUrl="https://www.sonarworks.com"/>
+      <outline type="rss" text="Forrester AI" title="Forrester AI" xmlUrl="https://www.forrester.com/blogs/category/artificial-intelligence-ai/feed/" htmlUrl="https://www.forrester.com"/>
+    </outline>
+
+    <!-- CATEGORIA: Product & Market (id=6) -->
+    <outline text="Product &amp; Market" title="Product &amp; Market">
+      <outline type="rss" text="Wired AI" title="Wired AI" xmlUrl="https://www.wired.com/feed/tag/ai/latest/rss" htmlUrl="https://www.wired.com"/>
+      <outline type="rss" text="NYT AI" title="NYT AI" xmlUrl="https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/spotlight/artificial-intelligence/rss.xml" htmlUrl="https://www.nytimes.com"/>
+      <outline type="rss" text="Fast Company AI" title="Fast Company AI" xmlUrl="https://www.fastcompany.com/section/artificial-intelligence/rss" htmlUrl="https://www.fastcompany.com"/>
+      <outline type="rss" text="The Verge AI" title="The Verge AI" xmlUrl="https://www.theverge.com/rss/ai-artificial-intelligence/index.xml" htmlUrl="https://www.theverge.com"/>
+      <outline type="rss" text="Bloomberg Technology" title="Bloomberg Technology" xmlUrl="https://feeds.bloomberg.com/technology/news.rss" htmlUrl="https://www.bloomberg.com"/>
+      <outline type="rss" text="The Guardian AI" title="The Guardian AI" xmlUrl="https://www.theguardian.com/technology/artificialintelligenceai/rss" htmlUrl="https://www.theguardian.com"/>
+      <outline type="rss" text="SCMP Tech" title="SCMP Tech" xmlUrl="https://www.scmp.com/rss/36/feed/" htmlUrl="https://www.scmp.com"/>
+      <outline type="rss" text="Pandaily China" title="Pandaily China" xmlUrl="https://pandaily.com/feed/" htmlUrl="https://pandaily.com"/>
+      <outline type="rss" text="The Robot Report" title="The Robot Report" xmlUrl="https://www.therobotreport.com/feed/" htmlUrl="https://www.therobotreport.com"/>
+      <outline type="rss" text="France 24 AI" title="France 24 AI" xmlUrl="https://www.france24.com/en/tag/artificial-intelligence/rss" htmlUrl="https://www.france24.com"/>
+    </outline>
+
+    <!-- CATEGORIA: Dev Tools (id=3) -->
+    <outline text="Dev Tools" title="Dev Tools">
+      <outline type="rss" text="TechRepublic AI" title="TechRepublic AI" xmlUrl="https://www.techrepublic.com/rssfeeds/topic/artificial-intelligence/" htmlUrl="https://www.techrepublic.com"/>
+      <outline type="rss" text="Computerworld AI" title="Computerworld AI" xmlUrl="https://www.computerworld.com/artificial-intelligence/feed/" htmlUrl="https://www.computerworld.com"/>
+      <outline type="rss" text="InfoQ AI/ML" title="InfoQ AI/ML" xmlUrl="https://feed.infoq.com/ai-ml-data-eng/" htmlUrl="https://www.infoq.com"/>
+      <outline type="rss" text="TechTalks" title="TechTalks" xmlUrl="https://bdtechtalks.com/feed/" htmlUrl="https://bdtechtalks.com"/>
+      <outline type="rss" text="SiliconANGLE AI" title="SiliconANGLE AI" xmlUrl="https://siliconangle.com/category/ai/feed/" htmlUrl="https://siliconangle.com"/>
+      <outline type="rss" text="Silicon UK Tech" title="Silicon UK Tech" xmlUrl="https://www.silicon.co.uk/news/e-innovation/artificial-intelligence/feed" htmlUrl="https://www.silicon.co.uk"/>
+      <outline type="rss" text="KnowTechie AI" title="KnowTechie AI" xmlUrl="https://knowtechie.com/category/ai/feed/" htmlUrl="https://knowtechie.com"/>
+    </outline>
+
+    <!-- CATEGORIA: Cloud & Infra (id=4) -->
+    <outline text="Cloud &amp; Infra" title="Cloud &amp; Infra">
+      <outline type="rss" text="Robotics &amp; Automation" title="Robotics &amp; Automation" xmlUrl="https://roboticsandautomationnews.com/feed/" htmlUrl="https://roboticsandautomationnews.com"/>
+      <outline type="rss" text="GovTech AI" title="GovTech AI" xmlUrl="https://www.govtech.com/artificial-intelligence.rss" htmlUrl="https://www.govtech.com"/>
+      <outline type="rss" text="Spritle Software" title="Spritle Software" xmlUrl="https://www.spritle.com/blog/feed/" htmlUrl="https://www.spritle.com"/>
+    </outline>
+
+    <!-- CATEGORIA: AI Squads (id=9) -->
+    <outline text="AI Squads" title="AI Squads">
+      <outline type="rss" text="Artificial Lawyer" title="Artificial Lawyer" xmlUrl="https://www.artificiallawyer.com/feed/" htmlUrl="https://www.artificiallawyer.com"/>
+      <outline type="rss" text="Analytics India Mag" title="Analytics India Mag" xmlUrl="https://analyticsindiamag.com/ai-news-updates/feed/" htmlUrl="https://analyticsindiamag.com"/>
+      <outline type="rss" text="GPTZero" title="GPTZero" xmlUrl="https://gptzero.me/news/rss/" htmlUrl="https://gptzero.me"/>
+      <outline type="rss" text="Last Week in AI" title="Last Week in AI" xmlUrl="https://lastweekin.ai/feed" htmlUrl="https://lastweekin.ai"/>
+    </outline>
+  </body>
+</opml>

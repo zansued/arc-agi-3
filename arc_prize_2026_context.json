@@ -1,0 +1,97 @@
+{
+  "status": "ACTIVE",
+  "decided_at": "2026-06-06T10:45:00-03:00",
+  "decision_owner": "Codex+Hermes",
+  "program": "ARC Prize 2026",
+  "source_urls": {
+    "arc_prize_2026": "https://arcprize.org/competitions/2026",
+    "arc_agi_3": "https://arcprize.org/competitions/2026/arc-agi-3",
+    "paper_prize": "https://arcprize.org/competitions/2026/paper",
+    "kaggle_arc_agi_3": "https://www.kaggle.com/competitions/arc-prize-2026-arc-agi-3",
+    "kaggle_arc_agi_2": "https://www.kaggle.com/competitions/arc-prize-2026-arc-agi-2",
+    "kaggle_paper_track": "https://www.kaggle.com/competitions/arc-prize-2026-paper-track"
+  },
+  "corrected_timeline": {
+    "competition_start": "2026-03-25",
+    "arc_agi_3_milestone_1": "2026-06-30",
+    "arc_agi_3_milestone_2": "2026-09-30",
+    "final_submissions_due": "2026-11-02",
+    "papers_due_official_arc": "2026-11-08",
+    "results_announced": "2026-12-04",
+    "note": "As of 2026-06-06, there are months until final submission, not 5 days. The near-term deadline is ARC-AGI-3 Milestone #1 on 2026-06-30."
+  },
+  "tracks": {
+    "arc_agi_3": {
+      "priority": "primary",
+      "type": "interactive agent benchmark",
+      "submission_mode": "Kaggle notebook agent",
+      "why": [
+        "Current stack is built around interactive actions, state archives, replay, ACTION6 handling, spectral shaping, and controller routing.",
+        "Milestone #1 on 2026-06-30 creates the first real near-term target.",
+        "Paper Track can later document this line directly."
+      ],
+      "current_line": [
+        "v10_final fallback",
+        "ACTION6 router",
+        "v12_graph_frontier",
+        "v14_spectral_reward_shaping",
+        "v15/v16/v18 policy experiments",
+        "v19_hybrid_router_short_bfs candidate"
+      ]
+    },
+    "arc_agi_2": {
+      "priority": "deferred",
+      "type": "static grid prediction benchmark",
+      "submission_mode": "submission.json",
+      "why_deferred": [
+        "ARC-AGI-2 requires exact grid output prediction.",
+        "The current architecture is interactive and does not directly emit submission.json.",
+        "Opening this as an active front now would dilute Milestone #1 ARC-AGI-3 work."
+      ]
+    },
+    "paper_track": {
+      "priority": "secondary_live_writeup",
+      "type": "research paper/writeup",
+      "dependency": "Must be linked to a Kaggle code submission for ARC-AGI-2 or ARC-AGI-3.",
+      "strategy": "Maintain a living writeup documenting the ARC-AGI-3 interactive solver, ablations, failures, and theory."
+    }
+  },
+  "strategic_decision": {
+    "primary_focus": "ARC-AGI-3",
+    "secondary_focus": "Paper Track documenting ARC-AGI-3",
+    "defer": "ARC-AGI-2 until a separate static grid solver exists",
+    "do_not_say": [
+      "Do not say the hackathon/submission deadline is in 5 days.",
+      "Do not conflate ARC-AGI-3 interactive agents with ARC-AGI-2 submission.json.",
+      "Do not run broad 25-game experiments unless a 3-game smoke benchmark passes."
+    ]
+  },
+  "near_term_plan": {
+    "until_2026_06_30": [
+      "Stabilize ARC-AGI-3 interactive solver line.",
+      "Compare v10/v14/v16/v18/v19 on bp35, sp80, r11l before wider runs.",
+      "Promote only versions with zero crashes and objective improvement.",
+      "Prepare Kaggle notebook path for ARC-AGI-3 with offline constraints.",
+      "Keep Paper Track notes updated from each benchmark and failure analysis."
+    ],
+    "july_to_september": [
+      "Build controller per game family.",
+      "Run ablations across v10/v14/router/DGM-informed policies.",
+      "Optimize portfolio strategy under Kaggle runtime limits."
+    ],
+    "october_to_november": [
+      "Freeze ARC-AGI-3 final notebook before 2026-11-02.",
+      "Finalize Paper Track writeup before official ARC paper due date 2026-11-08."
+    ]
+  },
+  "agent_zero_next_task": {
+    "summary": "Continue ARC-AGI-3 v19_hybrid_router_short_bfs as a controlled 3-game benchmark, not a 25-game run.",
+    "steps": [
+      "Use the corrected ARC Prize 2026 timeline and track definitions.",
+      "Do not mention 5 days remaining.",
+      "Do not switch to ARC-AGI-2 unless explicitly instructed.",
+      "Do not run 25 games until bp35, sp80, r11l smoke benchmark passes.",
+      "Publish last_report.json with status WAITING_FOR_SUPERVISOR after each controlled run."
+    ]
+  }
+}

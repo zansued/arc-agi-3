@@ -1,0 +1,66 @@
+{
+  "approach_1": {
+    "name": "Kernel PCA Reconstruction Error as Permutation Fitness",
+    "type": "Kernel Methods + Simulated Annealing",
+    "mathematical_foundation": "Kernel PCA maps scalar values into an RKHS (Reproducing Kernel Hilbert Space) via nonlinear feature map φ. For a candidate 2D arrangement (64×64 grid), compute the kernel PCA reconstruction error: E = Σᵢ ||φ(zᵢ) − P_k φ(zᵢ)||² where P_k projects onto the top k principal components in ℋ. The true 2D spatial structure creates smooth transitions between adjacent cells, which align with the dominant kernel-PC directions. Random permutations destroy this alignment, resulting in HIGHER reconstruction error for the same k.",
+    "expected_gap": "3-10σ based on the compression gap magnitude (both measure Kolmogorov/algorithmic structure; kernel PCA reconstruction error is a proxy for how well the nonlinear manifold explains the ordered data)",
+    "implementation_steps": [
+      "Reshape 4096 scalar values into 64×64 candidate grid",
+      "Center the data (zero mean)",
+      "Compute kernel matrix K using RBF kernel with γ = 1/(2·σ²) where σ = median pairwise distance or Silverman's rule",
+      "Center K in feature space: K' = K − 1_N K − K 1_N + 1_N K 1_N",
+      "Perform eigendecomposition of K' → αᵢ (eigenvectors), λᵢ (eigenvalues)",
+      "Project each point onto top k=16 components: β_iⱼ = Σₘ α_jₘ K'(xᵢ, xₘ)",
+      "Reconstruct in feature space: φ̅(zᵢ) = Σⱼ₌₁ᵏ β_iⱼ αⱼ",
+      "Reconstruction error: E_rec(zᵢ) = K(zᵢ, zᵢ) − 2 Σⱼ₌₁ᵏ β_iⱼ² + Σⱼ₌₁ᵏ β_iⱼ² ",
+      "Total fitness: F = mean(E_rec) across all N points",
+      "Use F as fitness function in SA: initialize from LZ-GA seed permutation (which already gives 15σ compression gap), make random swaps, accept if F decreases or with probability exp(ΔF/T)",
+      "Complexity: O(N²k) per evaluation → subsample to K=500 points for SA inner loop, then full N for final validation"
+    ],
+    "advantages": [
+      "Captures nonlinear manifold structure that linear PCA misses",
+      "RBF kernel is universal approximator — can detect ANY smooth spatial structure",
+      "Reconstruction error is a continuous smooth fitness landscape (unlike compression which is discrete)",
+      "Kernel PCA is deterministic and reproducible per permutation",
+      "Subsampling to K=500 reduces O(N²) to O(K²) with minimal loss of signal"
+    ],
+    "comparison_to_linear_pca": "Linear PCA on D=2 gives identical scores for all permutations (std=0) because it is permutation-invariant — it only sees the value distribution. Kernel PCA in an infinite-dimensional RKHS sees the INTERNAL TOPOLOGY of the 2D arrangement, because the kernel similarity K(zᵢ, zⱼ) = exp(−γ(zᵢ−zⱼ)²) reflects value proximity, and when values are arranged in a 2D grid, nearby-in-value points tend to be nearby-in-grid-position. This creates a low-dimensional nonlinear manifold in ℋ that is destroyed by permutation. Mathematical proof: for true order, the Gram matrix G_ij = K(zᵢ, zⱼ) has Toeplitz-plus-low-rank structure (due to smooth 2D decay), giving rapid eigenvalue decay. For random order, G is nearly diagonal → slow eigenvalue decay → higher reconstruction error for any fixed k."
+  },
+  "approach_2": {
+    "name": "Autoencoder Bottleneck Distance Minimization",
+    "type": "Deep Autoencoder + Pairwise Adjacency Fitness",
+    "mathematical_foundation": "Train a deep autoencoder (encoder: 4096→256→64→bottleneck, decoder symmetric) on the full set of 4096 values. The bottleneck layer learns a low-dimensional (d=2..4) representation of the latent manifold. For the CORRECT 2D arrangement, adjacent elements in the matrix lie on a CONTINUOUS submanifold in bottleneck space — their Euclidean distance in bottleneck space should be SMALL. For random permutations, adjacent elements are unrelated → bottleneck distances are large.",
+    "expected_gap": "2-8σ depending on bottleneck dimension and training quality",
+    "implementation_steps": [
+      "Define autoencoder architecture: Input(4096) → Dense(256, ReLU) → Dense(64, ReLU) → Dense(bottleneck_dim, linear) → Dense(64, ReLU) → Dense(256, ReLU) → Dense(4096, linear)",
+      "Bottleneck dimension: try d=2,3,4 (d=2 corresponds to the hypothesized latent dimensionality)",
+      "Training: use all 4096 values as both input and target. Loss = MSE. Batch size = 256, epochs = 200, Adam optimizer LR=0.001, early stopping patience=20",
+      "Since the autoencoder is permutation-INVARIANT (it learns the value distribution, not order), it trains once and is reused for all permutation candidates",
+      "For a candidate permutation π, reshape to 64×64 grid. For each row r, extract bottleneck activations b(r, c) for column c",
+      "Compute adjacent bottleneck distance: D_adj = mean(|b(r,c) − b(r,c+1)|²) across all rows and columns",
+      "Also compute between-row adjacency: D_col = mean(|b(r,c) − b(r+1,c)|²)",
+      "Fitness F = D_adj + α·D_col where α balances row vs column smoothness",
+      "Use F as fitness in SA: lower F → better permutation",
+      "Normalization: divide by expected distance under random permutation (can estimate analytically from bottleneck distribution)",
+      "Complexity: O(N·d_bottleneck) per evaluation — VERY fast, allows 100K+ SA steps"
+    ],
+    "advantages": [
+      "Autoencoder trains ONCE (∼minutes), then evaluates 1000s of permutations in seconds",
+      "Bottleneck activations are smooth functions of input — sensitive to ORDER, not just distribution",
+      "d=2 bottleneck explicitly constrains to latent 2D manifold — if data truly has 2D structure, it will align",
+      "Can combine with denoising autoencoder for robustness to noise",
+      "Fitness landscape is continuous and differentiable (via encoder gradients) → can use gradient-free SA or even gradient-based optimization via encoder Jacobian"
+    ],
+    "mathematical_detail": "The encoder E: ℝ⁴⁰⁹⁶ → ℝᵈ learns a low-dimensional representation. For two input vectors x and x' (two rows of the 64×64 matrix), the bottleneck distance is ||E(x) − E(x')||. In the true matrix, adjacent rows are smoothly varying function of column index. This means E(x) ≈ E(x') for adjacent rows. For a random permutation, rows are statistically independent, so E(x) and E(x') are uncorrelated points in ℝᵈ with expected squared distance ≈ 2·Trace(Cov(E(X))). The ratio of true:D_adj to random:D_adj is proportional to the fraction of variance explained by the 2D manifold structure — expected > 0.3 based on D₂ gap of 0.27."
+  },
+  "hybrid_pipeline": {
+    "stage_1": "Train autoencoder (d=2) on all 4096 values once",
+    "stage_2": "Use LZ-GA seed permutation as starting point (guaranteed 15σ compression gap)",
+    "stage_3": "Simulated annealing with combined fitness: F = w₁·KernelPCA_rec_error + w₂·Adjacent_bottleneck_distance + w₃·Compression_size",
+    "stage_4": "Validate final permutation via recurrence plot FFT power (8x gap) and D₂ correlation dimension (0.27 gap)",
+    "expected_speed": "SA with 50K steps, bottleneck fitness evaluation O(N·d), kernel PCA evaluation every 100 steps (O(K²·k) with K=500 subsample), compression evaluation every 50 steps (O(N log N)). Total: ∼30 minutes on single CPU."
+  },
+  "key_novelty": "This is the first proposal to use KERNEL PCA RECONSTRUCTION ERROR as a PERMUTATION FITNESS FUNCTION. Previous work used compression size (LZMA), which is discrete and hard to optimize. Kernel PCA reconstruction error is continuous, differentiable in permutation space (via smooth kernel), and can be efficiently approximated via Nyström methods for faster evaluation.",
+  "created_by": "Sub-Agent 4: CRIPTO (Nonlinear Dimensionality Reduction & Autoencoder Specialist)",
+  "timestamp": "2026-05-14T21:36:50-03:00"
+}

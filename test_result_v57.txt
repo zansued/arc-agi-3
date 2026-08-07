@@ -1,0 +1,223 @@
+===== V57: BFS EXPLORAÇÃO AGGRESSIVA (V47 parâmetros) =====
+Games: 25 | Workers: 1
+ARC-DSR disponível: False
+Iniciado: 2026-06-20 15:41:24
+
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:41:24 | INFO | Got anonymous API key: 7ef1f253-e960-43a6-b3ba-b7069db5de21
+2026-06-20 15:41:24 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:41:24 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:41:24 | INFO | Created new scorecard: 0b8e5f23-0e26-4d8e-901b-7ed93f77178e
+2026-06-20 15:41:25 | INFO | Successfully fetched metadata for game ar25
+2026-06-20 15:41:25 | INFO | Successfully loaded game class Ar25 from environment_files/ar25/0c556536/ar25.py
+[V55] ar25:  288 st, 0 lv, 1000 stp,   0 cr, 52.1s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:42:16 | INFO | Got anonymous API key: b37eb226-86b4-44e5-96bc-2aeed76f3e70
+2026-06-20 15:42:16 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:42:17 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:42:17 | INFO | Created new scorecard: 9a093dd6-1a17-4d7e-82b6-1e2625d6938a
+2026-06-20 15:42:17 | INFO | Successfully fetched metadata for game bp35
+2026-06-20 15:42:18 | INFO | Successfully loaded game class Bp35 from environment_files/bp35/0a0ad940/bp35.py
+[V55] bp35:  168 st, 0 lv, 600 stp,   0 cr, 81.2s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:43:37 | INFO | Got anonymous API key: 09aa383f-b40f-4349-a68e-d8e80c2d3d45
+2026-06-20 15:43:37 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:43:38 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:43:38 | INFO | Created new scorecard: f3aa07be-3edc-45f4-b6b3-2b6c2b0da02a
+2026-06-20 15:43:38 | INFO | Successfully fetched metadata for game cd82
+2026-06-20 15:43:38 | INFO | Successfully loaded game class Cd82 from environment_files/cd82/fb555c5d/cd82.py
+[V55] cd82:   39 st, 0 lv, 240 stp,   0 cr,  3.0s, S:bfs AR ST
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:43:40 | INFO | Got anonymous API key: 8bf70837-f996-4e46-a05a-35a5bcc9a6b2
+2026-06-20 15:43:40 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:43:41 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:43:41 | INFO | Created new scorecard: 2eb9f0cf-d789-4e45-98a2-a94511826a40
+2026-06-20 15:43:41 | INFO | Successfully fetched metadata for game cn04
+2026-06-20 15:43:41 | INFO | Successfully loaded game class Cn04 from environment_files/cn04/2fe56bfb/cn04.py
+[V55] cn04:  207 st, 0 lv, 600 stp,   0 cr,  5.7s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:43:46 | INFO | Got anonymous API key: b867c510-54c5-4993-bde5-5e91bfa15ee9
+2026-06-20 15:43:46 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:43:47 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:43:47 | INFO | Created new scorecard: 4a09b730-71c1-4c17-b8b2-3652d4a3f3f5
+2026-06-20 15:43:47 | INFO | Successfully fetched metadata for game dc22
+2026-06-20 15:43:47 | INFO | Successfully loaded game class Dc22 from environment_files/dc22/fdcac232/dc22.py
+[V55] dc22:   59 st, 0 lv, 300 stp,   0 cr, 11.9s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:43:58 | INFO | Got anonymous API key: 1253152e-c3a0-44b9-8fb2-328a56010eb1
+2026-06-20 15:43:58 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:43:59 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:43:59 | INFO | Created new scorecard: e0c35c94-b601-46d5-af92-0e364f3aa692
+2026-06-20 15:43:59 | INFO | Successfully fetched metadata for game ft09
+2026-06-20 15:44:00 | INFO | Successfully loaded game class Ft09 from environment_files/ft09/0d8bbf25/ft09.py
+[V55] ft09:   33 st, 0 lv, 204 stp,   0 cr, 10.4s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:44:09 | INFO | Got anonymous API key: dad592cd-e088-4199-bd74-5c421d783ee2
+2026-06-20 15:44:09 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:44:09 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:44:09 | INFO | Created new scorecard: 8d30835a-64a3-4bbf-ad73-d83eae3ab5f1
+2026-06-20 15:44:10 | INFO | Successfully fetched metadata for game g50t
+2026-06-20 15:44:10 | INFO | Successfully loaded game class G50t from environment_files/g50t/5849a774/g50t.py
+[V55] g50t:    1 st, 0 lv,   6 stp,   0 cr,  2.6s, S:bfs
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:44:11 | INFO | Got anonymous API key: 71405760-7384-425d-bf88-89505f5af9e3
+2026-06-20 15:44:11 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:44:11 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:44:12 | INFO | Created new scorecard: 5ba93a26-b809-4900-bca6-6c2d18504717
+2026-06-20 15:44:12 | INFO | Successfully fetched metadata for game ka59
+2026-06-20 15:44:12 | INFO | Successfully loaded game class Ka59 from environment_files/ka59/38d34dbb/ka59.py
+[V55] ka59:  125 st, 0 lv, 500 stp,   0 cr,  7.2s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:44:18 | INFO | Got anonymous API key: 662f1e45-399e-468c-8c84-040e161abfaa
+2026-06-20 15:44:18 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:44:19 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:44:19 | INFO | Created new scorecard: 3fbd36eb-1638-4295-b2ee-4c04385cfe09
+2026-06-20 15:44:19 | INFO | Successfully fetched metadata for game lf52
+2026-06-20 15:44:20 | INFO | Successfully loaded game class Lf52 from environment_files/lf52/271a04aa/lf52.py
+[V55] lf52:   55 st, 0 lv, 324 stp,   0 cr, 56.4s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:45:15 | INFO | Got anonymous API key: 13503d7c-11e3-4e53-807c-9003adc41e51
+2026-06-20 15:45:15 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:45:15 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:45:15 | INFO | Created new scorecard: 96d2538e-7e9c-4527-843f-4cbbf8af63c4
+2026-06-20 15:45:16 | INFO | Successfully fetched metadata for game lp85
+2026-06-20 15:45:16 | INFO | Successfully loaded game class Lp85 from environment_files/lp85/305b61c3/lp85.py
+[V55] lp85:    1 st, 0 lv,   6 stp,   0 cr,  2.6s, S:bfs
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:45:17 | INFO | Got anonymous API key: 20d78124-1691-4560-8099-5d2d577fe987
+2026-06-20 15:45:17 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:45:18 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:45:18 | INFO | Created new scorecard: 920963f2-8075-4194-9694-3a1cdb52ccf9
+2026-06-20 15:45:18 | INFO | Successfully fetched metadata for game ls20
+2026-06-20 15:45:18 | INFO | Successfully loaded game class Ls20 from environment_files/ls20/9607627b/ls20.py
+[V55] ls20:  225 st, 0 lv, 1000 stp,   0 cr, 185.3s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:48:23 | INFO | Got anonymous API key: bad99555-a23b-423e-8e5f-ae79852cc8fe
+2026-06-20 15:48:23 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:48:23 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:48:23 | INFO | Created new scorecard: 9c17cb73-d1e1-45ea-82dd-4edd3b703d2d
+2026-06-20 15:48:24 | INFO | Successfully fetched metadata for game m0r0
+2026-06-20 15:48:24 | INFO | Successfully loaded game class M0r0 from environment_files/m0r0/492f87ba/m0r0.py
+[V55] m0r0:  255 st, 0 lv, 1000 stp,   0 cr, 40.5s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:49:03 | INFO | Got anonymous API key: 98a31905-276e-4976-abb1-ca3412884d21
+2026-06-20 15:49:03 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:49:04 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:49:04 | INFO | Created new scorecard: a01f9915-75b0-4763-b3cc-87c1a2a0f2f4
+2026-06-20 15:49:04 | INFO | Successfully fetched metadata for game r11l
+2026-06-20 15:49:05 | INFO | Successfully loaded game class R11l from environment_files/r11l/495a7899/r11l.py
+[V55] r11l:   31 st, 0 lv, 186 stp,   0 cr, 10.6s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:49:14 | INFO | Got anonymous API key: bd879689-ea30-447b-86e2-456b7334b555
+2026-06-20 15:49:14 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:49:14 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:49:14 | INFO | Created new scorecard: b15b0765-a89c-444f-9b4b-392b14e632b2
+2026-06-20 15:49:15 | INFO | Successfully fetched metadata for game re86
+2026-06-20 15:49:16 | INFO | Successfully loaded game class Re86 from environment_files/re86/8af5384d/re86.py
+[V55] re86:  265 st, 0 lv, 500 stp,   0 cr, 14.0s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:49:28 | INFO | Got anonymous API key: 03c98f0e-0c40-4e3a-84d1-d84a2cef6cd0
+2026-06-20 15:49:28 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:49:28 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:49:28 | INFO | Created new scorecard: 4229b199-7145-4a01-8d5f-a2f9902ffd3d
+2026-06-20 15:49:29 | INFO | Successfully fetched metadata for game s5i5
+2026-06-20 15:49:29 | INFO | Successfully loaded game class S5i5 from environment_files/s5i5/18d95033/s5i5.py
+[V55] s5i5:    1 st, 0 lv,   6 stp,   0 cr,  2.4s, S:bfs
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:49:30 | INFO | Got anonymous API key: 765358de-7b23-4aec-a69e-a715648e78d9
+2026-06-20 15:49:30 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:49:31 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:49:31 | INFO | Created new scorecard: 59de86ff-15d5-4b7c-9f00-ad7392aa2dbc
+2026-06-20 15:49:31 | INFO | Successfully fetched metadata for game sb26
+2026-06-20 15:49:31 | INFO | Successfully loaded game class Sb26 from environment_files/sb26/7fbdac44/sb26.py
+[V55] sb26:   26 st, 0 lv, 156 stp,   0 cr, 10.6s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:49:41 | INFO | Got anonymous API key: 7ba3d7ef-113b-4afd-87a0-7bebf29c74d7
+2026-06-20 15:49:41 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:49:42 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:49:42 | INFO | Created new scorecard: 08a4cb0c-8538-4de8-ab7c-74dcd0e1c400
+2026-06-20 15:49:42 | INFO | Successfully fetched metadata for game sc25
+2026-06-20 15:49:43 | INFO | Successfully loaded game class Sc25 from environment_files/sc25/635fd71a/sc25.py
+[V55] sc25:    1 st, 0 lv,   6 stp,   0 cr,  2.9s, S:bfs
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:49:44 | INFO | Got anonymous API key: 2989873d-c194-42b6-af11-ee41947fd525
+2026-06-20 15:49:44 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:49:44 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:49:44 | INFO | Created new scorecard: 65852504-780b-4002-b9a2-7e95b0dae904
+2026-06-20 15:49:45 | INFO | Successfully fetched metadata for game sk48
+2026-06-20 15:49:45 | INFO | Successfully loaded game class Sk48 from environment_files/sk48/d8078629/sk48.py
+[V55] sk48:   86 st, 0 lv, 300 stp,   0 cr, 21.6s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:50:05 | INFO | Got anonymous API key: 4f7bb695-2787-4e1d-bd50-2dfc2ecc3787
+2026-06-20 15:50:05 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:50:06 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:50:06 | INFO | Created new scorecard: 5d83d441-c47b-485f-94fa-b1d22c3ebd9c
+2026-06-20 15:50:07 | INFO | Successfully fetched metadata for game sp80
+2026-06-20 15:50:07 | INFO | Successfully loaded game class Sp80 from environment_files/sp80/589a99af/sp80.py
+[V55] sp80:  265 st, 0 lv, 800 stp,   0 cr, 23.6s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:50:29 | INFO | Got anonymous API key: 0aa600a7-434f-4556-9f27-08497b2e0e7a
+2026-06-20 15:50:29 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:50:30 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:50:30 | INFO | Created new scorecard: 360b9acf-d20a-4e64-8590-c64390119690
+2026-06-20 15:50:30 | INFO | Successfully fetched metadata for game su15
+2026-06-20 15:50:30 | INFO | Successfully loaded game class Su15 from environment_files/su15/1944f8ab/su15.py
+[V55] su15:    1 st, 0 lv,   6 stp,   0 cr,  2.3s, S:bfs
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:50:31 | INFO | Got anonymous API key: 72843f7a-dd3d-4cbf-a659-fd3586d06802
+2026-06-20 15:50:31 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:50:32 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:50:32 | INFO | Created new scorecard: 5ddaffa9-3448-4e22-9212-2c09715b9678
+2026-06-20 15:50:32 | INFO | Successfully fetched metadata for game tn36
+2026-06-20 15:50:33 | INFO | Successfully loaded game class Tn36 from environment_files/tn36/ef4dde99/tn36.py
+[V55] tn36:    1 st, 0 lv,   6 stp,   0 cr,  2.7s, S:bfs
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:50:34 | INFO | Got anonymous API key: 329ac899-61fe-41c2-b0ee-c663d5a5b3d5
+2026-06-20 15:50:34 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:50:34 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:50:34 | INFO | Created new scorecard: f6bb6c05-452c-4581-a193-0e18ad09c78c
+2026-06-20 15:50:35 | INFO | Successfully fetched metadata for game tr87
+2026-06-20 15:50:35 | INFO | Successfully loaded game class Tr87 from environment_files/tr87/cd924810/tr87.py
+[V55] tr87:  233 st, 0 lv, 500 stp,   0 cr, 46.1s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:51:20 | INFO | Got anonymous API key: 286711f7-06e5-4928-8d4d-a147cce23d8a
+2026-06-20 15:51:20 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:51:21 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:51:21 | INFO | Created new scorecard: 179d2225-9a4e-4543-a1da-007c620fe9a0
+2026-06-20 15:51:21 | INFO | Successfully fetched metadata for game tu93
+2026-06-20 15:51:21 | INFO | Successfully loaded game class Tu93 from environment_files/tu93/0768757b/tu93.py
+[V55] tu93:  126 st, 0 lv, 500 stp,   0 cr, 12.8s, S:bfs AR
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:51:33 | INFO | Got anonymous API key: 42380e22-4a17-4d0a-87ff-5b3aa26f5549
+2026-06-20 15:51:33 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:51:34 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:51:34 | INFO | Created new scorecard: bebe2ede-cb94-42e4-9e4a-fd42147c1afd
+2026-06-20 15:51:34 | INFO | Successfully fetched metadata for game vc33
+2026-06-20 15:51:34 | INFO | Successfully loaded game class Vc33 from environment_files/vc33/5430563c/vc33.py
+[V55] vc33:    1 st, 0 lv,   6 stp,   0 cr,  2.3s, S:bfs
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-20 15:51:35 | INFO | Got anonymous API key: 14a2f870-c154-463f-8b44-2a5a6f60221a
+2026-06-20 15:51:35 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-20 15:51:36 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-20 15:51:36 | INFO | Created new scorecard: 91f7b8d2-7579-416f-9ca7-315278e29476
+2026-06-20 15:51:36 | INFO | Successfully fetched metadata for game wa30
+2026-06-20 15:51:37 | INFO | Successfully loaded game class Wa30 from environment_files/wa30/ee6fef47/wa30.py
+[V55] wa30:  114 st, 0 lv, 300 stp,   0 cr, 22.8s, S:bfs AR
+
+============================================================
+V55 FULL BENCHMARK RESULT
+============================================================
+Tempo: 634.1s | 25/25 jogos
+Estados: 2607 | Níveis: 0 | Crashes: 0
+Steps: 9052 | Archive: 18 | Dedução: 0 (0 OK)
+
+Games com níveis:
+Traceback (most recent call last):
+  File "/a0/usr/workdir/v57.py", line 758, in <module>
+    run_benchmark(GAME_IDS, 'v55', workers=1)
+  File "/a0/usr/workdir/v57.py", line 720, in run_benchmark
+    save_neural_weights(results)
+  File "/a0/usr/workdir/v57.py", line 171, in save_neural_weights
+    with open(NEURAL_STATE_PATH, 'w') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'arc_runs/v57_neural_weights_v47.json'

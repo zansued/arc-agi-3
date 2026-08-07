@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+h1 { color: #00d4ff; border-bottom: 2px solid #00d4ff; padding-bottom: 10px; }
+h2 { color: #00b4d8; margin-top: 30px; }
+h3 { color: #90e0ef; }
+.section { background: #16213e; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #00d4ff; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+.badge-red { background: #e63946; color: white; }
+.badge-green { background: #2d6a4f; color: white; }
+.badge-yellow { background: #e9c46a; color: #333; }
+.badge-blue { background: #0077b6; color: white; }
+pre { background: #0d1b2a; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+code { background: #0d1b2a; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+ul { padding-left: 20px; }
+li { margin: 8px 0; }
+.gargalo { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+.gargalo-icon { font-size: 24px; }
+</style>
+</head>
+<body>
+
+<h1>~ Relatório Técnico: Levantamento do Sistema RAG Existente ~</h1>
+<p><em>Gerado em 2026-04-25 10:52 BRT &middot; Sistema: Agent Zero Deep Research</em></p>
+
+<div class="section">
+<h2>1. Diagnóstico Geral</h2>
+<p>O sistema <strong>NÃO possui um pipeline RAG (Retrieval-Augmented Generation) operacional</strong>. O que existe são componentes isolados e não integrados:</p>
+<ul>
+<li><span class="badge badge-yellow">Semi-Operacional</span> <strong>FAISS Indexes</strong> &mdash; 2 índices pré-existentes (IVF) mas sem conhecimento do que indexam</li>
+<li><span class="badge badge-red">Inexistente</span> <strong>Sistema de Embeddings</strong> &mdash; Nenhum modelo de embedding instalado</li>
+<li><span class="badge badge-red">Inexistente</span> <strong>Estratégia de Chunking</strong> &mdash; Zero implementação de chunking textual para RAG</li>
+<li><span class="badge badge-yellow">Operacional</span> <strong>Query Systems</strong> &mdash; 2 engines fazendo download HTTP + busca regex em CSVs gigantes</li>
+<li><span class="badge badge-blue">Disponível</span> <strong>Hardware</strong> &mdash; CPU-only com AVX512, 4 vCPUs, sem GPU</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>2. Estado Atual de Embeddings</h2>
+
+<h3>Pacotes Instalados</h3>
+<pre>$ pip list | grep -i -E 'sentence-transformers|fastembed|faiss|transformers|torch|chromadb|embedding'
+(NENHUM RESULTADO)</pre>
+
+<p><span class="badge badge-red">CRÍTICO</span> Nenhum dos seguintes está instalado:</p>
+<ul>
+<li><code>sentence-transformers</code> &mdash; não instalado</li>
+<li><code>fastembed</code> &mdash; não instalado</li>
+<li><code>faiss-cpu</code> &mdash; não instalado</li>
+<li><code>torch</code> / <code>torchvision</code> &mdash; não instalado</li>
+<li><code>transformers</code> &mdash; não instalado</li>
+</ul>
+
+<p><strong>Implicação:</strong> Não é possível gerar nenhum embedding textual. Não há busca semântica. Não há RAG.</p>
+
+<h3>O código existente</h3>
+<p>O arquivo <code>ai_models_system/scripts/ai_models_system.py</code> contém a classe <code>AIModelsSystem</code> que:</p>
+<ul>
+<li>Declara dependência de <code>torch</code> e <code>faiss</code> como opcionais (try/except)</li>
+<li>Tem método <code>search_with_faiss()</code> mas a implementação é <strong>SIMULADA</strong> (retorna resultados fixos, não reais)</li>
+<li>Tem método <code>generate_with_pytorch()</code> também <strong>SIMULADO</strong> (retorna descrição textual, não gera imagem real)</li>
+<li>Todos os métodos de cross-reference (CPF, Instagram) são <strong>SIMULADOS</strong> com notação <code>TODO</code></li>
+</ul>
+
+<p class="badge badge-yellow">ATENÇÃO: O sistema é um esqueleto/"mock" que precisa ser preenchido com implementações reais.</p>
+</div>
+
+<div class="section">
+<h2>3. Estado Atual de FAISS</h2>
+
+<h3>Índices Encontrados</h3>
+<pre>
+└── ai_models_system/data/
+    ├── added_IVF2251_Flat_nprobe_1_v2.index  (265 MB)
+    └── added_IVF3378_Flat_nprobe_1_v2.index  (397 MB)
+</pre>
+
+<h3>Características Técnicas (inferidas do código de teste)</h3>
+<ul>
+<li><strong>Tipo:</strong> IVF (Inverted File) com quantização Flat (sem compressão)</li>
+<li><strong>nprobe:</strong> 1 (apenas 1 cluster visitado por busca &mdash; rápido mas menos preciso)</li>
+<li><strong>Métrica:</strong> L2 (distância euclidiana) &mdash; confirmado no test_faiss_fixed.py</li>
+<li><strong>nlist:</strong> 2251 e 3378 clusters respectivamente</li>
+<li><strong>Dimensão (d):</strong> Não foi possível extrair (faiss não instalado). Estimativa por tamanho: ~512-768 dimensões</li>
+<li><strong>ntotal:</strong> Não extraído. Estimativa: centenas de milhares de vetores</li>
+</ul>
+
+<h3>Problemas Críticos</h3>
+<ul>
+<li><span class="badge badge-red">SEM METADADOS</span> Não sabemos <strong>o que</strong> estes índices indexam (faces? textos? imagens?)</li>
+<li><span class="badge badge-red">SEM MODELO ASSOCIADO</span> Não sabemos qual modelo de embedding gerou os vetores</li>
+<li><span class="badge badge-red">SEM CÓDIGO DE CRIAÇÃO</span> Não há código que treine/crie estes índices &mdash; eles são pré-existentes, provavelmente de outro sistema</li>
+<li><span class="badge badge-yellow">VERSÃO FAISS</span> Os índices são v2 (mais recentes), mas a versão exata do FAISS que os criou é desconhecida</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>4. Estratégia de Chunking</h2>
+
+<p><span class="badge badge-red">INEXISTENTE</span> Não há implementação de chunking textual para RAG.</p>
+
+<p>O que existe sob o nome "chunk":</p>
+<ul>
+<li><strong>drive_query_unified.py:</strong> <code>CHUNK_SIZE = 1024 * 1024</code> (1MB) &mdash; chunk de <strong>bytes</strong> para download por range HTTP, NÃO chunk de texto para processamento semântico</li>
+<li><strong>drive_query_engine_v2.py:</strong> Mesmo conceito: MAX_CHUNKS=10 chunks de 1MB cada</li>
+<li><strong>process_excel_working.py:</strong> <code>chunk_size = 1000</code> &mdash; chunk de <strong>linhas</strong> de Excel, NÃO chunking semântico</li>
+</ul>
+
+<p>Não há:</p>
+<ul>
+<li>RecursiveCharacterTextSplitter (LangChain)</li>
+<li>Split por tokens/sentenças/parágrafos</li>
+<li>Sobreposição (overlap) entre chunks</li>
+<li>Chunking semântico baseado em embeddings</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>5. Modelos Disponíveis</h2>
+
+<h3>Modelos de Embedding</h3>
+<ul>
+<li><span class="badge badge-red">NENHUM</span> Nenhum modelo de embedding instalado ou configurado</li>
+</ul>
+
+<h3>Modelos FAISS (pré-existentes, sem contexto)</h3>
+<ul>
+<li>2 índices IVF com 2251 e 3378 clusters, dimensão desconhecida</li>
+</ul>
+
+<h3>Modelos PyTorch (pré-existentes, sem código de uso real)</h3>
+<ul>
+<li><code>BOLSONARO NEW_600e.pth</code> (53 MB) &mdash; provável fine-tune de Stable Diffusion</li>
+<li><code>LULA NOVO_300e.pth</code> (53 MB) &mdash; provável fine-tune de Stable Diffusion</li>
+</ul>
+
+<p>NOTA: PyTorch não está instalado, então estes modelos não podem ser carregados nem utilizados atualmente.</p>
+</div>
+
+<div class="section">
+<h2>6. Hardware Disponível</h2>
+
+<pre>
+Modelo:      AMD EPYC 9354P 32-Core Processor
+vCPUs:       4
+Arquitetura: x86_64
+AVX512:      SIM  (avx512f, avx512dq, avx512cd, avx512bw, avx512vl, etc.)
+GPU:         NENHUMA (nvidia-smi não encontrado)
+RAM:         ~8 GB (estimativa container Docker)
+</pre>
+
+<h3>Implicações</h3>
+<ul>
+<li><span class="badge badge-green">AVX512</span> disponível &rarr; FAISS CPU altamente otimizado, boa performance para busca</li>
+<li><span class="badge badge-yellow">Sem GPU</span> &rarr; Modelos grandes (>1B parâmetros) inviáveis para embedding em tempo real</li>
+<li><span class="badge badge-yellow">4 vCPUs</span> &rarr; Processamento paralelo limitado, mas suficiente para modelos pequenos/médios</li>
+<li><span class="badge badge-yellow">~8GB RAM</span> &rarr; Limita tamanho dos modelos e quantidade de dados em memória</li>
+</ul>
+
+<p><strong>Recomendação de modelo para embedding:</strong> Modelos small/multilingual que rodam bem em CPU com AVX512:</p>
+<ul>
+<li><code>paraphrase-multilingual-MiniLM-L12-v2</code> (12 layers, ~470 MB &rarr; 1.5 GB RAM em uso)</li>
+<li><code>BAAI/bge-m3</code> (multilingual, 568 MB, bom custo-benefício)</li>
+<li><code>intfloat/multilingual-e5-small</code> (modelo menor, 235 MB)</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>7. Gargalos Identificados</h2>
+
+<div class="gargalo">
+<span class="gargalo-icon">&bull;</span>
+<div><strong>Gargalo #1: Ausência de Embeddings</strong><br>
+<span>Sem modelos de embedding, não é possível fazer busca semântica. O sistema inteiro depende de regex para consultar dados, o que é frágil, lento e não-escalável.</span></div>
+</div>
+
+<div class="gargalo">
+<span class="gargalo-icon">&bull;</span>
+<div><strong>Gargalo #2: Chunking Inexistente</strong><br>
+<span>Não há pipeline para dividir documentos/textos em chunks semânticos. Os \"chunks\" atuais são fatias de bytes para download, não pedaços de texto processáveis por embedding.</span></div>
+</div>
+
+<div class="gargalo">
+<span class="gargalo-icon">&bull;</span>
+<div><strong>Gargalo #3: FAISS Órfão</strong><br>
+<span>Os índices FAISS existem mas ninguém sabe o que eles contêm. Não há metadados, não há modelo de embedding correspondente, não há pipeline de criação. São \"arquivos órfãos\".</span></div>
+</div>
+
+<div class="gargalo">
+<span class="gargalo-icon">&bull;</span>
+<div><strong>Gargalo #4: Código Simulado (Mock)</strong><br>
+<span>Grande parte do código em ai_models_system.py tem implementações marcadas como \"TODO\" ou que retornam resultados simulados. O sistema não executa operações reais.</span></div>
+</div>
+
+<div class="gargalo">
+<span class="gargalo-icon">&bull;</span>
+<div><strong>Gargalo #5: Sem Pipeline de Reranking</strong><br>
+<span>Não há mecanismo de reranking de resultados. Mesmo que houvesse busca por similaridade, não haveria como refinar a relevância dos resultados.</span></div>
+</div>
+
+<div class="gargalo">
+<span class="gargalo-icon">&bull;</span>
+<div><strong>Gargalo #6: Sem GPU</strong><br>
+<span>CPU-only limita severamente a capacidade de processamento de modelos de embedding e inferência. Modelos grandes (>1B params) são inviáveis para uso em tempo real.</span></div>
+</div>
+
+<div class="gargalo">
+<span class="gargalo-icon">&bull;</span>
+<div><strong>Gargalo #7: Dependências Não Instaladas</strong><br>
+<span>faiss, torch, sentence-transformers, transformers não estão instalados. O sistema declara dependência mas não as possui.</span></div>
+</div>
+</div>
+
+<div class="section">
+<h2>8. Recomendações para Implementar Chunking + Embedding + Reranking</h2>
+
+<h3>Fase 1: Instalação de Dependências (~10 minutos)</h3>
+<pre>
+pip install sentence-transformers faiss-cpu transformers torch --index-url https://download.pytorch.org/whl/cpu
+# Modelo recomendado: paraphrase-multilingual-MiniLM-L12-v2 (~470 MB download, ~1.5 GB RAM)
+# Alternativa: BAAI/bge-m3 (multilingual melhor, ~568 MB)
+</pre>
+
+<h3>Fase 2: Implementar Chunking Estratégico</h3>
+<p>Para documentos grandes (PDFs, CSVs, textos):</p>
+<ul>
+<li><strong>Texto longo:</strong> RecursiveCharacterTextSplitter (LangChain) com chunk_size=512 tokens, overlap=64</li>
+<li><strong>CSV/estruturado:</strong> Converter cada linha em string descritiva e chunk de 5-10 linhas</li>
+<li><strong>PDF:</strong> Extrair texto página a página, chunk por seção (títulos)</li>
+<li><strong>Overlap:</strong> 15-20% do chunk size para preservar contexto entre fronteiras</li>
+</ul>
+
+<h3>Fase 3: Pipeline de Embedding + Indexação FAISS</h3>
+<pre>
+1. text &rarr; chunking &rarr; chunks_texto
+2. chunks_texto &rarr; sentence-transformers &rarr; vetores (np.ndarray float32)
+3. vetores &rarr; faiss.IndexFlatIP (Inner Product) &rarr; índice
+4. Índice &rarr; salvar + salvar metadados (texto_original, fonte, posição)
+5. Para busca: query &rarr; embedding &rarr; faiss.search(k=20) &rarr; recuperar metadados
+</pre>
+
+<h3>Fase 4: Implementar Reranking</h3>
+<ul>
+<li><strong>Modelo sugerido:</strong> <code>BAAI/bge-reranker-v2-m3</code> ou <code>cross-encoder/ms-marco-MiniLM-L-6-v2</code></li>
+<li><strong>Fluxo:</strong> query + top-50 resultados FAISS &rarr; reranker &rarr; top-10 reordenados</li>
+<li><strong>Benefício:</strong> O reranker melhora precisão em 15-25% vs. similaridade cosseno pura</li>
+</ul>
+
+<h3>Fase 5: Integrar com Drive Query System</h3>
+<ul>
+<li>drive_query_unified.py faz download de CSVs gigantes por range HTTP</li>
+<li>Integrar: ao baixar dados, vetorizar e armazenar no FAISS</li>
+<li>Para consultas futuras: usar FAISS sem precisar baixar novamente</li>
+</ul>
+
+<h3>Considerações de Recursos</h3>
+<ul>
+<li><strong>Memória:</strong> Modelo paraphrase-multilingual-MiniLM-L12-v2 = ~470 MB + FAISS index = variável. Total estimado: 2-4 GB RAM</li>
+<li><strong>Tempo:</strong> Embedding de 1 milhão de chunks (~500 tokens cada) em CPU: ~30-60 minutos</li>
+<li><strong>FAISS CPU com AVX512:</strong> Milhões de vetores buscados em &lt;10ms. Performável para produção.</li>
+<li><strong>Limitação:</strong> Caso precise processar bilhões de registros (Serasa 223M+), considerar amostragem ou processamento incremental</li>
+</ul>
+</div>
+
+<hr>
+<p><em>Relatório gerado pelo Agent Zero Deep Research. 2026-04-25 10:52 BRT.</em></p>
+
+</body>
+</html>

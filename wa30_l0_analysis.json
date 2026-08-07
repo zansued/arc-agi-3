@@ -1,0 +1,18 @@
+{
+  "game": "wa30",
+  "level": 0,
+  "timestamp": "2026-07-16 13:46",
+  "tests": 0,
+  "wins": 0,
+  "key_findings": {
+    "moves_work": false,
+    "needs_sequence": false,
+    "no_movement_possible": true
+  },
+  "tag_meanings": {
+    "wbmdvjhthc": "green_truck",
+    "fsjjayjoeg": "cargo_platform",
+    "geezpjgiyd": "boxes",
+    "kdweefinfi": "orange_unknown"
+  }
+}

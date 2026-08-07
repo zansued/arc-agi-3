@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-06-08T17:55:49.329700+00:00",
+  "strategy": "hybrid_cn04_v28_others_v30",
+  "results": {
+    "tn36": {
+      "method": "v30_stateful_bfs (MAX_PLY=100)",
+      "levels": 0,
+      "states": 62
+    },
+    "sp80": {
+      "method": "v30_stateful_bfs (MAX_PLY=100)",
+      "levels": 1,
+      "states": 154
+    },
+    "bp35": {
+      "method": "v30_stateful_bfs (MAX_PLY=100)",
+      "levels": 0,
+      "states": 183
+    },
+    "cn04": {
+      "method": "v28_level_reward_shaping",
+      "levels": 1,
+      "states": 220
+    }
+  },
+  "total_levels": 2,
+  "targets": {
+    "total_levels_target": 2,
+    "total_levels_hit": true,
+    "cn04_states_target": 234,
+    "cn04_states_actual": 220,
+    "cn04_states_hit": false,
+    "sp80_states_target": 154,
+    "sp80_states_actual": 154,
+    "sp80_states_hit": true
+  }
+}

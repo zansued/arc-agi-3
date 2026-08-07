@@ -1,0 +1,47 @@
+
+============================================================
+  V60 — ARC-AGI-3 Solver (API arc_agi 0.1.0)
+============================================================
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-22 00:15:45 | INFO | Got anonymous API key: db42d25a-af3b-40c9-9060-4efca2e83f00
+2026-06-22 00:15:45 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-22 00:15:45 | INFO | Successfully fetched 25 environment(s) from API
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-06-22 00:15:46 | INFO | Got anonymous API key: ced2c7df-8857-45d1-94bf-3bdf6c7afca3
+2026-06-22 00:15:46 | INFO | You can register for an API key at https://three.arcprize.org
+2026-06-22 00:15:46 | INFO | Successfully fetched 25 environment(s) from API
+2026-06-22 00:15:46 | INFO | Created new scorecard: 20cf17e9-a3b3-4179-990d-ddfac7c8f260
+2026-06-22 00:15:47 | INFO | Successfully fetched metadata for game tu93
+2026-06-22 00:15:47 | INFO | Recording to recordings/20cf17e9-a3b3-4179-990d-ddfac7c8f260/tu93-0768757b-f98b1d6d-83df-41da-aab2-fa6e64b828ee.jsonl
+2026-06-22 00:15:47 | INFO | Successfully loaded game class Tu93 from environment_files/tu93/0768757b/tu93.py
+[V60] Jogo: tu93, níveis: 9
+
+============================================================
+  V60 Solver — tu93
+============================================================
+
+────────────────────────────────────────
+  FASE 0: RECONHECIMENTO
+────────────────────────────────────────
+[V60] FASE 0: Analisando jogo...
+  Grid: (64, 64), cores: [0, 2, 4, 5, 6, 9, 14]
+  Ações disponíveis: [1, 2, 3, 4]
+  ACTION1: diff=1 pixels, state=NOT_FINISHED, levels=0
+  ACTION2: diff=1 pixels, state=NOT_FINISHED, levels=0
+  ACTION3: diff=1 pixels, state=NOT_FINISHED, levels=0
+  ACTION4: diff=19 pixels, state=NOT_FINISHED, levels=0
+  Diagnóstico: unknown
+
+────────────────────────────────────────
+  FASE 1: BFS ARCHIVE REPLAY
+────────────────────────────────────────
+
+  --- Nível 1/9 ---
+[V60] FASE 1: BFS Archive Replay (max_states=5000)
+  Available actions (with effect): [1, 2, 3, 4]
+  ✅ LEVEL WON! 18 steps, levels=1
+  ✅ Nível 1 resolvido! 18 ações: [4, 2, 2, 4, 1, 4, 2, 2, 3, 3]...
+
+  --- Nível 2/9 ---
+[V60] FASE 1: BFS Archive Replay (max_states=5000)
+  Available actions (with effect): [1, 2, 3, 4]

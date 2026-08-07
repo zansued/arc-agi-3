@@ -1,0 +1,91 @@
+    def step(self) -> None:
+        if self.pxbksnibsu:
+            for i in range(len(self.pxbksnibsu) - 1, -1, -1):
+                dccdgxcupn = self.pxbksnibsu[i]
+                if not dccdgxcupn.olsmwehruj():
+                    del self.pxbksnibsu[i]
+            return
+
+    def whuxfukgkj(self, ljkhatysro: List[T], x: int, y: int) -> Optional[T]:
+        for jbapnxcirb in ljkhatysro:
+            if jbapnxcirb.nxexmixgsb(x, y):
+                return jbapnxcirb
+        return None
+
+
+class ccfrgpdila(yhrxffrkqu):
+    _background: Sprite
+    lmkazecqdh: int
+
+    @property
+    def abigrshaqh(self) -> bool:
+        return self._background.x < self.axbjgpzkyi.x + self.axbjgpzkyi.width
+
+    def __init__(self, krojcwlfuq: ytkjoffamq):
+        self._background = krojcwlfuq.current_level.get_sprites_by_tag(ipqpjaszxy.polqmmgekl)[0]
+        sprite = krojcwlfuq.current_level.get_sprites_by_tag(ipqpjaszxy.mooordpjil)[0]
+        self.lmkazecqdh = 0
+        super().__init__(krojcwlfuq, sprite)
+
+    def rzwjhftbll(self) -> None:
+        self.lmkazecqdh += 1
+        if self.fdksqlmpki.ziyfqaqget.level_index >= 5:
+            if self.lmkazecqdh % 2 == 0:
+                self.axbjgpzkyi.move(-1, 0)
+        else:
+            self.axbjgpzkyi.move(-1, 0)
+
+
+class Tn36(ARCBaseGame):
+    fdksqlmpki: ytkjoffamq
+    lmkazecqdh: ccfrgpdila
+    nyhaiggftp: bool
+    pgualuszrs: bool
+
+    def __init__(self) -> None:
+        camera = Camera(background=BACKGROUND_COLOR, letter_box=PADDING_COLOR)
+        super().__init__(game_id="tn36", levels=levels, camera=camera, available_actions=[6])
+
+    def on_set_level(self, level: Level) -> None:
+        self._levels[self._current_level_index] = self._clean_levels[self._current_level_index].clone()
+        self.fdksqlmpki = ytkjoffamq(self)
+        self.lmkazecqdh = ccfrgpdila(self.fdksqlmpki)
+        self.nyhaiggftp = False
+        self.pgualuszrs = False
+
+    def step(self) -> None:
+        if self.nyhaiggftp:
+            self.next_level()
+            self.complete_action()
+            return
+        if self.pgualuszrs:
+            self.lose()
+            self.complete_action()
+            return
+        if self.fdksqlmpki.deredwcqze:
+            self.fdksqlmpki.step()
+        elif self.action.id == GameAction.ACTION6:
+            gugj, zrlr = self.uihpdltbxp()
+            self.fdksqlmpki.rawolunrbj(gugj, zrlr)
+            self.fdksqlmpki.wbytzlpbyr()
+            self.lmkazecqdh.rzwjhftbll()
+        if not self.fdksqlmpki.deredwcqze:
+            if self.xkvjwtvanm():
+                self.nyhaiggftp = True
+                return
+            elif self.slpqhjqczp():
+                self.pgualuszrs = True
+                return
+            self.complete_action()
+
+    def xkvjwtvanm(self) -> bool:
+        return self.fdksqlmpki.vklyonlcrw
+
+    def slpqhjqczp(self) -> bool:
+        return not self.lmkazecqdh.abigrshaqh
+
+    def uihpdltbxp(self) -> Tuple[int, int]:
+        result = self.camera.display_to_grid(self.action.data["x"], self.action.data["y"])
+        if result is None:
+            return (0, 0)
+        return result

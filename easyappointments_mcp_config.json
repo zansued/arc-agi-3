@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "easyappointments": {
+      "command": "python",
+      "args": ["/a0/usr/workdir/easyappointments_mcp.py"],
+      "env": {
+        "EASYAPPOINTMENTS_TOKEN": "Easy!AppointmentsTokenSecretao"
+      }
+    }
+  }
+}

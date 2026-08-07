@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-04-29T03:08BRT",
+  "resultados": {
+    "osint_blackbird": 0.37493467330932617,
+    "osint_holehe": 0.018767356872558594,
+    "osint_Phunter": 0.22955965995788574,
+    "bridge_cpf_bridge": 0.060872554779052734,
+    "bridge_osint_bridge": 0.06973099708557129,
+    "bridge_judicial_bridge": 0.05142927169799805,
+    "bridge_brazil_bridge_final": 0.07623887062072754,
+    "bridge_main_integration": 0.08290290832519531,
+    "squad_crewai": 0.07944917678833008,
+    "knowledge_graph": 0.10697126388549805,
+    "rag_engine": "error: Command '['python3', '-c', \"\\nfrom rag_drive_advanced.rag_engine import RAGEngine\\nimport time\\ne = RAGEngine()\\nprint(f'RAG Engine loaded')\\n\"]' timed out after 15 seconds"
+  }
+}

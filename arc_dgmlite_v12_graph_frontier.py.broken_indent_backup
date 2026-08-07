@@ -1,0 +1,1542 @@
+#!/usr/bin/env python3
+"""
+ARC-AGI-3 DGM-lite v9 Go-Explore Archive Planner
+
+Lições de v1-v8:
+- v3: diversity bandit = boa exploracao (81.5 estados) mas 83.5% zero-delta, 14/25 early stagnation
+- v4: reduziu zero-delta (30.8%) mas colapsou exploracao (22.7 estados)
+- v5: microsequencias recuperaram exploracao (73.9 estados) mas zero-delta voltou (85%)
+- v6: melhor compromisso (79.3 estados, 83.4% zd, 12/25 estagnacao) com 3.4% object-aware
+- v7: object-aware forcado (25%) colapsou (5.0 estados, 89.5% zd)
+- v8: causal-object threshold 2.5 nunca ativou (5.2 estados, 86.3% zd)
+- v8.5: causal-object threshold 1.0 max_rate=8% + ACTION6 bug KeyError 'x'
+
+Problema central de TODAS as versoes:
+    exploracao existe, mas nao ha planejamento causal. Agente descobre
+    70-80 estados e depois ESTAGNA em todos os 25 jogos.
+
+v9 = Go-Explore Archive:
+    Em vez de explorar sempre do estado atual, guardar estados
+    interessantes, VOLTAR a eles e explorar ramos novos.
+
+Metodo: Go-Explore (Ecoffet et al., 2019) adaptado para ARC-AGI-3
+    archive[state_hash] = (sequence, score, visits, children, frame)
+    score = 3*children + 2*novelty + 10*progress - 1.5*visits - 0.05*len(sequence)
+    Modos: EXPLORE_CURRENT -> ARCHIVE_SELECT -> RESET -> REPLAY -> EXPLORE_FROM_CELL
+    MAX_REPLAY_LEN = 80, MAX_ARCHIVE_RESETS = 3  # v10a Coliseu: reduced to preserve more steps for exploration
+    ACTION6 explicitamente ignorado (evitar bug KeyError 'x')
+"""
+import os, json, csv, random, hashlib, math, sys, copy
+from datetime import datetime, timezone
+from collections import Counter, defaultdict, deque
+
+import numpy as np
+from arc_agi import Arcade
+from arcengine import GameAction, GameState
+
+# ACTION6 Adapter: step_action6 handles the data= requirement
+# Required because GameAction.ACTION6 crashes with KeyError: 'x' without data dict
+def step_action6(game, x=32, y=32):
+    """
+    Execute ACTION6 (click/interact) at normalized coordinates.
+    Wraps game.step with the required data= parameter.
+    """
+    return game.step(GameAction.ACTION6, data={'x': x, 'y': y})
+
+MAX_STEPS = 500
+OUT_DIR = "arc_runs"
+
+# Go-Explore parameters
+MAX_REPLAY_LEN = 80
+MAX_ARCHIVE_RESETS = 3  # v10a Coliseu: reduced to preserve more steps for exploration
+STAGNATION_STEPS = 30
+ZERO_DELTA_STREAK = 8
+ARCHIVE_PERIOD = 100  # also try archive select periodically
+
+# ---------------------------------------------------------------------------
+# Utility
+# ---------------------------------------------------------------------------
+
+def ensure_dir(path):
+    os.makedirs(path, exist_ok=True)
+
+def frame_hash(arr):
+    if arr is None:
+        return ""
+    return hashlib.md5(np.asarray(arr, dtype=np.int32).tobytes()).hexdigest()
+
+def count_changed_pixels(prev, curr):
+    if prev is None or curr is None:
+        return 0
+    try:
+        a = np.asarray(prev, dtype=np.int32)
+        b = np.asarray(curr, dtype=np.int32)
+        if a.shape != b.shape:
+            return -1
+        return int(np.sum(a != b))
+    except Exception:
+        return -1
+
+import math
+import numpy as np
+
+# ────────────────────────────────────────────────
+# TransitionGraph for frontier coverage
+# ────────────────────────────────────────────────
+
+def normalize_action_key(action, data=None):
+    """Canonicaliza ações para cobertura state-action."""
+    try:
+        aid = int(action)
+    except Exception:
+        aid = getattr(action, "value", action)
+    if aid == 6:
+        data = data or {}
+        x = int(data.get("x", -1))
+        y = int(data.get("y", -1))
+        group = int(data.get("group", -1))
+        return ("A6", group, x, y)
+    return ("A", int(aid))
+
+
+def masked_frame_hash(arr):
+    """Hash estável sem ruído de borda."""
+    if arr is None:
+        return ""
+    a = np.asarray(arr).squeeze()
+    # Normalize to 2D (64x64) if possible
+    if a.ndim == 1 and a.size == 64 * 64:
+        a = a.reshape(64, 64)
+    elif a.ndim > 2:
+        a = a.reshape(a.shape[-2], a.shape[-1])
+    elif a.ndim != 2:
+        # Unusable shape, hash flat
+        return hashlib.blake2b(a.tobytes(), digest_size=8).hexdigest()
+    a = a.astype(np.uint8).copy()
+    if a.shape[0] >= 4 and a.shape[1] >= 4:
+        a[0, :] = 0; a[-1, :] = 0
+        a[:, 0] = 0; a[:, -1] = 0
+    return hashlib.blake2b(a.tobytes(), digest_size=8).hexdigest()
+
+
+ACTION6_BASE_POINTS = [
+    (32, 32), (16, 16), (48, 16), (16, 48), (48, 48),
+    (32, 16), (32, 48), (16, 32), (48, 32),
+    (8, 8), (56, 8), (8, 56), (56, 56),
+]
+
+
+def action6_candidate_set(frame=None, state_hash=None):
+    """
+    Grupos:
+    0 = grid estável v10
+    1 = centros de quadrantes densos
+    2 = cores raras conservadoras
+    3 = jitter determinístico por hash
+    """
+    points = []
+    for x, y in ACTION6_BASE_POINTS:
+        points.append({"x": x, "y": y, "group": 0})
+    if frame is not None:
+        arr = np.asarray(frame).squeeze()
+        if arr.ndim == 2:
+            h, w = arr.shape
+            bg = int(np.bincount(arr.reshape(-1).astype(np.uint8)).argmax())
+            mask = arr != bg
+            for y0, y1, x0, x1 in [
+                (0, h//2, 0, w//2), (0, h//2, w//2, w),
+                (h//2, h, 0, w//2), (h//2, h, w//2, w),
+            ]:
+                ys, xs = np.where(mask[y0:y1, x0:x1])
+                if len(xs) >= 4:
+                    points.append({"x": int(x0 + np.mean(xs)), "y": int(y0 + np.mean(ys)), "group": 1})
+            vals, counts = np.unique(arr, return_counts=True)
+            rare = []
+            for v, c in zip(vals, counts):
+                if int(v) == bg: continue
+                if 2 <= int(c) <= 48:
+                    rare.append((int(c), int(v)))
+            rare.sort()
+            for _, color in rare[:4]:
+                ys, xs = np.where(arr == color)
+                if len(xs) > 0:
+                    points.append({"x": int(np.mean(xs)), "y": int(np.mean(ys)), "group": 2})
+    if state_hash:
+        seed = int(state_hash[:8], 16)
+        rng = random.Random(seed)
+        for _ in range(4):
+            points.append({"x": int(rng.choice([12,20,28,36,44,52])), "y": int(rng.choice([12,20,28,36,44,52])), "group": 3})
+    seen = set()
+    out = []
+    for p in points:
+        x = max(0, min(63, int(p["x"])))
+        y = max(0, min(63, int(p["y"])))
+        key = (p["group"], x, y)
+        if key not in seen:
+            seen.add(key)
+            out.append({"x": x, "y": y, "group": int(p["group"])})
+    return out
+
+
+def enumerate_graph_action_candidates(available_actions, frame=None, state_hash=None):
+    candidates = []
+    for a in available_actions:
+        try:
+            aid = int(a)
+        except Exception:
+            aid = getattr(a, "value", None)
+        if aid == 6:
+            for p in action6_candidate_set(frame=frame, state_hash=state_hash):
+                data = {"x": p["x"], "y": p["y"], "group": p["group"]}
+                key = normalize_action_key(6, data)
+                candidates.append((6, data, key))
+        else:
+            key = normalize_action_key(a, None)
+            candidates.append((int(aid if aid else 0), None, key))
+    return candidates
+
+
+class TGNode:
+    __slots__ = ("state_hash", "visits", "depth", "first_step", "last_step",
+                 "tested_actions", "outgoing", "incoming",
+                 "zero_delta_streak", "new_state_count")
+    def __init__(self, state_hash):
+        self.state_hash = state_hash
+        self.visits = 0
+        self.depth = 0
+        self.first_step = 0
+        self.last_step = 0
+        self.tested_actions = set()
+        self.outgoing = {}
+        self.incoming = set()
+        self.zero_delta_streak = 0
+        self.new_state_count = 0
+
+
+class TransitionGraph:
+    def __init__(self):
+        self.nodes = {}
+        self.edges = {}
+        self.edge_counts = Counter()
+        self.current_hash = None
+        self.last_hash = None
+        self.last_action_key = None
+        self.frontier_hits = 0
+        self.graph_action_hits = 0
+        self.abort_count = 0
+
+    def get_node(self, h, step=0, depth=0):
+        if h not in self.nodes:
+            self.nodes[h] = TGNode(state_hash=h)
+        node = self.nodes[h]
+        node.visits += 1
+        node.last_step = step
+        if depth:
+            node.depth = min(node.depth, depth) if node.depth else depth
+        if node.first_step == 0:
+            node.first_step = step
+        return node
+
+    def observe_state(self, h, step=0, depth=0):
+        self.last_hash = self.current_hash
+        self.current_hash = h
+        return self.get_node(h, step=step, depth=depth)
+
+    def observe_transition(self, src_hash, action_key, dst_hash, delta_pixels=0, step=0):
+        if src_hash is None or dst_hash is None or action_key is None:
+            return
+        src = self.get_node(src_hash, step=step)
+        dst = self.get_node(dst_hash, step=step)
+        src.tested_actions.add(action_key)
+        src.outgoing[action_key] = dst_hash
+        dst.incoming.add(src_hash)
+        edge = (src_hash, action_key, dst_hash)
+        self.edges[edge] = self.edges.get(edge, 0) + 1
+        self.edge_counts[(src_hash, action_key)] += 1
+        if dst_hash != src_hash:
+            src.new_state_count += 1
+            src.zero_delta_streak = 0
+        elif delta_pixels <= 0:
+            src.zero_delta_streak += 1
+
+    def untested_actions(self, state_hash, available_action_keys):
+        node = self.nodes.get(state_hash)
+        if node is None:
+            return list(available_action_keys)
+        return [a for a in available_action_keys if a not in node.tested_actions]
+
+    def frontier_score(self, state_hash, available_action_keys):
+        node = self.nodes.get(state_hash)
+        if node is None:
+            return 1000.0
+        untested = len(self.untested_actions(state_hash, available_action_keys))
+        out_degree = len(node.outgoing)
+        revisit = math.log1p(node.visits)
+        depth_bonus = 0.02 * node.depth
+        dead_penalty = 5.0 if node.zero_delta_streak >= 25 else 0.0
+        return 10.0 * untested + 1.5 * out_degree + depth_bonus - revisit - dead_penalty
+
+    def should_abort_current(self, state_hash):
+        node = self.nodes.get(state_hash)
+        if node is None:
+            return False
+        return node.zero_delta_streak >= 25 and node.new_state_count == 0
+
+    def stats(self):
+        frontier = sum(1 for n in self.nodes.values() if len(n.outgoing) > 0)
+        dead = sum(1 for n in self.nodes.values() if n.zero_delta_streak >= 25)
+        return {
+            "graph_nodes": len(self.nodes),
+            "graph_edges": len(self.edges),
+            "graph_frontier_nodes": frontier,
+            "graph_dead_nodes": dead,
+            "graph_action_hits": self.graph_action_hits,
+            "graph_frontier_hits": self.frontier_hits,
+            "graph_abort_count": self.abort_count,
+        }
+
+
+def choose_graph_frontier_action(tgraph, state_hash, available_actions, frame=None, rng=None):
+    rng = rng or random
+    candidates = enumerate_graph_action_candidates(available_actions, frame=frame, state_hash=state_hash)
+    if not candidates:
+        return None, None, "no_candidate"
+    available_keys = [key for _, _, key in candidates]
+    untested = tgraph.untested_actions(state_hash, available_keys)
+    if untested:
+        u_cands = [c for c in candidates if c[2] in untested]
+        def priority(c):
+            action, data, key = c
+            if action == 6:
+                group = int(data.get("group", 9))
+                return (1, group, rng.random())
+            return (0, int(action), rng.random())
+        u_cands.sort(key=priority)
+        action, data, key = u_cands[0]
+        tgraph.graph_action_hits += 1
+        return action, data, "graph_untested"
+    return None, None, "graph_exhausted"
+
+# ────────────────────────────────────────────────
+
+def extract_frame(raw):
+    if raw is None:
+        return None
+    if isinstance(raw, np.ndarray):
+        return raw.squeeze() if raw.ndim > 2 else raw
+    if hasattr(raw, "frame"):
+        arr = np.asarray(raw.frame, dtype=np.int32)
+        if arr.ndim == 3:
+            arr = arr[0]
+        return arr
+    if hasattr(raw, "grid"):
+        return np.asarray(raw.grid, dtype=np.int32)
+    return None
+
+def safe_state(raw):
+    s = getattr(raw, "state", None)
+    return str(s) if s is not None else "UNKNOWN"
+
+def safe_levels(raw):
+    return int(getattr(raw, "levels_completed", 0) or 0)
+
+def safe_win(raw):
+    return int(getattr(raw, "win_levels", 0) or 0)
+
+def progress_ratio(levels_completed, win_levels):
+    return levels_completed / max(1, win_levels)
+
+def is_fail(state_str):
+    return "FAIL" in state_str.upper()
+
+def is_win(state_str):
+    return "WIN" in state_str.upper()
+
+def normalize_action_result(result):
+    """Normalize planner return to (GameAction, data_or_None)."""
+    if isinstance(result, tuple):
+        if len(result) == 2:
+            return result[0], result[1]
+        raise ValueError(f"Invalid action tuple length: {len(result)}")
+    return result, None
+
+# ---------------------------------------------------------------------------
+# step_game()
+# ---------------------------------------------------------------------------
+
+def step_game(game, action, data=None, reasoning=None):
+    """
+    Step the game with action + optional data dict.
+    For ACTION6, data MUST contain 'x' and 'y' keys.
+    All other actions pass data=None (ignored by the game).
+    """
+    raw_before = game.observation_space
+    frame_before = extract_frame(raw_before)
+    try:
+        if data is not None and getattr(action, 'name', '') == 'ACTION6':
+            # Ensure x,y are ints and properly typed
+            clean = {'x': int(data['x']), 'y': int(data['y'])}
+            raw_after = game.step(action, data=clean)
+        elif data is not None:
+            raw_after = game.step(action, data=data, reasoning=reasoning)
+        else:
+            raw_after = game.step(action, reasoning=reasoning)
+    except Exception as e:
+        # If step fails, use observation_space as fallback
+        raw_after = game.observation_space
+    if raw_after is None:
+        raw_after = game.observation_space
+    frame_after = extract_frame(raw_after)
+    levels_before = safe_levels(raw_before)
+    levels_after = safe_levels(raw_after)
+    delta_levels = max(0, levels_after - levels_before)
+    win_lvls = safe_win(raw_after) or safe_win(raw_before)
+    state_str = safe_state(raw_after)
+    return {
+        "raw": raw_after,
+        "frame": frame_after,
+        "state": state_str,
+        "levels_completed": levels_after,
+        "win_levels": win_lvls,
+        "progress_ratio": progress_ratio(levels_after, win_lvls),
+        "delta_levels": delta_levels,
+        "delta_progress_ratio": progress_ratio(levels_after, win_lvls) - progress_ratio(levels_before, win_lvls),
+        "changed_pixels": count_changed_pixels(frame_before, frame_after),
+        "available_actions": list(getattr(raw_after, "available_actions", [])),
+    }
+
+# ---------------------------------------------------------------------------
+# GO-EXPLORE ARCHIVE
+# ---------------------------------------------------------------------------
+
+class ArchiveCell:
+    """A cell in the Go-Explore archive: a discovered state + how to reach it."""
+    def __init__(self, state_hash, sequence, frame, score=0.0):
+        self.state_hash = state_hash
+        self.sequence = list(sequence)  # list of action dicts
+        self.frame = frame.copy() if frame is not None else None
+        self.score = score
+        self.visits = 0
+        self.children = set()  # child state hashes discovered from here
+        self.max_levels = 0
+        self.last_improved_step = 0
+        self.novelty = 1.0  # starts high, decays with visits
+        self.untried_actions = set()
+        self.cell_frontier_score = 0.0
+        self.cell_depth_score = 0.0
+
+    def to_dict(self):
+        return {
+            "state_hash": self.state_hash,
+            "sequence_len": len(self.sequence),
+            "score": round(self.score, 2),
+            "visits": self.visits,
+            "children": len(self.children),
+            "max_levels": self.max_levels,
+            "novelty": round(self.novelty, 3),
+        }
+
+
+class GoExploreArchive:
+    """Archive of discovered states with scoring and selection."""
+    def __init__(self):
+        self.cells = {}  # state_hash -> ArchiveCell
+        self.total_visits = 0
+        self.n_resets = 0
+        self.n_replays = 0
+        self.n_replay_success = 0
+        self.max_size = 200  # prevent unbounded growth
+        self.last_selector = "none"
+        self.phase_step = 0
+
+    def add_or_update(self, state_hash, frame, sequence, parent_hash=None, levels=0, step=0):
+        if state_hash in self.cells:
+            cell = self.cells[state_hash]
+            # Update max_levels
+            if levels > cell.max_levels:
+                cell.max_levels = levels
+                cell.last_improved_step = step
+            # Update novelty (decays with visits across archive)
+            cell.novelty = 1.0 / (1.0 + cell.visits)
+            return cell
+
+        if len(self.cells) >= self.max_size:
+            # Evict lowest-score cell
+            worst = min(self.cells.values(), key=lambda c: c.score)
+            del self.cells[worst.state_hash]
+
+        cell = ArchiveCell(state_hash, sequence, frame)
+        cell.max_levels = levels
+        cell.last_improved_step = step
+        self.cells[state_hash] = cell
+
+        # Link to parent
+        if parent_hash and parent_hash in self.cells:
+            self.cells[parent_hash].children.add(state_hash)
+
+        return cell
+
+    def select_cell_v9_score(self, candidates=None):
+        cells = candidates if candidates is not None else list(self.cells.values())
+        valid = [c for c in cells if len(getattr(c, "sequence", [])) <= 80]
+        if not valid:
+            return None
+
+        def score(c):
+            children_val = len(getattr(c, "children", []))
+            novelty_val = getattr(c, "novelty", 0.0)
+            levels_val = getattr(c, "max_levels", 0)
+            visits_val = getattr(c, "visits", 0)
+            seq_len_val = len(getattr(c, "sequence", []))
+            return (
+                3.0 * children_val
+                + 2.0 * novelty_val
+                + 10.0 * levels_val
+                - 1.5 * visits_val
+                - 0.05 * seq_len_val
+            )
+
+        ranked = sorted(valid, key=score, reverse=True)
+        cell = random.choice(ranked[:min(5, len(ranked))])
+        cell.last_score_val = score(cell)
+        return cell
+
+    def select_cell_dual_pool(self, step: int):
+        cells = list(self.cells.values())
+        frontier = []
+        depth = []
+        general = []
+        for c in cells:
+            children_cnt = len(getattr(c, "children", []))
+            raw_untried = getattr(c, "untried_actions", 0)
+            untried_cnt = len(raw_untried) if isinstance(raw_untried, (set, list)) else int(raw_untried or 0)
+            seq_len_val = len(getattr(c, "sequence", []))
+            if seq_len_val > 80:
+                continue
+            gap = untried_cnt - children_cnt
+            c._gap = gap
+            c._untried_cnt = untried_cnt
+            c._children_cnt = children_cnt
+            if gap >= 2:
+                frontier.append(c)
+            elif gap <= -2:
+                depth.append(c)
+            else:
+                general.append(c)
+        p_frontier = 0.70 if step < 250 else 0.30
+        if random.random() < p_frontier and frontier:
+            self.last_selector = "frontier_pool"
+            return self.select_cell_v9_score(frontier)
+        if depth:
+            self.last_selector = "depth_pool"
+            return self.select_cell_v9_score(depth)
+        if general:
+            self.last_selector = "general_pool"
+            return self.select_cell_v9_score(general)
+        self.last_selector = "v9_fallback"
+        return self.select_cell_v9_score(cells)
+
+    def select_cell(self, step: int = 0):
+        return self.select_cell_dual_pool(step)
+
+        # Update scores for all cells
+        for cell in self.cells.values():
+            cell.score = (
+                3.0 * len(cell.children)
+                + 2.0 * cell.novelty
+                + 10.0 * cell.max_levels
+                - 1.5 * cell.visits
+                - 0.05 * len(cell.sequence)
+            )
+
+        # Prefer cells with short sequences, high novelty, unvisited branches
+        candidates = [c for c in self.cells.values()
+                      if len(c.sequence) <= MAX_REPLAY_LEN]
+
+        if not candidates:
+            candidates = list(self.cells.values())
+
+        # Sort by score descending
+        candidates.sort(key=lambda c: -c.score)
+
+        # Add small randomness to avoid always picking the same cell
+        top_n = max(1, min(5, len(candidates)))
+        best = random.choice(candidates[:top_n])
+        return best
+
+    def mark_visit(self, state_hash):
+        if state_hash in self.cells:
+            self.cells[state_hash].visits += 1
+            self.cells[state_hash].novelty = 1.0 / (1.0 + self.cells[state_hash].visits)
+            self.total_visits += 1
+
+    def record_replay(self, success):
+        self.n_replays += 1
+        if success:
+            self.n_replay_success += 1
+
+    def record_reset(self):
+        self.n_resets += 1
+
+    def get_stats(self):
+        return {
+            "archive_size": len(self.cells),
+            "n_resets": self.n_resets,
+            "n_replays": self.n_replays,
+            "n_replay_success": self.n_replay_success,
+            "replay_success_rate": (self.n_replay_success / max(1, self.n_replays)),
+            "total_visits": self.total_visits,
+        }
+
+
+# ---------------------------------------------------------------------------
+# Object Detector (from v6)
+# ---------------------------------------------------------------------------
+
+def _label_components(mask):
+    h, w = mask.shape
+    labeled = np.zeros((h, w), dtype=np.int32)
+    label_num = 0
+    for y in range(h):
+        for x in range(w):
+            if mask[y, x] > 0 and labeled[y, x] == 0:
+                label_num += 1
+                queue = [(y, x)]
+                labeled[y, x] = label_num
+                for sy, sx in queue:
+                    for dy, dx in [(-1,0),(1,0),(0,-1),(0,1)]:
+                        ny, nx = sy + dy, sx + dx
+                        if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] > 0 and labeled[ny, nx] == 0:
+                            labeled[ny, nx] = label_num
+                            queue.append((ny, nx))
+    return labeled, label_num
+
+
+class ObjectDetector:
+    def __init__(self):
+        self.prev_frame = None
+        self.prev_objects = []
+
+    def detect(self, frame):
+        if frame is None:
+            return []
+        f = np.asarray(frame, dtype=np.int32)
+        if f.ndim == 3:
+            f = f[0]
+        if f.shape != (64, 64):
+            return []
+        bg_val = int(np.median(f)) if f.size > 0 else 0
+        mask = (f != bg_val).astype(np.int32)
+        if mask.sum() == 0:
+            return []
+        labeled, n_labels = _label_components(mask)
+        objects = []
+        for obj_id in range(1, n_labels + 1):
+            ys, xs = np.where(labeled == obj_id)
+            if len(ys) < 3:
+                continue
+            color = int(f[ys[0], xs[0]])
+            area = len(ys)
+            x1, x2 = int(xs.min()), int(xs.max())
+            y1, y2 = int(ys.min()), int(ys.max())
+            cx, cy = int(xs.mean()), int(ys.mean())
+            touches = x1 <= 0 or y1 <= 0 or x2 >= 63 or y2 >= 63
+            aspect = (x2 - x1 + 1) / max(1, (y2 - y1 + 1))
+            obj = {
+                "id": obj_id,
+                "color": color,
+                "area": area,
+                "bbox": (x1, y1, x2, y2),
+                "center": (cx, cy),
+                "w": x2 - x1 + 1,
+                "h": y2 - y1 + 1,
+                "touches_border": touches,
+                "aspect_ratio": round(aspect, 2),
+            }
+            objects.append(obj)
+        objects.sort(key=lambda o: -o["area"])
+        self.prev_frame = frame
+        self.prev_objects = objects
+        return objects
+
+    def changed_objects(self, frame):
+        if self.prev_frame is None:
+            return []
+        prev = np.asarray(self.prev_frame, dtype=np.int32)
+        curr = np.asarray(frame, dtype=np.int32)
+        if prev.shape != curr.shape:
+            return []
+        diff = (prev != curr).astype(np.int32)
+        if diff.sum() < 3:
+            return []
+        labeled, n_labels = _label_components(diff)
+        regions = []
+        for obj_id in range(1, n_labels + 1):
+            ys, xs = np.where(labeled == obj_id)
+            if len(ys) < 3:
+                continue
+            regions.append({
+                "center": (int(xs.mean()), int(ys.mean())),
+                "area": len(ys),
+                "bbox": (int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())),
+            })
+        return regions
+
+
+# ---------------------------------------------------------------------------
+# Diversity Bandit (from v6)
+# ---------------------------------------------------------------------------
+
+
+# ACTION6 click points (normalized 64x64 grid)
+# Each point is a potential click location for ACTION6 (interact/click)
+ACTION6_POINTS = [
+    (32, 32),  # center
+    (16, 16), (48, 16), (16, 48), (48, 48),  # quadrants
+    (32, 16), (32, 48), (16, 32), (48, 32),  # mid-edges
+    (8, 8), (56, 8), (8, 56), (56, 56),  # corners
+    (24, 24), (40, 24), (24, 40), (40, 40),  # inner quadrants
+    (32, 8), (32, 56), (8, 32), (56, 32),  # edge centers
+]
+
+def choose_action6_point(step, frame=None):
+    """
+    Choose an ACTION6 click point cyclically through preset points.
+    Later: can be smarter using object centers from frame analysis.
+    """
+    return ACTION6_POINTS[step % len(ACTION6_POINTS)]
+
+
+def force_action6_action(available_actions, step, frame=None):
+    """
+    If ACTION6 is the ONLY available action, force ACTION6 with coordinates.
+    If ACTION6 is among others, use it with low probability.
+    Returns (GameAction, data_dict) or None if ACTION6 should not be used.
+    
+    available_actions can be ints (e.g. [6]) or GameAction enums.
+    """
+    import random
+
+    # Normalize available_actions to detect if ACTION6 (id=6) is present
+    has_action6 = False
+    for a in available_actions:
+        val = int(a) if isinstance(a, int) else getattr(a, 'value', 0)
+        if val == 6:
+            has_action6 = True
+            break
+
+    has_action6
+
+    if not has_action6:
+        return None
+
+    # Force ACTION6 if it's the only available action
+    if len(available_actions) == 1 and has_action6:
+        x, y = choose_action6_point(step, frame)
+        return (GameAction.ACTION6, {'x': x, 'y': y})
+
+    # Use ACTION6 with low probability when other actions exist
+    if random.random() < 0.10:
+        x, y = choose_action6_point(step, frame)
+        return (GameAction.ACTION6, {'x': x, 'y': y})
+
+    return None
+
+class ProgressBandit:
+    """Tracks action statistics and selects diverse actions."""
+    def __init__(self):
+        self.action_stats = defaultdict(lambda: {
+            "count": 0, "successes": 0, "zero_deltas": 0,
+            "total_delta": 0, "recent_changes": deque(maxlen=10),
+        })
+        self.history = deque(maxlen=50)
+        self.current_mode = "EXPLORE_CURRENT"
+        self.reset_state()
+
+    def reset_state(self):
+        self.last_frame = None
+        self.last_hash = None
+        self.zero_delta_streak = 0
+        self.steps_since_new_state = 0
+        self.step_count = 0
+        self.unique_states = set()
+        self.sequence = []  # action records for archive
+        self.current_hash = None
+        self.max_levels = 0
+        self.archive_timer = 0
+
+    def observe_result(self, action, data, changed, state_hash, levels, progress):
+        self.step_count += 1
+        self.archive_timer += 1
+
+        # Skip if action is None
+        if action is None:
+            return
+
+        # Get action key
+        action_name = getattr(action, "name", str(action))
+        stats = self.action_stats[action_name]
+        stats["count"] += 1
+        stats["recent_changes"].append(changed)
+
+        is_new = state_hash not in self.unique_states
+
+        if is_new:
+            self.unique_states.add(state_hash)
+            stats["successes"] += 1
+            self.zero_delta_streak = 0
+            self.steps_since_new_state = 0
+        else:
+            self.steps_since_new_state += 1
+
+        if changed == 0:
+            stats["zero_deltas"] += 1
+            self.zero_delta_streak += 1
+        else:
+            stats["total_delta"] += changed
+            self.zero_delta_streak = 0
+
+        # Update levels
+        if levels > self.max_levels:
+            self.max_levels = levels
+
+        self.last_hash = state_hash
+        self.current_hash = state_hash
+
+    def is_stagnated(self):
+        return (self.zero_delta_streak >= ZERO_DELTA_STREAK or
+                self.steps_since_new_state >= STAGNATION_STEPS)
+
+    def _safe_actions(self, available_actions):
+        """Filter available actions, allowing ACTION6 through (bug fixed in v10a4_action6).
+        ACTION6 now works via step() with data=dict parameter."""
+        safe = []
+        for a in available_actions:
+            name = getattr(a, "name", str(a))
+            if name in ("RESET",):
+                continue
+            safe.append(a)
+        if not safe:
+            return [GameAction.ACTION6]
+        return safe
+
+    def _choose_least_used(self, available_actions):
+        safe = self._safe_actions(available_actions)
+        if not safe:
+            return GameAction.RESET, None
+        safe.sort(key=lambda a: self.action_stats[getattr(a, "name", str(a))]["count"])
+        return safe[0], None
+
+    def _choose_random_probe(self, available_actions):
+        safe = self._safe_actions(available_actions)
+        if not safe:
+            return GameAction.RESET, None
+        # Weight by count (prefer less-used)
+        weights = []
+        for a in safe:
+            name = getattr(a, "name", str(a))
+            stats = self.action_stats[name]
+            w = 1.0 / (1.0 + stats["count"] * 0.1)
+            weights.append(max(w, 0.01))
+        total = sum(weights)
+        if total == 0:
+            return random.choice(safe), None
+        p = [w / total for w in weights]
+        idx = random.choices(range(len(safe)), weights=p, k=1)[0]
+        return safe[idx], None
+
+    def choose_action(self, available_actions, mode="EXPLORE_CURRENT"):
+        """Choose action based on current mode.
+        Returns (action, data) tuple where data may be a dict (for ACTION6) or None.
+        """
+        self.current_mode = mode
+        safe = self._safe_actions(available_actions)
+
+        if not safe:
+            return GameAction.RESET, None
+
+        # Check if ACTION6 should be forced (ACTION6-only game or low-probability)
+        action6_result = force_action6_action(available_actions, self.step_count)
+        if action6_result is not None:
+            return action6_result  # (GameAction.ACTION6, {'x': x, 'y': y})
+
+        if mode == "EXPLORE_CURRENT":
+            return self._choose_least_used(safe)
+
+        elif mode == "EXPLORE_FROM_CELL":
+            return self._choose_random_probe(safe)
+
+        elif mode == "REPLAY_SEQUENCE":
+            return None, None
+
+        else:
+            return self._choose_least_used(safe)
+
+
+# ---------------------------------------------------------------------------
+# Main game runner
+# ---------------------------------------------------------------------------
+
+# ===== ACTION6 Router =====
+# v10_stable for normal games, ACTION6 mode only for ACTION6-only games
+ACTION6_REQUIRED_GAMES = {"tn36", "su15", "ft09", "lp85"}
+
+def should_enable_action6(game_id, available_actions):
+    """
+    Determine if ACTION6 mode should be enabled for this game.
+    Returns True if:
+    - game_id is in the empirical whitelist, OR
+    - ACTION6 is the ONLY available action (non-RESET)
+    """
+    if game_id in ACTION6_REQUIRED_GAMES:
+        return True
+    ids = set()
+    for a in available_actions:
+        val = int(a) if isinstance(a, int) else getattr(a, "value", 0)
+        name = getattr(a, "name", str(a)).upper()
+        if val != 6 and name != "ACTION6" and name != "RESET":
+            ids.add(val)
+    has_action6 = any(
+        (int(a) == 6 if isinstance(a, int) else getattr(a, "value", 0) == 6)
+        for a in available_actions
+    )
+    return has_action6 and len(ids) == 0
+
+class RouterBandit(ProgressBandit):
+    """ProgressBandit wrapper that supports two-mode operation."""
+    def __init__(self, action6_mode=False):
+        super().__init__()
+        self.action6_mode = action6_mode
+
+    def choose_action(self, available_actions, mode="EXPLORE_CURRENT"):
+        if not self.action6_mode:
+            self.current_mode = mode
+            safe = self._safe_actions(available_actions)
+            if not safe:
+                return GameAction.RESET, None
+            if mode == "EXPLORE_CURRENT":
+                return self._choose_least_used(safe)
+            elif mode == "EXPLORE_FROM_CELL":
+                return self._choose_random_probe(safe)
+            elif mode == "REPLAY_SEQUENCE":
+                return None, None
+            else:
+                return self._choose_least_used(safe)
+        else:
+            return super().choose_action(available_actions, mode)
+
+archive_len_before_bookkeeping = len(archive.cells)
+def post_step_bookkeeping(
+    *,
+    step,
+    raw,
+    prev_frame,
+    prev_state_hash,
+    prev_graph_hash,
+    prev_action_key,
+    action,
+    data,
+    action_source,
+    seen_hashes,
+    archive,
+    tgraph,
+    sequence=None,
+    parent_hash=None,
+    levels_completed=0,
+    log_f=None,
+):
+
+archive_len_after_bookkeeping = len(archive.cells)
+new_state_added = archive_len_after_bookkeeping > archive_len_before_bookkeeping
+
+# --- STAGNATION TRACKING AFTER POST_STEP_BOOKKEEPING ---
+if delta_pixels <= 0:
+    zero_delta_streak += 1
+else:
+    zero_delta_streak = 0
+
+if not new_state_added:
+    no_new_state_streak += 1
+else:
+    no_new_state_streak = 0
+    """
+    Único caminho pós-step para TODA ação real.
+    Invariante:
+        archive_len_before_bookkeeping = len(archive.cells)
+        step_game() executado => post_step_bookkeeping() chamado exatamente 1 vez.
+
+        archive_len_after_bookkeeping = len(archive.cells)
+        new_state_added = archive_len_after_bookkeeping > archive_len_before_bookkeeping
+
+        # --- STAGNATION TRACKING AFTER POST_STEP_BOOKKEEPING ---
+        if delta_pixels <= 0:
+            zero_delta_streak += 1
+        else:
+            zero_delta_streak = 0
+
+        if not new_state_added:
+            no_new_state_streak += 1
+        else:
+            no_new_state_streak = 0
+    """
+    next_frame = extract_frame(raw)
+
+    prev_arr = np.asarray(prev_frame).squeeze()
+    next_arr = np.asarray(next_frame).squeeze()
+    if prev_arr.shape != next_arr.shape:
+        delta_pixels = -1
+    elif prev_arr.size == 0 or next_arr.size == 0:
+        delta_pixels = -1
+    else:
+        delta_pixels = int(np.sum(prev_arr != next_arr))
+
+    # Hash pós-step: este é o hash correto para archive/seen.
+    next_state_hash = frame_hash(next_frame)
+
+    is_new_state = next_state_hash not in seen_hashes
+    if is_new_state:
+        seen_hashes.add(next_state_hash)
+
+    archive.add_or_update(
+        state_hash=next_state_hash,
+        frame=next_frame,
+        sequence=list(sequence) if sequence else [],
+        parent_hash=parent_hash,
+        levels=levels_completed,
+        step=step,
+    )
+
+    next_graph_hash = masked_frame_hash(next_frame)
+
+    tgraph.observe_state(
+        next_graph_hash,
+        step=step,
+        depth=step,
+    )
+
+    tgraph.observe_transition(
+        src_hash=prev_graph_hash,
+        action_key=prev_action_key,
+        dst_hash=next_graph_hash,
+        delta_pixels=delta_pixels,
+        step=step,
+    )
+
+    # Safe extraction of action ID: GameAction IntEnums may fail with int()
+    action_id = int(getattr(action, 'value', action)) if action is not None else 0
+
+    event = {
+        "step": int(step),
+        "action": action_id,
+        "action_data": data,
+        "action_source": action_source,
+        "delta_pixels": int(delta_pixels),
+        "is_new_state": bool(is_new_state),
+        "prev_state_hash": prev_state_hash,
+        "state_hash": next_state_hash,
+        "graph_prev_hash": prev_graph_hash,
+        "graph_state_hash": next_graph_hash,
+        "graph_action_key": repr(prev_action_key),
+    }
+
+    event.update(tgraph.stats())
+
+    if log_f is not None:
+        log_f.write(json.dumps(event) + "\n")
+        log_f.flush()
+
+    return next_frame, next_state_hash, next_graph_hash, delta_pixels, is_new_state
+
+
+
+# ===== v12b Conservative Frontier Settings =====
+GRAPH_POLICY_PROB = 0.10
+GRAPH_ACTION6_PROB = 0.10
+GRAPH_MIN_STAGNATION = 8
+GRAPH_MAX_ACTIONS_PER_GAME = 60
+# ================================================
+def run_game(game_id, max_steps=MAX_STEPS, out_dir=OUT_DIR, action6_mode=None):
+    if action6_mode is None:
+        action6_mode = should_enable_action6(game_id, [6])
+    """Run a single game with Go-Explore Archive."""
+    logs = []
+    ensure_dir(out_dir)
+
+    game = Arcade().make(game_id)
+    game.reset()
+    raw = game.observation_space
+    frame = extract_frame(raw)
+    state_hash = frame_hash(frame)
+    levels_completed = safe_levels(raw)
+    win_levels = safe_win(raw)
+
+    # Initialize objects
+    bandit = RouterBandit(action6_mode=action6_mode)
+    archive = GoExploreArchive()
+    detector = ObjectDetector()
+    tgraph = TransitionGraph()
+
+    bandit.reset_state()
+    seen_hashes = set()
+    real_step_count = 0
+    graph_transition_count = 0
+    graph_policy_used_count = 0
+    zero_delta_streak = 0
+    no_new_state_streak = 0
+    log_f = None  # JSONL logging handled inline
+
+    bandit.current_hash = state_hash
+    bandit.unique_states.add(state_hash)
+    bandit.last_frame = frame
+
+    seen_hashes.add(state_hash)
+
+    # Initialize archive with initial state
+    archive.add_or_update(
+        state_hash=state_hash,
+        frame=frame,
+        sequence=[],
+        parent_hash=None,
+        levels=levels_completed,
+        step=0,
+    )
+
+    # Initialize TransitionGraph with the initial state
+    current_graph_hash = masked_frame_hash(frame)
+    tgraph.observe_state(current_graph_hash, step=0)
+
+    current_mode = "EXPLORE_CURRENT"
+    selected_cell = None
+    replay_idx = 0
+    sequence = []
+    n_resets = 0
+    paused = False
+
+    for step_idx in range(max_steps):
+        avail = list(getattr(raw, "available_actions", []) or [])
+        if not avail:
+            avail = list(range(1, 7))
+
+        # ---- Decision Logic ----
+
+        # Check for stagnation or periodic archive selection
+        if current_mode == "EXPLORE_CURRENT":
+            should_select = (bandit.is_stagnated() or
+                             step_idx > 0 and step_idx % ARCHIVE_PERIOD == 0)
+
+            if should_select and archive.cells:
+                selected_cell = archive.select_cell()
+                if selected_cell and len(selected_cell.sequence) <= MAX_REPLAY_LEN and n_resets < MAX_ARCHIVE_RESETS:
+                    current_mode = "ARCHIVE_SELECT"
+                else:
+                    current_mode = "EXPLORE_CURRENT"
+
+        if current_mode == "ARCHIVE_SELECT":
+            current_mode = "RESET_TO_CELL"
+            n_resets += 1
+
+        if current_mode == "RESET_TO_CELL":
+            game.reset()
+            archive.record_reset()
+            raw = game.observation_space
+            frame = extract_frame(raw)
+            state_hash = frame_hash(frame)
+            replay_idx = 0
+            current_mode = "REPLAY_SEQUENCE"
+            
+            # Observe state in TransitionGraph
+            tgraph.observe_state(state_hash, step=step_idx)
+
+        if current_mode == "REPLAY_SEQUENCE":
+            if replay_idx < len(selected_cell.sequence):
+                # Replay next action
+                record = selected_cell.sequence[replay_idx]
+                action_id = record["action_id"]
+                action_data = record.get("data")
+                try:
+                    action = GameAction.from_id(action_id)
+                except Exception:
+                    action = GameAction.RESET
+
+                # Unified post-step bookkeeping for replay
+                prev_frame = frame
+                prev_state_hash = state_hash
+                prev_graph_hash = masked_frame_hash(frame)
+                prev_action_key = normalize_action_key(action, action_data)
+
+                result = step_game(game, action, data=action_data,
+                                   reasoning=f"v10_REPLAY_{replay_idx}")
+                raw = result["raw"]
+                replay_idx += 1
+
+                archive_len_before_bookkeeping = len(archive.cells)
+                frame, state_hash, current_graph_hash, delta_pixels, is_new_state = post_step_bookkeeping(
+                    step=step_idx,
+                    raw=raw,
+                    prev_frame=prev_frame,
+                    prev_state_hash=prev_state_hash,
+                    prev_graph_hash=prev_graph_hash,
+                    prev_action_key=prev_action_key,
+                    action=action,
+                    data=action_data,
+                    action_source="replay_sequence",
+                    seen_hashes=seen_hashes,
+                    archive=archive,
+                    tgraph=tgraph,
+                    log_f=log_f,
+                )
+
+                archive_len_after_bookkeeping = len(archive.cells)
+                new_state_added = archive_len_after_bookkeeping > archive_len_before_bookkeeping
+
+                # --- STAGNATION TRACKING AFTER POST_STEP_BOOKKEEPING ---
+                if delta_pixels <= 0:
+                    zero_delta_streak += 1
+                else:
+                    zero_delta_streak = 0
+
+                if not new_state_added:
+                    no_new_state_streak += 1
+                else:
+                    no_new_state_streak = 0
+                real_step_count += 1
+                graph_transition_count += 1
+
+                # Check if we reached the target state
+                replay_success = (state_hash == selected_cell.state_hash)
+
+                # Log replay step
+                log_entry = {
+                    "step": step_idx,
+                    "mode": "REPLAY_SEQUENCE",
+                    "action_id": action_id,
+                    "action_name": getattr(action, "name", str(action)),
+                    "replay_idx": replay_idx,
+                    "target_hash": selected_cell.state_hash,
+                    "current_hash": current_hash,
+                    "replay_success": replay_success,
+                    "sequence_len": len(selected_cell.sequence),
+                    "state": safe_state(raw),
+                    "levels_completed": safe_levels(raw),
+                    "win_levels": safe_win(raw),
+                    "changed_pixels": result["changed_pixels"],
+                    "unique_states": len(bandit.unique_states),
+                    "archive_size": len(archive.cells),
+                    "zero_delta_streak": bandit.zero_delta_streak,
+                    "steps_since_new_state": bandit.steps_since_new_state,
+                }
+                
+                # Add TransitionGraph statistics to the log entry
+                tg_stats = tgraph.stats()
+                log_entry.update(tg_stats)
+                log_entry["frontier_exploration"] = False
+                
+                logs.append(log_entry)
+                continue
+
+            # Replay complete
+            archive.record_replay(frame_hash(frame) == selected_cell.state_hash)
+            archive.mark_visit(selected_cell.state_hash)
+            bandit.current_hash = frame_hash(frame)
+            current_mode = "EXPLORE_FROM_CELL"
+
+        # ---- Dead-cell abort check ----
+        if (current_mode in ("EXPLORE_CURRENT", "EXPLORE_FROM_CELL")) and tgraph.should_abort_current(state_hash):
+            print(f"  [TransitionGraph] DEAD-CELL ABORT triggered at step {step_idx}! Aborting stagnated sequence.")
+            tgraph.abort_count += 1
+            if archive.cells and n_resets < MAX_ARCHIVE_RESETS:
+                selected_cell = archive.select_cell()
+                if selected_cell and len(selected_cell.sequence) <= MAX_REPLAY_LEN:
+                    current_mode = "RESET_TO_CELL"
+                    game.reset()
+                    archive.record_reset()
+                    raw = game.observation_space
+                    frame = extract_frame(raw)
+                    state_hash = frame_hash(frame)
+                    tgraph.observe_state(state_hash, step=step_idx)
+                    replay_idx = 0
+                    current_mode = "REPLAY_SEQUENCE"
+                    
+                    # Log abort step
+                    log_entry = {
+                        "step": step_idx,
+                        "mode": "ABORT_RESET",
+                        "action_id": 0,
+                        "action_name": "ABORT_RESET",
+                        "state_hash": state_hash,
+                        "state": safe_state(raw),
+                        "changed_pixels": 0,
+                        "levels_completed": levels_completed,
+                        "win_levels": win_levels,
+                        "unique_states": len(bandit.unique_states),
+                        "archive_size": len(archive.cells),
+                        "n_resets": archive.n_resets,
+                        "n_replays": archive.n_replays,
+                        "replay_success_rate": round(archive.n_replay_success / max(1, archive.n_replays), 3),
+                        "zero_delta_streak": bandit.zero_delta_streak,
+                        "steps_since_new_state": bandit.steps_since_new_state,
+                        "selected_cell": selected_cell.state_hash[:8] if selected_cell else None,
+                        "sequence_len": len(sequence),
+                        "archive_selector": getattr(archive, 'last_selector', 'none'),
+                    }
+                    tg_stats = tgraph.stats()
+                    log_entry.update(tg_stats)
+                    log_entry["frontier_exploration"] = False
+                    logs.append(log_entry)
+                    continue
+
+        # ---- Normal action selection ----
+        is_frontier_exploration = False
+        frontier_log_reason = "bandit"
+        
+        # 35% Gating check
+        # v12b conservative gating
+        use_graph_policy = False
+        if current_mode in ("EXPLORE_CURRENT", "EXPLORE_FROM_CELL"):
+            stuck = (
+                zero_delta_streak >= GRAPH_MIN_STAGNATION
+                or no_new_state_streak >= GRAPH_MIN_STAGNATION
+            )
+            if stuck and graph_policy_used_count < GRAPH_MAX_ACTIONS_PER_GAME:
+                prob = GRAPH_POLICY_PROB
+                if 6 in [int(a) for a in avail]:
+                    prob = GRAPH_ACTION6_PROB
+                use_graph_policy = random.random() < prob
+        if use_graph_policy:
+            frontier_action, frontier_data, frontier_reason = choose_graph_frontier_action(
+                tgraph, state_hash, avail, frame=frame
+            )
+            if frontier_reason == "graph_untested":
+                action = frontier_action
+                data = frontier_data
+                is_frontier_exploration = True
+                frontier_log_reason = frontier_reason
+
+        if not is_frontier_exploration:
+            chosen = bandit.choose_action(avail, mode=current_mode)
+            action, data = normalize_action_result(chosen)
+
+        # Safety: skip if action is None (shouldn't happen)
+        if action is None:
+            action = GameAction.RESET
+
+        action_name = getattr(action, "name", str(action))
+        
+        if is_frontier_exploration:
+            action_source = "graph_untested"
+            print(f"  [TransitionGraph] Step {step_idx}: Frontier exploration chosen (action={action_name}, data={data})")
+        else:
+            action_source = "v10_policy"
+
+        # Unified post-step bookkeeping for explore
+        prev_frame = frame
+        prev_state_hash = state_hash
+        prev_graph_hash = current_graph_hash
+        prev_action_key = normalize_action_key(action, data)
+
+        result = step_game(game, action, data=data,
+                           reasoning=f"v12_frontier" if is_frontier_exploration else f"v10_{current_mode}")
+
+        raw = result["raw"]
+        real_step_count += 1
+
+        archive_len_before_bookkeeping = len(archive.cells)
+        frame, state_hash, current_graph_hash, delta_pixels, is_new_state = post_step_bookkeeping(
+            step=step_idx,
+            raw=raw,
+            prev_frame=prev_frame,
+            prev_state_hash=prev_state_hash,
+            prev_graph_hash=prev_graph_hash,
+            prev_action_key=prev_action_key,
+            action=action,
+            data=data,
+            action_source=action_source,
+            seen_hashes=seen_hashes,
+            archive=archive,
+            tgraph=tgraph,
+            log_f=log_f,
+        )
+
+        archive_len_after_bookkeeping = len(archive.cells)
+        new_state_added = archive_len_after_bookkeeping > archive_len_before_bookkeeping
+
+        # --- STAGNATION TRACKING AFTER POST_STEP_BOOKKEEPING ---
+        if delta_pixels <= 0:
+            zero_delta_streak += 1
+        else:
+            zero_delta_streak = 0
+
+        if not new_state_added:
+            no_new_state_streak += 1
+        else:
+            no_new_state_streak = 0
+        graph_transition_count += 1
+        levels_completed = result.get("levels_completed", 0)
+        changed_pixels = delta_pixels
+
+        # Build action record for archive
+        action_record = {
+            "action_id": int(action.value) if hasattr(action, "value") else 0,
+            "action_name": action_name,
+            "data": data,
+        }
+        sequence.append(action_record)
+
+        # Update bandit
+        bandit.observe_result(action, data, changed_pixels, state_hash,
+                              levels_completed, result["progress_ratio"])
+
+        # Check if this state should go to archive
+        is_new = state_hash not in archive.cells
+        if is_new and state_hash:
+            archive.add_or_update(
+                state_hash=state_hash,
+                frame=frame,
+                sequence=list(sequence),
+                parent_hash=bandit.last_hash,
+                levels=levels_completed,
+                step=step_idx,
+            )
+
+        # Check for WIN or FAIL
+        state_str = safe_state(raw)
+        if is_win(state_str):
+            current_mode = "WIN"
+        elif is_fail(state_str):
+            current_mode = "FAIL"
+
+        # Update archive phase_step
+        archive.phase_step = step_idx
+
+        # Log entry
+        archive_stats = archive.get_stats()
+        log_entry = {
+            "step": step_idx,
+            "mode": current_mode,
+            "action_id": int(action.value) if hasattr(action, "value") else 0,
+            "action_name": action_name,
+            "state_hash": state_hash,
+            "state": state_str,
+            "changed_pixels": changed_pixels,
+            "levels_completed": levels_completed,
+            "win_levels": result["win_levels"],
+            "unique_states": len(bandit.unique_states),
+            "archive_size": archive_stats["archive_size"],
+            "n_resets": archive_stats["n_resets"],
+            "n_replays": archive_stats["n_replays"],
+            "replay_success_rate": round(archive_stats["replay_success_rate"], 3),
+            "zero_delta_streak": bandit.zero_delta_streak,
+            "steps_since_new_state": bandit.steps_since_new_state,
+            "selected_cell": selected_cell.state_hash[:8] if selected_cell else None,
+            "sequence_len": len(sequence),
+            "archive_selector": getattr(archive, 'last_selector', 'none'),
+        }
+        
+        tg_stats = tgraph.stats()
+        log_entry.update(tg_stats)
+        log_entry["frontier_exploration"] = is_frontier_exploration
+        
+        logs.append(log_entry)
+
+        # Check terminal conditions
+        if state_str in ("WIN", "FAIL"):
+            break
+
+    # Generate summary
+    unique_states = len(bandit.unique_states)
+    total_steps = len(logs)
+    zero_delta_count = sum(1 for l in logs if l.get("changed_pixels", -1) == 0)
+    zero_delta_rate = zero_delta_count / max(1, total_steps)
+    max_levels_completed = max((l.get("levels_completed", 0) for l in logs), default=0)
+    win_levels_final = max((l.get("win_levels", 0) for l in logs), default=0)
+
+    status = safe_state(raw) if raw is not None else "UNKNOWN"
+
+    # Count early stagnation
+    early_stagnation = 0
+    if unique_states < 30:
+        early_stagnation = 1
+
+    tg_stats = tgraph.stats()
+    summary = {
+        "game_id": game_id,
+        "status": status,
+        "steps": total_steps,
+        "unique_states": unique_states,
+        "zero_delta_rate": round(zero_delta_rate, 4),
+        "max_levels_completed": max_levels_completed,
+        "win_levels": win_levels_final,
+        "early_stagnation": early_stagnation,
+        "archive_size": len(archive.cells),
+        "n_resets": archive.n_resets,
+        "n_replays": archive.n_replays,
+        "replay_success_rate": round(archive.n_replay_success / max(1, archive.n_replays), 3),
+        "mean_zero_delta_streak": round(bandit.zero_delta_streak / max(1, total_steps), 4),
+        "real_step_count": int(real_step_count),
+        "graph_transition_count": int(graph_transition_count),
+        "bookkeeping_ratio": graph_transition_count / max(1, real_step_count),
+    }
+    summary.update(tg_stats)
+
+    # Save logs
+    safe_id = game_id.replace("/", "_")
+    log_path = os.path.join(out_dir, f"v12_graph_frontier_{safe_id}.jsonl")
+    with open(log_path, "w") as f:
+        for entry in logs:
+            json.dump(entry, f)
+            f.write(chr(10))
+    return logs, summary
+
+
+def run_benchmark(games, max_steps=MAX_STEPS, out_dir=OUT_DIR):
+    """Run benchmark on multiple games."""
+    results = []
+    for gid in games:
+        print(f"  [v12] {gid}...", flush=True)
+        logs, summary = run_game(gid, max_steps, out_dir)
+        results.append(summary)
+        e = chr(39)
+        print(f"    \u2192 {summary['status']:8s} | states={summary['unique_states']:3d} | "
+              f"levels={summary['max_levels_completed']}/{summary['win_levels']} | "
+              f"graph_nodes={summary['graph_nodes']:3d} | graph_edges={summary['graph_edges']:3d} | "
+              f"archive={summary['archive_size']:3d} | resets={summary['n_resets']} | "
+              f"replay_ok={summary['replay_success_rate']:.2%}", flush=True)
+    csv_path = os.path.join(out_dir, "summary_v10.csv")
+    with open(csv_path, "w", newline="") as f:
+        if results:
+            w = csv.DictWriter(f, fieldnames=list(results[0].keys()))
+            w.writeheader()
+            w.writerows(results)
+    return results
+
+
+if __name__ == "__main__":
+    import sys
+    games = sys.argv[1:] if len(sys.argv) > 1 else [
+        "sk48", "bp35", "tn36",
+        "wa30", "vc33", "tu93", "tr87", "su15",
+        "sp80", "sc25", "sb26", "s5i5", "re86",
+        "r11l", "m0r0", "ls20", "lp85", "lf52",
+        "ka59", "g50t", "ft09", "dc22", "cd82",
+        "ar25", "cn04",
+    ]
+    print("=" * 60)
+    print("ARC-AGI-3 v12 Go-Explore TransitionGraph & Frontier Gating Benchmark")
+    print(f"Games: {len(games)}")
+    print("=" * 60)
+    results = run_benchmark(games)
+    print("=" * 60)
+    print("SUMMARY")
+    print("=" * 60)
+    for r in results:
+        e = chr(39)
+        print(f"{r['game_id']:15s} {r['status']:8s} | states={r['unique_states']:3d} | levels={r['max_levels_completed']}/{r['win_levels']} | early_stag={r['early_stagnation']}")
+    avg_states = sum(r['unique_states'] for r in results) / len(results)
+    avg_zd = sum(r['zero_delta_rate'] for r in results) / len(results)
+    early_stag_count = sum(r['early_stagnation'] for r in results)
+    avg_archive = sum(r['archive_size'] for r in results) / len(results)
+    avg_replay_ok = sum(r['replay_success_rate'] for r in results) / len(results)
+    avg_graph_nodes = sum(r['graph_nodes'] for r in results) / len(results)
+    avg_graph_edges = sum(r['graph_edges'] for r in results) / len(results)
+    print(f"\nMEDIA: {avg_states:.1f} estados | {avg_zd:.1%} zero-delta | {early_stag_count}/25 early stag | archive={avg_archive:.0f} | replay_ok={avg_replay_ok:.1%} | graph_nodes={avg_graph_nodes:.1f} | graph_edges={avg_graph_edges:.1f}")
+    print(f"Logs em: {OUT_DIR}/")

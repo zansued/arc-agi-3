@@ -1,0 +1,10 @@
+{
+  "approach_1_lattice_corr_gt": 0.014436057366730566,
+  "approach_1_lattice_corr_rand": -0.015205290797562195,
+  "approach_1_lattice_corr_gap": 0.02964134816429276,
+  "approach_1b_fisher_gt": -0.0021954613814552143,
+  "approach_1b_fisher_rand": -0.002195461381455779,
+  "approach_1b_fisher_ratio": 0,
+  "spectral_error_gt": 1.0,
+  "spectral_error_rand": 1.0
+}

@@ -1,0 +1,11 @@
+{
+  "domain_patterns": {
+    "news.ycombinator.com": {
+      "content_type": "article",
+      "selectors": {
+        "main": "body"
+      },
+      "learned_at": "2026-05-07T19:53:23.891597+00:00"
+    }
+  }
+}

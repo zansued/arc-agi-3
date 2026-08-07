@@ -1,0 +1,37 @@
+{
+  "game_id": "tu93",
+  "solver": "v62_8_bfs_estado",
+  "levels": [
+    {
+      "level": 1,
+      "solved": false,
+      "steps": 0,
+      "expansions": 5000,
+      "time_s": 41.5
+    },
+    {
+      "level": 2,
+      "solved": false,
+      "steps": 0,
+      "expansions": 5000,
+      "time_s": 38.9
+    },
+    {
+      "level": 3,
+      "solved": false,
+      "steps": 0,
+      "expansions": 5000,
+      "time_s": 33.8
+    }
+  ],
+  "solved": 0,
+  "total": 3,
+  "actions": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "time": 116.4,
+  "expansions": 15000
+}

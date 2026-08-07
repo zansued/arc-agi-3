@@ -1,0 +1,501 @@
+[
+  {
+    "game": "ar25",
+    "inferred_mechanics": "tangram",
+    "confidence": 3,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "evidence": [
+      "composite_names:100%"
+    ],
+    "data_keys": [
+      "StepCounter"
+    ],
+    "sprite_count": 51
+  },
+  {
+    "game": "bp35",
+    "inferred_mechanics": "match",
+    "confidence": 3,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "evidence": [
+      "beh:match",
+      "beh:queue"
+    ],
+    "data_keys": [],
+    "sprite_count": 6
+  },
+  {
+    "game": "cd82",
+    "inferred_mechanics": "tangram",
+    "confidence": 3,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "evidence": [
+      "composite_names:62%"
+    ],
+    "data_keys": [
+      "x"
+    ],
+    "sprite_count": 13
+  },
+  {
+    "game": "cn04",
+    "inferred_mechanics": "tangram",
+    "confidence": 9,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "evidence": [
+      "composite_names:100%",
+      "sys_click",
+      "beh:place"
+    ],
+    "data_keys": [
+      "BackgroundColour",
+      "GreyMasking",
+      "MaxSteps"
+    ],
+    "sprite_count": 48
+  },
+  {
+    "game": "dc22",
+    "inferred_mechanics": "physics",
+    "confidence": 4,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "evidence": [
+      "composite_names:98%",
+      "beh:collide"
+    ],
+    "data_keys": [
+      "StepCounter"
+    ],
+    "sprite_count": 99
+  },
+  {
+    "game": "ft09",
+    "inferred_mechanics": "unknown",
+    "confidence": 0.0,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "evidence": [],
+    "data_keys": [
+      "cwU",
+      "elp",
+      "kCv"
+    ],
+    "sprite_count": 187
+  },
+  {
+    "game": "g50t",
+    "inferred_mechanics": "physics",
+    "confidence": 6,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "evidence": [
+      "beh:collide"
+    ],
+    "data_keys": [],
+    "sprite_count": 56
+  },
+  {
+    "game": "ka59",
+    "inferred_mechanics": "physics",
+    "confidence": 4,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      6
+    ],
+    "evidence": [
+      "composite_names:100%",
+      "beh:collide"
+    ],
+    "data_keys": [
+      "StepCounter"
+    ],
+    "sprite_count": 33
+  },
+  {
+    "game": "lf52",
+    "inferred_mechanics": "match",
+    "confidence": 6,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "evidence": [
+      "beh:match"
+    ],
+    "data_keys": [],
+    "sprite_count": 2
+  },
+  {
+    "game": "lp85",
+    "inferred_mechanics": "tangram",
+    "confidence": 3,
+    "actions": [
+      6
+    ],
+    "evidence": [
+      "click_only"
+    ],
+    "data_keys": [
+      "StepCounter",
+      "level_name"
+    ],
+    "sprite_count": 89
+  },
+  {
+    "game": "ls20",
+    "inferred_mechanics": "match",
+    "confidence": 20.0,
+    "actions": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "evidence": [
+      "data:GoalColor,StartColor,GoalRotation,StartRotation,StartShape",
+      "data:Fog",
+      "move_only",
+      "beh:collide"
+    ],
+    "data_keys": [
+      "Fog",
+      "GoalColor",
+      "GoalRotation",
+      "StartColor",
+      "StartRotation",
+      "StartShape",
+      "StepCounter",
+      "StepsDecrement"
+    ],
+    "sprite_count": 36
+  },
+  {
+    "game": "m0r0",
+    "inferred_mechanics": "tangram",
+    "confidence": 9,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      6
+    ],
+    "evidence": [
+      "composite_names:91%",
+      "sys_click",
+      "beh:place",
+      "beh:collide"
+    ],
+    "data_keys": [
+      "psqw"
+    ],
+    "sprite_count": 23
+  },
+  {
+    "game": "r11l",
+    "inferred_mechanics": "tangram",
+    "confidence": 12,
+    "actions": [
+      6
+    ],
+    "evidence": [
+      "composite_names:100%",
+      "click_only",
+      "sys_click",
+      "beh:place",
+      "beh:collide"
+    ],
+    "data_keys": [
+      "x"
+    ],
+    "sprite_count": 50
+  },
+  {
+    "game": "re86",
+    "inferred_mechanics": "physics",
+    "confidence": 4,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "evidence": [
+      "composite_names:100%",
+      "beh:collide"
+    ],
+    "data_keys": [
+      "StepCounter"
+    ],
+    "sprite_count": 55
+  },
+  {
+    "game": "s5i5",
+    "inferred_mechanics": "tangram",
+    "confidence": 5,
+    "actions": [
+      6
+    ],
+    "evidence": [
+      "composite_names:100%",
+      "click_only",
+      "beh:collide"
+    ],
+    "data_keys": [
+      "Children",
+      "StepCounter"
+    ],
+    "sprite_count": 92
+  },
+  {
+    "game": "sb26",
+    "inferred_mechanics": "unknown",
+    "confidence": 0.0,
+    "actions": [
+      5,
+      6,
+      7
+    ],
+    "evidence": [],
+    "data_keys": [],
+    "sprite_count": 20
+  },
+  {
+    "game": "sc25",
+    "inferred_mechanics": "tangram",
+    "confidence": 9,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      6
+    ],
+    "evidence": [
+      "composite_names:86%",
+      "sys_click",
+      "beh:place"
+    ],
+    "data_keys": [
+      "efvw",
+      "slfh",
+      "x"
+    ],
+    "sprite_count": 51
+  },
+  {
+    "game": "sk48",
+    "inferred_mechanics": "unknown",
+    "confidence": 0.0,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7
+    ],
+    "evidence": [],
+    "data_keys": [
+      "grouped_pauses"
+    ],
+    "sprite_count": 16
+  },
+  {
+    "game": "sp80",
+    "inferred_mechanics": "paint",
+    "confidence": 4,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "evidence": [
+      "composite_names:78%",
+      "beh:spill"
+    ],
+    "data_keys": [
+      "dojfslwbg",
+      "steps"
+    ],
+    "sprite_count": 18
+  },
+  {
+    "game": "su15",
+    "inferred_mechanics": "tangram",
+    "confidence": 3,
+    "actions": [
+      6,
+      7
+    ],
+    "evidence": [
+      "composite_names:98%"
+    ],
+    "data_keys": [
+      "steps",
+      "x",
+      "xkstxyqbs"
+    ],
+    "sprite_count": 42
+  },
+  {
+    "game": "tn36",
+    "inferred_mechanics": "program",
+    "confidence": 9,
+    "actions": [
+      6
+    ],
+    "evidence": [
+      "data:Programs",
+      "click_only",
+      "beh:program",
+      "beh:collide"
+    ],
+    "data_keys": [
+      "Positions",
+      "Programs",
+      "Reset",
+      "Rotations",
+      "scvkkws"
+    ],
+    "sprite_count": 48
+  },
+  {
+    "game": "tr87",
+    "inferred_mechanics": "tangram",
+    "confidence": 7,
+    "actions": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "evidence": [
+      "composite_names:83%",
+      "move_only",
+      "beh:place"
+    ],
+    "data_keys": [
+      "alter_rules",
+      "double_translation",
+      "tree_translation"
+    ],
+    "sprite_count": 35
+  },
+  {
+    "game": "tu93",
+    "inferred_mechanics": "navigation",
+    "confidence": 4,
+    "actions": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "evidence": [
+      "composite_names:100%",
+      "move_only"
+    ],
+    "data_keys": [
+      "StepCounter"
+    ],
+    "sprite_count": 43
+  },
+  {
+    "game": "vc33",
+    "inferred_mechanics": "physics",
+    "confidence": 8,
+    "actions": [
+      6
+    ],
+    "evidence": [
+      "data:Gravity",
+      "composite_names:100%",
+      "click_only",
+      "beh:gravity,collide"
+    ],
+    "data_keys": [
+      "Gravity",
+      "StepCounter"
+    ],
+    "sprite_count": 62
+  },
+  {
+    "game": "wa30",
+    "inferred_mechanics": "unknown",
+    "confidence": 0.0,
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "evidence": [],
+    "data_keys": [
+      "StepCounter"
+    ],
+    "sprite_count": 20
+  }
+]

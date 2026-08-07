@@ -1,0 +1,156 @@
+class S5i5(ARCBaseGame):
+    gwiuiwqizb: gslihflgok
+    pigtralzpb: dict[Sprite, list[Sprite]]
+    uricqfoplr: dict[Sprite, set[Sprite]]
+    whoonmfbnp: dict[Sprite, Sprite]
+    rkqyhehjqs: Sprite | None
+    fewcuujhek: int
+    ollepmnfio: int
+
+    def __init__(self) -> None:
+        self.gwiuiwqizb = gslihflgok(0)
+        camera = gdivpwtbrb(
+            background=BACKGROUND_COLOR,
+            letter_box=PADDING_COLOR,
+            interfaces=[self.gwiuiwqizb],
+        )
+        super().__init__(game_id="s5i5", levels=levels, camera=camera, available_actions=[6])
+
+    def on_set_level(self, level: Level) -> None:
+        self.zhrkjlkeib()
+        self.rkqyhehjqs = None
+        self.fewcuujhek = -1
+        self.pigtralzpb = dict()
+        self.uricqfoplr = dict()
+        self.whoonmfbnp = dict()
+        onbqzewjuc = self.current_level.get_sprites_by_tag("0066ghlkyvdbgg")
+        for ywilvedpsj in onbqzewjuc:
+            self.pigtralzpb[ywilvedpsj] = []
+        ikeftojlyi = self.current_level.get_sprites_by_tag("0001qwdmnlybkb")
+        xgzeakvcwi = self.current_level.get_sprites_by_tag("0064ocqkuqacti")
+        for oflixwqbdt in ikeftojlyi:
+            xubtnfttpv = oflixwqbdt.pixels[1, 1]
+            xgwwjgtqup = [ywilvedpsj for ywilvedpsj in onbqzewjuc if xubtnfttpv in ywilvedpsj.pixels]
+            for ywilvedpsj in xgwwjgtqup:
+                self.pigtralzpb[ywilvedpsj].append(oflixwqbdt)
+            self.uricqfoplr[oflixwqbdt] = set()
+            for fmrtwxnnpy in xgzeakvcwi:
+                if fmrtwxnnpy.collides_with(oflixwqbdt):
+                    self.uricqfoplr[oflixwqbdt].add(fmrtwxnnpy)
+        psphsrkxjy = self.current_level.get_data("Children")
+        if psphsrkxjy:
+            for fdrwlflfyg in psphsrkxjy:
+                orhkwrcwxo = self.current_level.get_sprites_by_name(fdrwlflfyg[0])
+                zyocyrhxxh = self.current_level.get_sprites_by_name(fdrwlflfyg[1])
+                for lijkrmwzvo in orhkwrcwxo:
+                    for atngkiijya in zyocyrhxxh:
+                        self.uricqfoplr[lijkrmwzvo].add(atngkiijya)
+
+    def zhrkjlkeib(self) -> None:
+        """."""
+        sovonhdews = self.current_level.get_data("StepCounter")
+        self.gwiuiwqizb.dazkjahdqd = sovonhdews
+        self.gwiuiwqizb.yhkntwvjfr()
+
+    def neurwiqfry(self) -> bool:
+        znvalkxrwn = self.current_level.get_sprites_by_tag("0087vvmblxkzdi")
+        xgzeakvcwi = self.current_level.get_sprites_by_tag("0064ocqkuqacti")
+        for ufrkmxelkg in znvalkxrwn:
+            if not any([fmrtwxnnpy.x == ufrkmxelkg.x and fmrtwxnnpy.y == ufrkmxelkg.y for fmrtwxnnpy in xgzeakvcwi]):
+                return False
+        return True
+
+    def uiqzouvdxd(self, sprite: Sprite, dx: int, dy: int) -> None:
+        sprite.move(dx, dy)
+        if sprite in self.uricqfoplr:
+            for atngkiijya in self.uricqfoplr[sprite]:
+                self.uiqzouvdxd(atngkiijya, dx, dy)
+
+    def dxlryikffn(self, sprite: Sprite) -> None:
+        self.whoonmfbnp[sprite] = sprite.clone()
+        if sprite in self.uricqfoplr:
+            for atngkiijya in self.uricqfoplr[sprite]:
+                self.dxlryikffn(atngkiijya)
+
+    def gnpdxxlhrp(self, oflixwqbdt: Sprite) -> int:
+        if oflixwqbdt.pixels[-1, 1] == fbnsnwoblu:
+            return 0
+        elif oflixwqbdt.pixels[1, 0] == fbnsnwoblu:
+            return 90
+        elif oflixwqbdt.pixels[0, 1] == fbnsnwoblu:
+            return 180
+        else:
+            return 270
+
+    def nkkhgerxvq(self, oflixwqbdt: Sprite, index: int) -> None:
+        xubtnfttpv = oflixwqbdt.pixels[1, 1]
+        old_height, old_width = oflixwqbdt.pixels.shape
+        xauipuqvdg = index * vjqemmsfmx
+        rotation = self.gnpdxxlhrp(oflixwqbdt)
+        dx = 0
+        dy = 0
+        if rotation == 0:
+            oflixwqbdt.pixels = np.full((xauipuqvdg, vjqemmsfmx), xubtnfttpv)
+            oflixwqbdt.pixels[-1, :] = fbnsnwoblu
+            dy = -(xauipuqvdg - old_height)
+            oflixwqbdt.move(0, dy)
+        elif rotation == 90:
+            oflixwqbdt.pixels = np.full((vjqemmsfmx, xauipuqvdg), xubtnfttpv)
+            oflixwqbdt.pixels[:, 0] = fbnsnwoblu
+            dx = xauipuqvdg - old_width
+        elif rotation == 180:
+            oflixwqbdt.pixels = np.full((xauipuqvdg, vjqemmsfmx), xubtnfttpv)
+            oflixwqbdt.pixels[0, :] = fbnsnwoblu
+            dy = xauipuqvdg - old_height
+        else:
+            oflixwqbdt.pixels = np.full((vjqemmsfmx, xauipuqvdg), xubtnfttpv)
+            oflixwqbdt.pixels[:, -1] = fbnsnwoblu
+            dx = -(xauipuqvdg - old_width)
+            oflixwqbdt.move(dx, 0)
+        for atngkiijya in self.uricqfoplr[oflixwqbdt]:
+            self.uiqzouvdxd(atngkiijya, dx, dy)
+
+    def qownxibuiy(self) -> bool:
+        ikeftojlyi = self.current_level.get_sprites_by_tag("0001qwdmnlybkb")
+        for oflixwqbdt in ikeftojlyi:
+            if any([oflixwqbdt.collides_with(other) for other in ikeftojlyi]):
+                return True
+        return False
+
+    def eeyirqljyp(self, oflixwqbdt: Sprite, adnwhafqes: int, nwqedamdbz: int) -> None:
+        dx = adnwhafqes - oflixwqbdt.x
+        dy = nwqedamdbz - oflixwqbdt.y
+        oflixwqbdt.set_position(adnwhafqes - dy, nwqedamdbz + dx - (oflixwqbdt.width - vjqemmsfmx))
+        oflixwqbdt.pixels = np.rot90(oflixwqbdt.pixels)
+        if oflixwqbdt in self.uricqfoplr:
+            for atngkiijya in self.uricqfoplr[oflixwqbdt]:
+                self.eeyirqljyp(atngkiijya, adnwhafqes, nwqedamdbz)
+
+    def bhgumdfgqr(self, oflixwqbdt: Sprite) -> None:
+        rotation = self.gnpdxxlhrp(oflixwqbdt)
+        if rotation == 0:
+            adnwhafqes = oflixwqbdt.x
+            nwqedamdbz = oflixwqbdt.y + oflixwqbdt.height - vjqemmsfmx
+            for atngkiijya in self.uricqfoplr[oflixwqbdt]:
+                self.eeyirqljyp(atngkiijya, adnwhafqes, nwqedamdbz)
+            oflixwqbdt.move(-oflixwqbdt.height + vjqemmsfmx, oflixwqbdt.height - vjqemmsfmx)
+        elif rotation == 90:
+            adnwhafqes = oflixwqbdt.x
+            nwqedamdbz = oflixwqbdt.y
+            for atngkiijya in self.uricqfoplr[oflixwqbdt]:
+                self.eeyirqljyp(atngkiijya, adnwhafqes, nwqedamdbz)
+            oflixwqbdt.move(0, -oflixwqbdt.width + vjqemmsfmx)
+        elif rotation == 180:
+            adnwhafqes = oflixwqbdt.x
+            nwqedamdbz = oflixwqbdt.y
+            for atngkiijya in self.uricqfoplr[oflixwqbdt]:
+                self.eeyirqljyp(atngkiijya, adnwhafqes, nwqedamdbz)
+        elif rotation == 270:
+            adnwhafqes = oflixwqbdt.x + oflixwqbdt.width - vjqemmsfmx
+            nwqedamdbz = oflixwqbdt.y
+            for atngkiijya in self.uricqfoplr[oflixwqbdt]:
+                self.eeyirqljyp(atngkiijya, adnwhafqes, nwqedamdbz)
+            oflixwqbdt.move(oflixwqbdt.width - vjqemmsfmx, 0)
+        oflixwqbdt.pixels = np.rot90(oflixwqbdt.pixels)
+
+    def step(self) -> None:

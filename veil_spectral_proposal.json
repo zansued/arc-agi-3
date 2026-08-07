@@ -1,0 +1,63 @@
+{
+  "sub_agent": "SPECTRAL (Laplacian Eigenmaps & Spectral Embedding)",
+  "proposals": [
+    {
+      "id": 1,
+      "name": "Spectral Embedding Coherence (SEC)",
+      "description": "Use normalized graph Laplacian to quantify how well a candidate permutation embeds into a 2D manifold. The true permutation should produce a clean 2D grid-like embedding; random permutations produce structureless point clouds.",
+      "mathematical_framework": {
+        "graph_construction": "Build k-NN graph (k in [7,15]) from z-values. Edge weights w_ij = exp(-(z_i - z_j)^2 / σ²) where σ = median distance. This yields adjacency W ∈ ℝ^{N×N}.",
+        "laplacian": "Normalized Laplacian L_sym = I - D^{-1/2} W D^{-1/2}, where D_ii = Σ_j w_ij.",
+        "embedding": "Extract eigenvectors v_1, v_2, v_3 (skip trivial v_0 = constant) corresponding to smallest non-zero eigenvalues λ_1 ≤ λ_2 ≤ λ_3. The spectral embedding maps each point to (v_1[i], v_2[i], v_3[i]).",
+        "coherence_metric_C(π)": {
+          "component_a_gridness": "Fit a 2D Delaunay triangulation to the embedding coordinates. For each triangle, compute the variance of edge lengths. True grid → low variance (regular triangles). Random → high variance. Gridness = -ln(mean(triangle_edge_length_variance)).",
+          "component_b_reconstruction": "From the 2D spectral embedding, attempt to reconstruct the original z-values via kernel regression. The true permutation should have lower reconstruction error because the embedding captures the true manifold. RecErr = ||z - z_reconstructed||² / N.",
+          "component_c_mutual_information": "If we assign row/column indices based on the embedding's projection onto principal axes, the normalized mutual information between these assignments and the natural ordering should be higher for the true permutation.",
+          "combined": "C(π) = Gridness(π) * exp(-RecErr(π)) + MI(π)"
+        },
+        "rationale": "In the original 2D matrix, adjacent rows and columns share smooth latent structure. The true permutation makes nearby scalar values in the 1D sequence correspond to nearby positions in the 2D grid. The k-NN graph of z-values for the true permutation thus approximates the grid adjacency. The leading eigenvectors of the Laplacian encode this grid topology. For random permutations, adjacent z-values in the sequence come from unrelated grid positions — the k-NN graph is effectively random, producing a flat spectrum and random embedding."
+      },
+      "complexity": "O(N log N + Nk + kd²) where k=15 neighbors, d=3 dimensions. ~1000 evaluations/second on modern hardware for N=4096.",
+      "relationship_to_confirmed_signals": {
+        "spectral_gap": "SEC directly uses the Laplacian eigenvalues λ₂ and λ₃. The confirmed spectral gap of 0.15-0.30 for true permutation manifests as v_1, v_2, v_3 forming a structured 2D grid. For random, the gap is <0.05 and the embedding is unstructured.",
+        "compression_15sigma": "The SEC coherence metric is correlated with Kolmogorov complexity — lower-complexity permutations embed more smoothly. SEC can filter candidates before expensive lzma validation."
+      },
+      "search_strategy": "Use SEC as the fitness function for simulated annealing with substring reversal moves (2-opt). Initialize from sorted z-order. Run 5000 steps with T_start=10, T_end=0.001. Record top-100 permutations for validation."
+    },
+    {
+      "id": 2,
+      "name": "Diffusion Map Relaxation Time (DMRT)",
+      "description": "Build a diffusion operator from the data and use its spectral decay rate as a fitness function. The true permutation should exhibit slower diffusion relaxation due to the underlying 2D manifold structure.",
+      "mathematical_framework": {
+        "diffusion_operator": "P = D^{-1} W where W_ij = Gaussian kernel exp(-(z_i - z_j)^2/σ²) with automatic σ = kernel_width_heuristic(z) (e.g., median of pairwise distances).",
+        "diffusion_map": "For diffusion time t, the embedding is Ψ_t(i) = [λ_1^t φ_1(i), λ_2^t φ_2(i), ..., λ_d^t φ_d(i)] where λ_i are eigenvalues of P (λ_0=1) and φ_i are eigenvectors.",
+        "spectral_decay_metric_S(π)": "S(π) = (Σ_{i=2}^{d} λ_i²) / (λ_1² — Σ_{i=2}^{d} λ_i²) where λ_1 ≈ 1 (trivial) and λ_2 is the largest non-trivial eigenvalue. For d=20 components (capturing manifold fine structure).",
+        "interpretation": "For the true permutation structured on a 2D grid, the eigenvalues λ_2 through λ_d decay slowly because the manifold is coherent and connected — the diffusion process relaxes gradually along the many well-defined directions of the grid. Spectral decay S is LOW for true permutation. For random permutations, the data is unstructured — diffusion quickly becomes uniform, meaning the non-trivial eigenvalues vanish rapidly. Spectral decay S is HIGH for random measurements.",
+        "diffusion_time_selection": "The optimal diffusion time t* = 1/log(λ_2/λ_3) selects the time at which the first non-trivial eigenmode dominates. This is theoretically elegant: it directly uses the confirmed spectral gap signal.",
+        "fitness_function_F(π)": "F(π) = -log(S(π)) = -log((Σ λ_i²) / (λ_1² - Σ λ_i²)). True permutation maximizes F (lower S). Random permutations minimize F (higher S)."
+      },
+      "complexity": "O(N log N) for KD-tree kernel evaluation + O(Nkd + d³) for sparse eigensolver. ~500 evaluations/second for d=20 eigenvectors.",
+      "relationship_to_confirmed_signals": {
+        "spectral_gap_λ₂_λ₃": "DMRT directly computes and uses λ₂ and λ₃. The gap manifests as a jump in the diffusion time selection t*, making the fitness function more discriminative precisely where the signal is strongest.",
+        "compression_15sigma": "DMRT exploits the same underlying principle (Kolmogorov complexity / compressibility) through the spectral lens. The diffusion map captures the intrinsic manifold dimensionality — the true permutation on a 2D manifold has diffusion dimensionality ≈ 2, while random permutations have diffusion dimensionality → ∞ (equidimensional)."
+      },
+      "search_strategy": "Two-stage: (1) Coarse search: evaluate DMRT on 10000 random permutations generated by swapping subsets of indices. Keep top 1%. (2) Fine search: simulated annealing on top candidates using DMRT fitness, with 2000 steps. Validate final top-10 with lzma compression (the 15σ signal)."
+    }
+  ],
+  "pipeline_recommendation": {
+    "stage_1_rapid_filter": "DMRT on random candidates (10000 evaluations ~20 seconds). Retain top 1% (100 permutations).",
+    "stage_2_refinement": "SEC simulated annealing starting from each of the top 100. 500 steps each = 50000 evaluations. Retain top 10.",
+    "stage_3_validation": "lzma compression for top 10 candidates. The 15σ gap guarantees unambiguous identification of the true permutation.",
+    "total_time": "~2-3 minutes for full pipeline."
+  },
+  "theoretical_justification": "Both proposals are grounded in the fundamental property of the VEIL dataset: the true permutation minimizes Kolmogorov complexity because it reconstructs a low-dimensional spatial structure (2D grid). Spectral methods (Laplacian eigenmaps, diffusion maps) are the natural mathematical tools for detecting such structure because they construct a discrete approximation of the continuous Laplace-Beltrami operator on the manifold from point cloud data. The confirmed spectral gap signal (λ₂/λ₃) is the first eigenvalue of this discrete operator, and the compression signal (15σ) is essentially the same information measured in bits. The SEC and DMRT proposals translate these signals into concrete, implementable fitness functions for permutation search.",
+  "implementation_notes": {
+    "language": "Python 3.13",
+    "key_libraries": "scipy.sparse.linalg.eigsh, sklearn.neighbors.KDTree, scipy.spatial.Delaunay",
+    "data_format": "Numpy array of shape (4096,) for z-values",
+    "edge_case": "For the k-NN graph, handle ties in z-values (99.3% uniqueness → <30 duplicate values, assign 1e-10 jitter)",
+    "kernel_width": "Use the automatic kernel width heuristic: σ = median of pairwise distances / sqrt(2*log(N))",
+    "numerical_stability": "Use double precision (float64) for eigenvalue computation. Verify L_sym is positive semi-definite up to 1e-12."
+  },
+  "proposal_creation_datetime": "2026-05-14T22:03:38-03:00"
+}

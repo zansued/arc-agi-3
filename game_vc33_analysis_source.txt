@@ -1,0 +1,266 @@
+class Vc33(ARCBaseGame):
+    heczcoeosi: xclqwacrmx
+    dwwmpxqsza: tuple[int, int]
+    wrcxjliglr: dict[Sprite, tuple[Sprite, Sprite]]
+    bnnqyrupir: wqemqapjce | None
+
+    def __init__(self) -> None:
+        self.heczcoeosi = xclqwacrmx(0)
+        xlpbmgyvhdc = Camera(
+            background=BACKGROUND_COLOR,
+            letter_box=PADDING_COLOR,
+            interfaces=[self.heczcoeosi],
+        )
+        super().__init__(game_id="vc33", levels=levels, camera=xlpbmgyvhdc, available_actions=[6])
+
+    def ztjckgmepu(self) -> None:
+        """."""
+        rwejtsvefe = self.current_level.get_data("StepCounter")
+        self.heczcoeosi.dmesyeowwd = rwejtsvefe
+        self.heczcoeosi.mflhbpdcce()
+
+    def cicmkyghjc(self, name: str) -> Sprite:
+        return self.current_level.get_sprites_by_name(name)[0]
+
+    def qhmwbtpcsk(self) -> bool:
+        return self.dwwmpxqsza[0] > 0 or self.dwwmpxqsza[1] > 0
+
+    def mzqwlqlkrv(self, sprite: Sprite) -> int:
+        if self.dwwmpxqsza[0]:
+            return sprite.y
+        return sprite.x
+
+    def xitrlzpbgu(self, sprite: Sprite) -> int:
+        if self.dwwmpxqsza[0]:
+            return sprite.x
+        return sprite.y
+
+    def vmjlfzxesj(self, sprite: Sprite) -> int:
+        if self.dwwmpxqsza[0]:
+            return sprite.height
+        return sprite.width
+
+    def pjfzvvjgud(self, sprite: Sprite) -> int:
+        if self.dwwmpxqsza[0]:
+            return sprite.width
+        return sprite.height
+
+    def zfcrfmorna(self, sprite: Sprite) -> int:
+        if self.qhmwbtpcsk():
+            return self.xitrlzpbgu(sprite) + self.pjfzvvjgud(sprite)
+        else:
+            return self.xitrlzpbgu(sprite)
+
+    def hpakcxndwy(self, sprite: Sprite) -> int:
+        if self.qhmwbtpcsk():
+            return self.xitrlzpbgu(sprite)
+        else:
+            return self.xitrlzpbgu(sprite) + self.pjfzvvjgud(sprite)
+
+    def ldbtzvbmoj(self, eqbmrymiwc: Sprite, abwvwckyso: Sprite) -> bool:
+        if self.qhmwbtpcsk():
+            return self.zfcrfmorna(eqbmrymiwc) >= self.hpakcxndwy(abwvwckyso)
+        else:
+            return self.zfcrfmorna(eqbmrymiwc) <= self.hpakcxndwy(abwvwckyso)
+
+    def on_set_level(self, level: Level) -> None:
+        """."""
+        self.ztjckgmepu()
+        self.bnnqyrupir = None
+        self.dwwmpxqsza = self.current_level.get_data("Gravity")
+        self.wrcxjliglr = dict()
+        wpgwyzgomg = self.current_level.get_sprites_by_tag("0022jvmlspyigc")
+        amifeafxwr = self.current_level.get_sprites_by_tag("0043nzrtobajqi")
+        for abwvwckyso in wpgwyzgomg:
+            dfghvrvmmj = [eqbmrymiwc for eqbmrymiwc in amifeafxwr if self.mzqwlqlkrv(eqbmrymiwc) == self.mzqwlqlkrv(abwvwckyso) and self.ldbtzvbmoj(eqbmrymiwc, abwvwckyso)]
+            if dfghvrvmmj:
+                sxrzgujgtx = [eqbmrymiwc for eqbmrymiwc in amifeafxwr if self.mzqwlqlkrv(eqbmrymiwc) + self.vmjlfzxesj(eqbmrymiwc) == self.mzqwlqlkrv(abwvwckyso) - self.vmjlfzxesj(abwvwckyso) and self.ldbtzvbmoj(eqbmrymiwc, abwvwckyso)]
+                if self.qhmwbtpcsk():
+                    pzeognzxtp = min(sxrzgujgtx, key=lambda glarpukzki: self.xitrlzpbgu(glarpukzki))
+                    qrsthafmxa = min(dfghvrvmmj, key=lambda glarpukzki: self.xitrlzpbgu(glarpukzki))
+                else:
+                    pzeognzxtp = max(sxrzgujgtx, key=lambda glarpukzki: self.xitrlzpbgu(glarpukzki))
+                    qrsthafmxa = max(dfghvrvmmj, key=lambda glarpukzki: self.xitrlzpbgu(glarpukzki))
+                self.wrcxjliglr[abwvwckyso] = (pzeognzxtp, qrsthafmxa)
+            else:
+                sxrzgujgtx = [eqbmrymiwc for eqbmrymiwc in amifeafxwr if self.mzqwlqlkrv(eqbmrymiwc) < self.mzqwlqlkrv(abwvwckyso) and self.mzqwlqlkrv(eqbmrymiwc) + self.vmjlfzxesj(eqbmrymiwc) > self.mzqwlqlkrv(abwvwckyso) and self.ldbtzvbmoj(eqbmrymiwc, abwvwckyso)]
+                if sxrzgujgtx:
+                    dfghvrvmmj = [eqbmrymiwc for eqbmrymiwc in amifeafxwr if self.mzqwlqlkrv(eqbmrymiwc) == self.mzqwlqlkrv(abwvwckyso) + self.vmjlfzxesj(abwvwckyso) * 2 and self.ldbtzvbmoj(eqbmrymiwc, abwvwckyso)]
+                    if self.qhmwbtpcsk():
+                        pzeognzxtp = min(
+                            sxrzgujgtx,
+                            key=lambda glarpukzki: self.xitrlzpbgu(glarpukzki),
+                        )
+                        qrsthafmxa = min(
+                            dfghvrvmmj,
+                            key=lambda glarpukzki: self.xitrlzpbgu(glarpukzki),
+                        )
+                    else:
+                        pzeognzxtp = max(
+                            sxrzgujgtx,
+                            key=lambda glarpukzki: self.xitrlzpbgu(glarpukzki),
+                        )
+                        qrsthafmxa = max(
+                            dfghvrvmmj,
+                            key=lambda glarpukzki: self.xitrlzpbgu(glarpukzki),
+                        )
+                    self.wrcxjliglr[abwvwckyso] = (qrsthafmxa, pzeognzxtp)
+
+    def ielczunthe(self) -> bool:
+        """."""
+        wdfdpqxtkf = self.current_level.get_sprites_by_tag("0016uciqlhjlom")
+        vtcmlsebpq = self.current_level.get_sprites_by_tag("0010gnulkywfpz")
+        amifeafxwr = self.current_level.get_sprites_by_tag("0043nzrtobajqi")
+        bqppzuakxi = self.current_level.get_sprites_by_tag("0025yfyiswdvoh")
+        for vfddimntfs in wdfdpqxtkf:
+            zoovwgfyzl = vfddimntfs.pixels[-1, -1]
+            zvmujaknkt = [eqbmrymiwc for eqbmrymiwc in amifeafxwr if self.bcpuwqzpxw(vfddimntfs, eqbmrymiwc)]
+            kxlcdazxzs = self.rcbyiqlbza(zvmujaknkt[0])
+            nyaroikuxn = True
+            for hxlxvkeipz in vtcmlsebpq:
+                bggewwdych = [wall for wall in bqppzuakxi if wall.collides_with(hxlxvkeipz)][0]
+                if zoovwgfyzl in hxlxvkeipz.pixels and self.xitrlzpbgu(vfddimntfs) == self.xitrlzpbgu(hxlxvkeipz) and (bggewwdych in kxlcdazxzs):
+                    nyaroikuxn = False
+                    break
+            if nyaroikuxn:
+                return False
+        return True
+
+    def ezbubuphlm(self, xklhcncusa: Sprite) -> bool:
+        amifeafxwr = self.current_level.get_sprites_by_tag("0043nzrtobajqi")
+        lqequazmqm = [eqbmrymiwc for eqbmrymiwc in amifeafxwr if self.hpakcxndwy(eqbmrymiwc) == self.zfcrfmorna(xklhcncusa)]
+        vqoweqholk = [eqbmrymiwc for eqbmrymiwc in lqequazmqm if self.mzqwlqlkrv(eqbmrymiwc) + self.vmjlfzxesj(eqbmrymiwc) == self.mzqwlqlkrv(xklhcncusa)]
+        eltgoujmhx = [eqbmrymiwc for eqbmrymiwc in lqequazmqm if self.mzqwlqlkrv(eqbmrymiwc) == self.mzqwlqlkrv(xklhcncusa) + self.vmjlfzxesj(xklhcncusa)]
+        if vqoweqholk and eltgoujmhx:
+            return True
+        return False
+
+    def vktvbwfvhu(self, xklhcncusa: Sprite) -> None:
+        if self.ezbubuphlm(xklhcncusa):
+            xklhcncusa.color_remap(None, fqzhkhmfxt)
+            if xklhcncusa.pixels.shape[1] == 3:
+                pcbttqnhxk = sprites["0006mfbmvylbss"].clone()
+            else:
+                pcbttqnhxk = sprites["0008rybtprnbie"].clone()
+            pcbttqnhxk.set_rotation(xklhcncusa.rotation)
+            if xklhcncusa.rotation == 0:
+                pcbttqnhxk.set_position(xklhcncusa.x - 2, xklhcncusa.y)
+            elif xklhcncusa.rotation == 180:
+                pcbttqnhxk.set_position(xklhcncusa.x - 2, xklhcncusa.y)
+            if xklhcncusa.rotation == 90:
+                pcbttqnhxk.set_position(xklhcncusa.x, xklhcncusa.y - 2)
+            elif xklhcncusa.rotation == 270:
+                pcbttqnhxk.set_position(xklhcncusa.x, xklhcncusa.y - 2)
+            self.current_level.add_sprite(pcbttqnhxk)
+        else:
+            xklhcncusa.color_remap(None, flmcufqvdo)
+
+    def wpcgsoumbr(self) -> None:
+        cagzzrtjlm = self.current_level.get_sprites_by_tag("0007gyluczquhi")
+        for pcbttqnhxk in cagzzrtjlm:
+            self.current_level.remove_sprite(pcbttqnhxk)
+        pqklvzcuxd = self.current_level.get_sprites_by_tag("0004sttgkofqwb")
+        for xklhcncusa in pqklvzcuxd:
+            self.vktvbwfvhu(xklhcncusa)
+
+    def rcbyiqlbza(self, eqbmrymiwc: Sprite) -> list[Sprite]:
+        bqppzuakxi = self.current_level.get_sprites_by_tag("0025yfyiswdvoh")
+        kxlcdazxzs = [wall for wall in bqppzuakxi if self.mzqwlqlkrv(wall) + self.vmjlfzxesj(wall) == self.mzqwlqlkrv(eqbmrymiwc) or self.mzqwlqlkrv(wall) == self.mzqwlqlkrv(eqbmrymiwc) + self.vmjlfzxesj(eqbmrymiwc)]
+        return kxlcdazxzs
+
+    def kectayqmfn(self, eqbmrymiwc: Sprite) -> list[Sprite]:
+        wsqwqkejcw = self.current_level.get_sprites_by_tag("0001symqacyexa")
+        if self.qhmwbtpcsk():
+            mkmqnniulx = [floor for floor in wsqwqkejcw if self.mzqwlqlkrv(floor) == self.mzqwlqlkrv(eqbmrymiwc) and self.zfcrfmorna(floor) < self.zfcrfmorna(eqbmrymiwc)]
+        else:
+            mkmqnniulx = [floor for floor in wsqwqkejcw if self.mzqwlqlkrv(floor) == self.mzqwlqlkrv(eqbmrymiwc) and self.zfcrfmorna(floor) > self.zfcrfmorna(eqbmrymiwc)]
+        return mkmqnniulx
+
+    def bcpuwqzpxw(self, vfddimntfs: Sprite, eqbmrymiwc: Sprite) -> bool:
+        return self.mzqwlqlkrv(vfddimntfs) >= self.mzqwlqlkrv(eqbmrymiwc) and self.mzqwlqlkrv(vfddimntfs) < self.mzqwlqlkrv(eqbmrymiwc) + self.vmjlfzxesj(eqbmrymiwc) and (self.zfcrfmorna(vfddimntfs) == self.hpakcxndwy(eqbmrymiwc))
+
+    def usqfmpzewf(self, eqbmrymiwc: Sprite) -> list[Sprite]:
+        wdfdpqxtkf = self.current_level.get_sprites_by_tag("0016uciqlhjlom")
+        return [vfddimntfs for vfddimntfs in wdfdpqxtkf if self.bcpuwqzpxw(vfddimntfs, eqbmrymiwc)]
+
+    def ysoqxdegud(self, eqbmrymiwc: Sprite) -> int:
+        ehuyojkjcq = self.kectayqmfn(eqbmrymiwc)
+        if ehuyojkjcq:
+            if self.usqfmpzewf(eqbmrymiwc):
+                if self.dwwmpxqsza[0] == -3:
+                    return max([self.zfcrfmorna(sprite) - 6 for sprite in ehuyojkjcq])
+                else:
+                    return max([self.zfcrfmorna(sprite) - 4 for sprite in ehuyojkjcq])
+            else:
+                return max([self.zfcrfmorna(sprite) for sprite in ehuyojkjcq])
+        katgaxrnxd = self.rcbyiqlbza(eqbmrymiwc)
+        if self.qhmwbtpcsk():
+            return max([self.hpakcxndwy(sprite) for sprite in katgaxrnxd])
+        else:
+            return min([self.hpakcxndwy(sprite) for sprite in katgaxrnxd])
+
+    def xowbpvmzbd(self, yvppaekogs: Sprite, dvfrzxabyk: Sprite) -> None:
+        if self.pjfzvvjgud(yvppaekogs) > 0 and (self.qhmwbtpcsk() and self.xitrlzpbgu(dvfrzxabyk) > self.ysoqxdegud(dvfrzxabyk) or (not self.qhmwbtpcsk() and self.hpakcxndwy(dvfrzxabyk) < self.ysoqxdegud(dvfrzxabyk))):
+            volqrbaomzl, duyfsmiznvg = self.dwwmpxqsza
+            for vfddimntfs in self.usqfmpzewf(yvppaekogs):
+                vfddimntfs.move(volqrbaomzl, duyfsmiznvg)
+            for vfddimntfs in self.usqfmpzewf(dvfrzxabyk):
+                vfddimntfs.move(-volqrbaomzl, -duyfsmiznvg)
+            if volqrbaomzl >= 0:
+                yvppaekogs.move(volqrbaomzl, 0)
+                dvfrzxabyk.move(-volqrbaomzl, 0)
+            if duyfsmiznvg >= 0:
+                yvppaekogs.move(0, duyfsmiznvg)
+                dvfrzxabyk.move(0, -duyfsmiznvg)
+            ogkqtyxbce = np.full((1, dvfrzxabyk.pixels.shape[1]), qgrljjqvyn)
+            if volqrbaomzl != 0:
+                yvppaekogs.pixels = yvppaekogs.pixels[: -abs(volqrbaomzl)]
+                for i in range(abs(volqrbaomzl)):
+                    dvfrzxabyk.pixels = np.vstack([dvfrzxabyk.pixels, ogkqtyxbce])
+            else:
+                yvppaekogs.pixels = yvppaekogs.pixels[: -abs(duyfsmiznvg)]
+                for i in range(abs(duyfsmiznvg)):
+                    dvfrzxabyk.pixels = np.vstack([dvfrzxabyk.pixels, ogkqtyxbce])
+            self.wpcgsoumbr()
+
+    def iootdyzbwv(self, abwvwckyso: Sprite) -> None:
+        yvppaekogs, dvfrzxabyk = self.wrcxjliglr[abwvwckyso]
+        self.xowbpvmzbd(yvppaekogs, dvfrzxabyk)
+
+    def mwsdltsaxd(self, xklhcncusa: Sprite) -> wqemqapjce:
+        amifeafxwr = self.current_level.get_sprites_by_tag("0043nzrtobajqi")
+        lqequazmqm = [eqbmrymiwc for eqbmrymiwc in amifeafxwr if self.hpakcxndwy(eqbmrymiwc) == self.zfcrfmorna(xklhcncusa)]
+        vqoweqholk = [eqbmrymiwc for eqbmrymiwc in lqequazmqm if self.mzqwlqlkrv(eqbmrymiwc) + self.vmjlfzxesj(eqbmrymiwc) == self.mzqwlqlkrv(xklhcncusa)]
+        eltgoujmhx = [eqbmrymiwc for eqbmrymiwc in lqequazmqm if self.mzqwlqlkrv(eqbmrymiwc) == self.mzqwlqlkrv(xklhcncusa) + self.vmjlfzxesj(xklhcncusa)]
+        wrrpfpsshs = vqoweqholk[0]
+        nmhvenelbu = eltgoujmhx[0]
+        hgrgnxfhxv = []
+        jhnzlxbvwh = self.usqfmpzewf(wrrpfpsshs)
+        ydofmpomfe = self.usqfmpzewf(nmhvenelbu)
+        for vfddimntfs in jhnzlxbvwh:
+            if self.dwwmpxqsza[0] != 0:
+                y = nmhvenelbu.y + nmhvenelbu.height // 2 - vfddimntfs.height // 2
+                x = vfddimntfs.x
+            else:
+                x = nmhvenelbu.x + nmhvenelbu.width // 2 - vfddimntfs.width // 2
+                y = vfddimntfs.y
+            hgrgnxfhxv.append(kzobdxxpyg(vfddimntfs, (x, y)))
+        for vfddimntfs in ydofmpomfe:
+            if self.dwwmpxqsza[0] != 0:
+                y = wrrpfpsshs.y + wrrpfpsshs.height // 2 - vfddimntfs.height // 2
+                x = vfddimntfs.x
+            else:
+                x = wrrpfpsshs.x + wrrpfpsshs.width // 2 - vfddimntfs.width // 2
+                y = vfddimntfs.y
+            hgrgnxfhxv.append(kzobdxxpyg(vfddimntfs, (x, y)))
+        if self.dwwmpxqsza[0] > 0:
+            zbfsemofrj = kzobdxxpyg(xklhcncusa, (xklhcncusa.x - xklhcncusa.width, xklhcncusa.y))
+        elif self.dwwmpxqsza[0] < 0:
+            zbfsemofrj = kzobdxxpyg(xklhcncusa, (xklhcncusa.x + xklhcncusa.width, xklhcncusa.y))
+        else:
+            zbfsemofrj = kzobdxxpyg(xklhcncusa, (xklhcncusa.x, xklhcncusa.y - xklhcncusa.height))
+        nxdhyqlepc = kzobdxxpyg(xklhcncusa, (xklhcncusa.x, xklhcncusa.y))
+        ocvdtekxgc = wqemqapjce([zbfsemofrj] + hgrgnxfhxv + [nxdhyqlepc])
+        return ocvdtekxgc
+
+    def step(self) -> None:

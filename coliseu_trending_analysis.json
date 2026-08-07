@@ -1,0 +1,157 @@
+{
+  "results": [
+    {
+      "repo": "antirez/ds4",
+      "stars": 8304,
+      "exists": false,
+      "desc": "DeepSeek 4 Flash local inference engine for Metal and CUDA",
+      "topics": [],
+      "license": "MIT",
+      "language": "C",
+      "coliseu": {
+        "Caos": 9,
+        "Evolucao": 8,
+        "Geometria": 9,
+        "Assinatura": 10,
+        "Impacto": 10
+      },
+      "coliseu_score": 445.0
+    },
+    {
+      "repo": "strukto-ai/mirage",
+      "stars": 2131,
+      "exists": false,
+      "desc": "A Unified Virtual Filesystem For AI Agents",
+      "topics": [
+        "agent-sandbox",
+        "agent-tools",
+        "ai-agents",
+        "bash",
+        "claude-code",
+        "fuse",
+        "langchain",
+        "llm-agents",
+        "openai-agents",
+        "python",
+        "typescript",
+        "vfs",
+        "virtual-filesystem"
+      ],
+      "license": "Apache-2.0",
+      "language": "TypeScript",
+      "coliseu": {
+        "Caos": 8,
+        "Evolucao": 7,
+        "Geometria": 8,
+        "Assinatura": 9,
+        "Impacto": 8
+      },
+      "coliseu_score": 316.0
+    },
+    {
+      "repo": "zarazhangrui/beautiful-html-templates",
+      "stars": 1104,
+      "exists": false,
+      "desc": "HTML slide templates for coding agents",
+      "topics": [],
+      "license": "MIT",
+      "language": "HTML",
+      "coliseu": {
+        "Caos": 6,
+        "Evolucao": 6,
+        "Geometria": 9,
+        "Assinatura": 10,
+        "Impacto": 8
+      },
+      "coliseu_score": 294.0
+    },
+    {
+      "repo": "yaojingang/yao-open-prompts",
+      "stars": 1926,
+      "exists": false,
+      "desc": "Chinese AI prompt library covering work, study, content, marketing",
+      "topics": [
+        "ai",
+        "chinese-prompts",
+        "geo",
+        "prompt-engineering",
+        "prompts"
+      ],
+      "license": "NOASSERTION",
+      "language": "Python"
+    },
+    {
+      "repo": "aattaran/deepclaude",
+      "stars": 1817,
+      "exists": true,
+      "desc": "Claude Code loop with DeepSeek V4 Pro, OpenRouter"
+    }
+  ],
+  "coliseu_ranking": [
+    {
+      "repo": "antirez/ds4",
+      "stars": 8304,
+      "exists": false,
+      "desc": "DeepSeek 4 Flash local inference engine for Metal and CUDA",
+      "topics": [],
+      "license": "MIT",
+      "language": "C",
+      "coliseu": {
+        "Caos": 9,
+        "Evolucao": 8,
+        "Geometria": 9,
+        "Assinatura": 10,
+        "Impacto": 10
+      },
+      "coliseu_score": 445.0
+    },
+    {
+      "repo": "strukto-ai/mirage",
+      "stars": 2131,
+      "exists": false,
+      "desc": "A Unified Virtual Filesystem For AI Agents",
+      "topics": [
+        "agent-sandbox",
+        "agent-tools",
+        "ai-agents",
+        "bash",
+        "claude-code",
+        "fuse",
+        "langchain",
+        "llm-agents",
+        "openai-agents",
+        "python",
+        "typescript",
+        "vfs",
+        "virtual-filesystem"
+      ],
+      "license": "Apache-2.0",
+      "language": "TypeScript",
+      "coliseu": {
+        "Caos": 8,
+        "Evolucao": 7,
+        "Geometria": 8,
+        "Assinatura": 9,
+        "Impacto": 8
+      },
+      "coliseu_score": 316.0
+    },
+    {
+      "repo": "zarazhangrui/beautiful-html-templates",
+      "stars": 1104,
+      "exists": false,
+      "desc": "HTML slide templates for coding agents",
+      "topics": [],
+      "license": "MIT",
+      "language": "HTML",
+      "coliseu": {
+        "Caos": 6,
+        "Evolucao": 6,
+        "Geometria": 9,
+        "Assinatura": 10,
+        "Impacto": 8
+      },
+      "coliseu_score": 294.0
+    }
+  ]
+}

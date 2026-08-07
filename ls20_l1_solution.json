@@ -1,0 +1,33 @@
+{
+  "game_id": "ls20",
+  "level": 0,
+  "level_id": "9607627b-l1",
+  "actions": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    3,
+    3,
+    3,
+    2,
+    1,
+    4,
+    4,
+    4,
+    1,
+    1,
+    1
+  ],
+  "total_actions": 17,
+  "baseline": 22,
+  "win_score": 7,
+  "levels_completed_after": 1,
+  "final_block_pos": [
+    34,
+    10
+  ],
+  "notes": "17 actions + 1 dummy action. Block pushed through transformer at (19,30) changing rotation 270\u21920, then navigated around blocker gateway (32,8) to goal at (34,10). dummy action triggers complete_action\u2192pbznecvnfr\u2192next_level."
+}

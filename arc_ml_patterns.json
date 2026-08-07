@@ -1,0 +1,402 @@
+{
+  "games": {
+    "sp80": {
+      "levels": {
+        "0": {
+          "n_sprites": 7,
+          "tags": [
+            "sowlljgtjvn",
+            "repwkzbkhxl",
+            "liolfvkveqg",
+            "waoewejnqzc",
+            "plzwjbfyfli",
+            "sys_click"
+          ]
+        },
+        "1": {
+          "n_sprites": 10,
+          "tags": [
+            "sowlljgtjvn",
+            "repwkzbkhxl",
+            "liolfvkveqg",
+            "waoewejnqzc",
+            "plzwjbfyfli",
+            "sys_click"
+          ]
+        },
+        "2": {
+          "n_sprites": 15,
+          "tags": [
+            "sowlljgtjvn",
+            "repwkzbkhxl",
+            "liolfvkveqg",
+            "waoewejnqzc",
+            "plzwjbfyfli",
+            "sys_click"
+          ]
+        },
+        "3": {
+          "n_sprites": 13,
+          "tags": [
+            "sowlljgtjvn",
+            "repwkzbkhxl",
+            "liolfvkveqg",
+            "waoewejnqzc",
+            "plzwjbfyfli",
+            "sys_click"
+          ]
+        },
+        "4": {
+          "n_sprites": 16,
+          "tags": [
+            "sowlljgtjvn",
+            "repwkzbkhxl",
+            "liolfvkveqg",
+            "tuvkdkhdokr",
+            "waoewejnqzc",
+            "plzwjbfyfli",
+            "sys_click"
+          ]
+        },
+        "5": {
+          "n_sprites": 14,
+          "tags": [
+            "sowlljgtjvn",
+            "repwkzbkhxl",
+            "liolfvkveqg",
+            "tuvkdkhdokr",
+            "waoewejnqzc",
+            "plzwjbfyfli",
+            "sys_click"
+          ]
+        }
+      },
+      "total_tests": 0,
+      "wins": 0
+    },
+    "wa30": {
+      "levels": {
+        "0": {
+          "n_sprites": 5,
+          "tags": [
+            "fsjjayjoeg",
+            "geezpjgiyd",
+            "wbmdvjhthc"
+          ],
+          "tests": 2
+        },
+        "1": {
+          "n_sprites": 8,
+          "tags": [
+            "kdweefinfi",
+            "fsjjayjoeg",
+            "geezpjgiyd",
+            "wbmdvjhthc"
+          ]
+        },
+        "2": {
+          "n_sprites": 24,
+          "tags": [
+            "fsjjayjoeg",
+            "wbmdvjhthc",
+            "kdweefinfi",
+            "geezpjgiyd",
+            "bnzklblgdk"
+          ]
+        },
+        "3": {
+          "n_sprites": 51,
+          "tags": [
+            "debyzcmtnr",
+            "fsjjayjoeg",
+            "wbmdvjhthc",
+            "kdweefinfi",
+            "geezpjgiyd",
+            "bnzklblgdk"
+          ]
+        },
+        "4": {
+          "n_sprites": 29,
+          "tags": [
+            "debyzcmtnr",
+            "fsjjayjoeg",
+            "wbmdvjhthc",
+            "kdweefinfi",
+            "geezpjgiyd"
+          ]
+        },
+        "5": {
+          "n_sprites": 36,
+          "tags": [
+            "debyzcmtnr",
+            "fsjjayjoeg",
+            "ysysltqlke",
+            "wbmdvjhthc",
+            "geezpjgiyd",
+            "zqxwgacnue"
+          ]
+        }
+      },
+      "total_tests": 2,
+      "wins": 0
+    },
+    "ls20": {
+      "levels": {
+        "0": {
+          "n_sprites": 128,
+          "tags": [
+            "ihdgageizm",
+            "rjlbuycveu",
+            "hoswmpiqkw",
+            "eqatonpohu",
+            "ghizzeqtoh",
+            "sfqyzhzkij",
+            "wgmbtyhvbc",
+            "kvynsvxbpi",
+            "rhsxkxzdjz",
+            "vjotnebuqo"
+          ]
+        },
+        "1": {
+          "n_sprites": 111,
+          "tags": [
+            "ihdgageizm",
+            "rjlbuycveu",
+            "hoswmpiqkw",
+            "eqatonpohu",
+            "ghizzeqtoh",
+            "sfqyzhzkij",
+            "wgmbtyhvbc",
+            "kvynsvxbpi",
+            "rhsxkxzdjz",
+            "vjotnebuqo",
+            "npxgalaybz"
+          ]
+        },
+        "2": {
+          "n_sprites": 97,
+          "tags": [
+            "ihdgageizm",
+            "rjlbuycveu",
+            "hoswmpiqkw",
+            "eqatonpohu",
+            "ghizzeqtoh",
+            "sfqyzhzkij",
+            "wgmbtyhvbc",
+            "kvynsvxbpi",
+            "rhsxkxzdjz",
+            "vjotnebuqo",
+            "gbvqrjtaqo",
+            "soyhouuebz",
+            "npxgalaybz"
+          ]
+        },
+        "3": {
+          "n_sprites": 110,
+          "tags": [
+            "ihdgageizm",
+            "rjlbuycveu",
+            "hoswmpiqkw",
+            "eqatonpohu",
+            "ghizzeqtoh",
+            "sfqyzhzkij",
+            "wgmbtyhvbc",
+            "kvynsvxbpi",
+            "vjotnebuqo",
+            "gbvqrjtaqo",
+            "ttfwljgohq",
+            "soyhouuebz",
+            "npxgalaybz"
+          ]
+        },
+        "4": {
+          "n_sprites": 102,
+          "tags": [
+            "ihdgageizm",
+            "rjlbuycveu",
+            "hoswmpiqkw",
+            "eqatonpohu",
+            "ghizzeqtoh",
+            "sfqyzhzkij",
+            "wgmbtyhvbc",
+            "xfmluydglp",
+            "kvynsvxbpi",
+            "rhsxkxzdjz",
+            "vjotnebuqo",
+            "gbvqrjtaqo",
+            "ttfwljgohq",
+            "soyhouuebz",
+            "npxgalaybz"
+          ]
+        },
+        "5": {
+          "n_sprites": 103,
+          "tags": [
+            "ihdgageizm",
+            "rjlbuycveu",
+            "hoswmpiqkw",
+            "eqatonpohu",
+            "ghizzeqtoh",
+            "npxgalaybz",
+            "sfqyzhzkij",
+            "soyhouuebz",
+            "wgmbtyhvbc",
+            "xfmluydglp",
+            "kvynsvxbpi",
+            "rhsxkxzdjz",
+            "gbvqrjtaqo",
+            "ttfwljgohq",
+            "vjotnebuqo",
+            "vfkkzdgxzx"
+          ]
+        }
+      },
+      "total_tests": 0,
+      "wins": 0
+    },
+    "cn04": {
+      "levels": {
+        "0": {
+          "n_sprites": 2,
+          "tags": [
+            "sys_click"
+          ]
+        },
+        "1": {
+          "n_sprites": 4,
+          "tags": [
+            "sys_click"
+          ]
+        },
+        "2": {
+          "n_sprites": 3,
+          "tags": [
+            "sys_click"
+          ]
+        },
+        "3": {
+          "n_sprites": 4,
+          "tags": [
+            "sys_click"
+          ]
+        },
+        "4": {
+          "n_sprites": 8,
+          "tags": [
+            "sys_click"
+          ]
+        },
+        "5": {
+          "n_sprites": 13,
+          "tags": [
+            "sys_click"
+          ]
+        }
+      },
+      "total_tests": 0,
+      "wins": 0
+    },
+    "tu93": {
+      "levels": {
+        "0": {
+          "n_sprites": 3,
+          "tags": [
+            "0005uvnhiglpvh",
+            "0015msvpvzxhqf",
+            "0017unajnymcki"
+          ]
+        },
+        "1": {
+          "n_sprites": 4,
+          "tags": [
+            "0001haidilggfh",
+            "0005uvnhiglpvh",
+            "0015msvpvzxhqf",
+            "0017unajnymcki"
+          ]
+        },
+        "2": {
+          "n_sprites": 6,
+          "tags": [
+            "0001haidilggfh",
+            "0005uvnhiglpvh",
+            "0015msvpvzxhqf",
+            "0017unajnymcki"
+          ]
+        },
+        "3": {
+          "n_sprites": 5,
+          "tags": [
+            "0001haidilggfh",
+            "0020npxxteirsg",
+            "0005uvnhiglpvh",
+            "0015msvpvzxhqf",
+            "0017unajnymcki"
+          ]
+        },
+        "4": {
+          "n_sprites": 8,
+          "tags": [
+            "0001haidilggfh",
+            "0020npxxteirsg",
+            "0005uvnhiglpvh",
+            "0015msvpvzxhqf",
+            "0017unajnymcki"
+          ]
+        },
+        "5": {
+          "n_sprites": 11,
+          "tags": [
+            "0001haidilggfh",
+            "0020npxxteirsg",
+            "0005uvnhiglpvh",
+            "0015msvpvzxhqf",
+            "0017unajnymcki"
+          ]
+        }
+      },
+      "total_tests": 0,
+      "wins": 0
+    }
+  },
+  "bugs": [
+    {
+      "id": "rotation_click_bug",
+      "desc": "rotation=2 faz clique sempre selecionar primeira barra (SP80)",
+      "workaround": "mover primeira barra primeiro"
+    }
+  ],
+  "cross_game_attrs": {
+    "sp80": {
+      "rotation_attr": "yqejjfwwh",
+      "steps_attr": "zlhbnhpcq",
+      "has_rotation": true,
+      "has_steps": true
+    },
+    "wa30": {
+      "rotation_attr": "level_index",
+      "steps_attr": null,
+      "has_rotation": true,
+      "has_steps": false
+    },
+    "ls20": {
+      "rotation_attr": "oeuabekjf",
+      "steps_attr": "zyoimjaei",
+      "has_rotation": true,
+      "has_steps": true
+    },
+    "cn04": {
+      "rotation_attr": "ztpxqonhr",
+      "steps_attr": "ojcsxidcz",
+      "has_rotation": true,
+      "has_steps": true
+    },
+    "tu93": {
+      "rotation_attr": "kdkehgjrzq",
+      "steps_attr": null,
+      "has_rotation": true,
+      "has_steps": false
+    }
+  },
+  "last_updated": 1784220344
+}

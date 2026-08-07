@@ -1,0 +1,65 @@
+{
+  "run_key": "v24_forced_exploration_and_mutation-smoke-20260608",
+  "version": "v24_forced_exploration_and_mutation",
+  "target_version": "v24_forced_exploration_and_mutation_fix1",
+  "status": "WAITING_FOR_SUPERVISOR",
+  "benchmark": "arc-agi-3",
+  "failure_family": "forced-exploration-did-not-escape-fragile-1-state-lock",
+  "summary_path": "/a0/usr/workdir/arc_runs/summary_v24_smoke.csv",
+  "games_benchmarked": 5,
+  "total_unique_states": 189,
+  "levels_completed": 0,
+  "crashes": 0,
+  "games_detail": {
+    "tn36": {
+      "states": 1,
+      "levels": 0,
+      "steps": 500,
+      "policy": "v10_final",
+      "best_action": "RESET",
+      "stalled": "1"
+    },
+    "vc33": {
+      "states": 1,
+      "levels": 0,
+      "steps": 500,
+      "policy": "v10_final",
+      "best_action": "RESET",
+      "stalled": "1"
+    },
+    "su15": {
+      "states": 1,
+      "levels": 0,
+      "steps": 500,
+      "policy": "v10_final",
+      "best_action": "ACTION7",
+      "stalled": "1"
+    },
+    "sp80": {
+      "states": 34,
+      "levels": 0,
+      "steps": 42,
+      "policy": "v14_spectral",
+      "best_action": "ACTION1",
+      "stalled": "0"
+    },
+    "bp35": {
+      "states": 152,
+      "levels": 0,
+      "steps": 271,
+      "policy": "v14_spectral",
+      "best_action": "ACTION3",
+      "stalled": "1"
+    }
+  },
+  "readout": {
+    "forced_exploration": "implemented and ran 500 live steps on tn36/vc33/su15, but did not escape 1-state lock",
+    "regression": "sp80 lost v23 level progress in this smoke",
+    "good_signal": "bp35 remained high at 152 states",
+    "implementation_bug": "summary was written as summary_v22.csv inside container; copied to summary_v24_smoke.csv on host"
+  },
+  "next_experiment": {
+    "name": "v24_forced_exploration_and_mutation_fix1",
+    "focus": "force non-reset/non-repeating action payload exploration and preserve sp80/cn04 v23 seeds"
+  }
+}

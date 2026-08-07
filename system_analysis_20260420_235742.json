@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-04-20T23:57:42.137096",
+  "components": {
+    "lead_agent": {
+      "status": "ok",
+      "path": "/a0/usr/workdir/lead_agent_final.py"
+    },
+    "autopoiese": {
+      "status": "ok",
+      "files_count": 2,
+      "latest_file": "/a0/usr/workdir/autopoiese_analise_20260420_175107.json"
+    },
+    "osint_tools": {
+      "holehe": {
+        "status": "installed",
+        "path": "/a0/usr/workdir/osint_tools_installed/holehe"
+      },
+      "blackbird": {
+        "status": "installed",
+        "path": "/a0/usr/workdir/osint_tools_installed/blackbird"
+      },
+      "Phunter": {
+        "status": "installed",
+        "path": "/a0/usr/workdir/osint_tools_installed/Phunter"
+      },
+      "Telerecon": {
+        "status": "installed",
+        "path": "/a0/usr/workdir/osint_tools_installed/Telerecon"
+      }
+    },
+    "supabase": {
+      "status": "available",
+      "path": "/a0/usr/workdir/mcp_servers/supabase_mcp.py"
+    },
+    "paperclip_zero": {
+      "status": "installed",
+      "path": "/a0/usr/plugins/paperclip_zero",
+      "api_responding": false
+    }
+  },
+  "issues": [],
+  "recommendations": [
+    "Configurar armazenamento no Supabase",
+    "Ativar PaperClip Zero para gestão centralizada"
+  ],
+  "optimizations": [
+    "Sistema tem dados suficientes para aprendizado de máquina",
+    "Implementar otimização automática de parâmetros",
+    "Integrar holehe para validação avançada de emails"
+  ]
+}
