@@ -97,12 +97,21 @@ def install_sse(handler_cls):
             self.send_header = orig_send_header
             self.end_headers = orig_end_headers
 
-        self.send_response(202)
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Content-Length", "0")
-        self.end_headers()
 
         raw_written = dummy_wfile.getvalue()
+        if raw_written:
+            self.send_header("Content-Length", str(len(raw_written)))
+            self.end_headers()
+            self.wfile.write(raw_written)
+            self.wfile.flush()
+        else:
+            # Notification (no id): no body required.
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+
         if raw_written:
             try:
                 res_obj = json.loads(raw_written.decode("utf-8"))
