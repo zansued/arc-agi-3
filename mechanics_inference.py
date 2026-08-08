@@ -128,6 +128,26 @@ def analyze_game(game_id: str) -> dict:
         scores["match"] = scores.get("match", 0) + 1
         evidence.append(f"composite_names:{ratio:.0%}")
 
+    # 2.5 Clusters de variantes (peso 4) — sinal forte de match/pairing.
+    # Prefixo com 3+ sufixos diferentes (ex: gayktr-grwjuk/orfrpe/puvdux)
+    # indica variantes de cor/forma do mesmo objeto para emparelhamento.
+    # Exclui clusters de levels (wahtyt-Level1 ... Level11) que não são variantes.
+    variant_clusters = _extract_variant_clusters(names)
+    real_variant_clusters = {}
+    for pre, sufs in variant_clusters.items():
+        # Exclui clusters de levels (wahtyt-Level1 ... Level11)
+        if all(re.match(r"^level\d+", s, re.IGNORECASE) for s in sufs):
+            continue
+        # Exclui clusters numéricos (plzwjbfyfli-3 ... plzwjbfyfli-8 -> paletas de paint)
+        numeric = [s for s in sufs if re.match(r"^\d+[a-h]?$", s)]
+        if len(numeric) / len(sufs) >= 0.5:
+            continue
+        real_variant_clusters[pre] = sufs
+    if real_variant_clusters:
+        cluster_hits = len(real_variant_clusters)
+        scores["match"] = scores.get("match", 0) + 4 * cluster_hits
+        evidence.append(f"variant_clusters:{cluster_hits}")
+
     # 3. Padrão de ações (peso 2)
     if actions and set(actions) <= {"ACTION6"}:
         scores["tangram"] = scores.get("tangram", 0) + 2

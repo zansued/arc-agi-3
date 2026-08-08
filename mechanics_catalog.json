@@ -42,8 +42,8 @@
   },
   {
     "game": "cd82",
-    "inferred_mechanics": "tangram",
-    "confidence": 3,
+    "inferred_mechanics": "match",
+    "confidence": 8,
     "actions": [
       1,
       2,
@@ -53,7 +53,8 @@
       6
     ],
     "evidence": [
-      "composite_names:62%"
+      "composite_names:62%",
+      "variant_clusters:1"
     ],
     "data_keys": [
       "x"
@@ -86,8 +87,8 @@
   },
   {
     "game": "dc22",
-    "inferred_mechanics": "physics",
-    "confidence": 4,
+    "inferred_mechanics": "match",
+    "confidence": 20.0,
     "actions": [
       1,
       2,
@@ -98,7 +99,7 @@
     ],
     "evidence": [
       "composite_names:98%",
-      "beh:collide"
+      "variant_clusters:9"
     ],
     "data_keys": [
       "StepCounter"
@@ -128,8 +129,8 @@
   },
   {
     "game": "g50t",
-    "inferred_mechanics": "physics",
-    "confidence": 6,
+    "inferred_mechanics": "unknown",
+    "confidence": 0.0,
     "actions": [
       1,
       2,
@@ -137,16 +138,14 @@
       4,
       5
     ],
-    "evidence": [
-      "beh:collide"
-    ],
+    "evidence": [],
     "data_keys": [],
     "sprite_count": 56
   },
   {
     "game": "ka59",
-    "inferred_mechanics": "physics",
-    "confidence": 4,
+    "inferred_mechanics": "match",
+    "confidence": 8,
     "actions": [
       1,
       2,
@@ -156,7 +155,7 @@
     ],
     "evidence": [
       "composite_names:100%",
-      "beh:collide"
+      "variant_clusters:1"
     ],
     "data_keys": [
       "StepCounter"
@@ -211,8 +210,7 @@
     "evidence": [
       "data:GoalColor,StartColor,GoalRotation,StartRotation,StartShape",
       "data:Fog",
-      "move_only",
-      "beh:collide"
+      "move_only"
     ],
     "data_keys": [
       "Fog",
@@ -228,8 +226,8 @@
   },
   {
     "game": "m0r0",
-    "inferred_mechanics": "tangram",
-    "confidence": 9,
+    "inferred_mechanics": "match",
+    "confidence": 20.0,
     "actions": [
       1,
       2,
@@ -239,9 +237,9 @@
     ],
     "evidence": [
       "composite_names:91%",
+      "variant_clusters:3",
       "sys_click",
-      "beh:place",
-      "beh:collide"
+      "beh:place"
     ],
     "data_keys": [
       "psqw"
@@ -250,17 +248,17 @@
   },
   {
     "game": "r11l",
-    "inferred_mechanics": "tangram",
-    "confidence": 12,
+    "inferred_mechanics": "match",
+    "confidence": 20.0,
     "actions": [
       6
     ],
     "evidence": [
       "composite_names:100%",
+      "variant_clusters:4",
       "click_only",
       "sys_click",
-      "beh:place",
-      "beh:collide"
+      "beh:place"
     ],
     "data_keys": [
       "x"
@@ -269,8 +267,8 @@
   },
   {
     "game": "re86",
-    "inferred_mechanics": "physics",
-    "confidence": 4,
+    "inferred_mechanics": "tangram",
+    "confidence": 3,
     "actions": [
       1,
       2,
@@ -279,8 +277,7 @@
       5
     ],
     "evidence": [
-      "composite_names:100%",
-      "beh:collide"
+      "composite_names:100%"
     ],
     "data_keys": [
       "StepCounter"
@@ -290,14 +287,13 @@
   {
     "game": "s5i5",
     "inferred_mechanics": "tangram",
-    "confidence": 5,
+    "confidence": 6,
     "actions": [
       6
     ],
     "evidence": [
       "composite_names:100%",
-      "click_only",
-      "beh:collide"
+      "click_only"
     ],
     "data_keys": [
       "Children",
@@ -320,8 +316,8 @@
   },
   {
     "game": "sc25",
-    "inferred_mechanics": "tangram",
-    "confidence": 9,
+    "inferred_mechanics": "match",
+    "confidence": 8,
     "actions": [
       1,
       2,
@@ -331,6 +327,7 @@
     ],
     "evidence": [
       "composite_names:86%",
+      "variant_clusters:1",
       "sys_click",
       "beh:place"
     ],
@@ -402,15 +399,14 @@
   {
     "game": "tn36",
     "inferred_mechanics": "program",
-    "confidence": 9,
+    "confidence": 10,
     "actions": [
       6
     ],
     "evidence": [
       "data:Programs",
       "click_only",
-      "beh:program",
-      "beh:collide"
+      "beh:program"
     ],
     "data_keys": [
       "Positions",
@@ -473,7 +469,7 @@
       "data:Gravity",
       "composite_names:100%",
       "click_only",
-      "beh:gravity,collide"
+      "beh:gravity"
     ],
     "data_keys": [
       "Gravity",
