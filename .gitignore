@@ -9,3 +9,8 @@ mcp_state/
 knowledge_graph/data/
 arc_runs/
 *.jsonl
+.boot_blackgov.md
+.env.github
+.s16_google_adc.promptinclude.md
+blackgov_system_profile.md
+dgm_lemoz_python_symbols.txt
