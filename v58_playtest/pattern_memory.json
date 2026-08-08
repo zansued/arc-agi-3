@@ -15,7 +15,7 @@
     },
     "cn04": {
       "pattern": "tangram",
-      "description": "Tangram expans\u00edvel - pe\u00e7as crescem com clique (at\u00e9 5x), ACTION5=girar/crescer",
+      "description": "Tangram expansível - peças crescem com clique (até 5x), ACTION5=girar/crescer",
       "catalog": {
         "action6_func": "select_or_grow",
         "has_pecas_expansiveis": true,
@@ -35,5 +35,15 @@
       "cn04"
     ]
   },
-  "last_updated": "2026-06-17T22:39:42.328071"
+  "last_updated": "2026-06-17T22:39:42.328071",
+  "solutions": [
+    {
+      "game": "sp80",
+      "level": 6,
+      "state": "WIN",
+      "steps": 78,
+      "method": "visual_browser",
+      "timestamp": "2026-08-08T16:59:17.500231"
+    }
+  ]
 }
