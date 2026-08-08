@@ -171,6 +171,28 @@ def analyze_game(game_id: str) -> dict:
             scores[mech] = scores.get(mech, 0) + 3
             evidence.append(f"beh:{','.join(hits[:3])}")
 
+    # 5.5 Movimento direcional literal (ACTION1-4 -> move(0,-1)/(0,1)/(-1,0)/(1,0))
+    move_blocks = re.findall(
+        r'GameAction\.ACTION[1-4][^:]*:\s*[^=\n]*\.move\s*\(\s*([0-9\-]+)\s*,\s*([0-9\-]+)\s*\)',
+        code,
+    )
+    if move_blocks:
+        directions = set((int(a), int(b)) for a, b in move_blocks[:8])
+        cardinal = {(0, -1), (0, 1), (-1, 0), (1, 0)}
+        if directions and directions <= cardinal and len(directions) >= 2:
+            scores["navigation"] = scores.get("navigation", 0) + 6
+            evidence.append(f"directional_move:{len(directions)}")
+ 
+    # 5.6 Data keys de programacao/sequencia em passos agrupados
+    if {"grouped_pauses", "lit_extension"}.intersection(data_keys):
+        scores["program"] = scores.get("program", 0) + 5
+        evidence.append("data:grouped_pauses")
+ 
+    # 5.7 Morph gradual de cor -> match de cores (dict sprite->alvo + np.sign + color_remap)
+    if "color_remap" in lower and "np.sign" in lower and "pixels[0, 0]" in lower:
+        scores["match"] = scores.get("match", 0) + 4
+        evidence.append("color_morph_target")
+ 
     # 6. Decisão
     if not scores:
         best, conf = ("unknown", 0.0)
