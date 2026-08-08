@@ -129,8 +129,8 @@
   },
   {
     "game": "g50t",
-    "inferred_mechanics": "unknown",
-    "confidence": 0.0,
+    "inferred_mechanics": "navigation",
+    "confidence": 12,
     "actions": [
       1,
       2,
@@ -138,7 +138,9 @@
       4,
       5
     ],
-    "evidence": [],
+    "evidence": [
+      "directional_move:4"
+    ],
     "data_keys": [],
     "sprite_count": 56
   },
@@ -303,14 +305,16 @@
   },
   {
     "game": "sb26",
-    "inferred_mechanics": "unknown",
-    "confidence": 0.0,
+    "inferred_mechanics": "match",
+    "confidence": 8,
     "actions": [
       5,
       6,
       7
     ],
-    "evidence": [],
+    "evidence": [
+      "color_morph_target"
+    ],
     "data_keys": [],
     "sprite_count": 20
   },
@@ -340,8 +344,8 @@
   },
   {
     "game": "sk48",
-    "inferred_mechanics": "unknown",
-    "confidence": 0.0,
+    "inferred_mechanics": "program",
+    "confidence": 10,
     "actions": [
       1,
       2,
@@ -350,7 +354,9 @@
       6,
       7
     ],
-    "evidence": [],
+    "evidence": [
+      "data:grouped_pauses"
+    ],
     "data_keys": [
       "grouped_pauses"
     ],
