@@ -2,3 +2,10 @@ duck-harness/
 .env
 .env.github
 duck-harness/
+recordings/
+.venv/
+*.whl
+mcp_state/
+knowledge_graph/data/
+arc_runs/
+*.jsonl
