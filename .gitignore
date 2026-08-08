@@ -14,3 +14,8 @@ arc_runs/
 .s16_google_adc.promptinclude.md
 blackgov_system_profile.md
 dgm_lemoz_python_symbols.txt
+__pycache__/
+*.pyc
+.claude/
+a2a_bridge.py
+billing_tracker.py
