@@ -94,7 +94,6 @@
       2,
       3,
       4,
-      5,
       6
     ],
     "evidence": [
@@ -108,18 +107,15 @@
   },
   {
     "game": "ft09",
-    "inferred_mechanics": "unknown",
-    "confidence": 0.0,
+    "inferred_mechanics": "paint",
+    "confidence": 10,
     "actions": [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7
+      6
     ],
-    "evidence": [],
+    "evidence": [
+      "click_only",
+      "paint_click_remap"
+    ],
     "data_keys": [
       "cwU",
       "elp",
@@ -130,7 +126,7 @@
   {
     "game": "g50t",
     "inferred_mechanics": "navigation",
-    "confidence": 12,
+    "confidence": 20.0,
     "actions": [
       1,
       2,
@@ -139,7 +135,8 @@
       5
     ],
     "evidence": [
-      "directional_move:4"
+      "directional_move:4",
+      "collect_sprites"
     ],
     "data_keys": [],
     "sprite_count": 56
@@ -212,7 +209,9 @@
     "evidence": [
       "data:GoalColor,StartColor,GoalRotation,StartRotation,StartShape",
       "data:Fog",
-      "move_only"
+      "move_only",
+      "collect_sprites",
+      "step_counter"
     ],
     "data_keys": [
       "Fog",
@@ -235,6 +234,7 @@
       2,
       3,
       4,
+      5,
       6
     ],
     "evidence": [
@@ -270,7 +270,7 @@
   {
     "game": "re86",
     "inferred_mechanics": "tangram",
-    "confidence": 3,
+    "confidence": 2,
     "actions": [
       1,
       2,
@@ -279,7 +279,8 @@
       5
     ],
     "evidence": [
-      "composite_names:100%"
+      "composite_names:100%",
+      "step_counter"
     ],
     "data_keys": [
       "StepCounter"
@@ -425,8 +426,8 @@
   },
   {
     "game": "tr87",
-    "inferred_mechanics": "tangram",
-    "confidence": 7,
+    "inferred_mechanics": "navigation",
+    "confidence": 11,
     "actions": [
       1,
       2,
@@ -436,7 +437,8 @@
     "evidence": [
       "composite_names:83%",
       "move_only",
-      "beh:place"
+      "beh:place",
+      "collect_sprites"
     ],
     "data_keys": [
       "alter_rules",
@@ -448,7 +450,7 @@
   {
     "game": "tu93",
     "inferred_mechanics": "navigation",
-    "confidence": 4,
+    "confidence": 18,
     "actions": [
       1,
       2,
@@ -457,7 +459,9 @@
     ],
     "evidence": [
       "composite_names:100%",
-      "move_only"
+      "move_only",
+      "collect_sprites",
+      "step_counter"
     ],
     "data_keys": [
       "StepCounter"
@@ -467,7 +471,7 @@
   {
     "game": "vc33",
     "inferred_mechanics": "physics",
-    "confidence": 8,
+    "confidence": 6,
     "actions": [
       6
     ],
@@ -475,7 +479,8 @@
       "data:Gravity",
       "composite_names:100%",
       "click_only",
-      "beh:gravity"
+      "beh:gravity",
+      "paint_click_remap"
     ],
     "data_keys": [
       "Gravity",
@@ -485,8 +490,8 @@
   },
   {
     "game": "wa30",
-    "inferred_mechanics": "unknown",
-    "confidence": 0.0,
+    "inferred_mechanics": "navigation",
+    "confidence": 14,
     "actions": [
       1,
       2,
@@ -494,7 +499,10 @@
       4,
       5
     ],
-    "evidence": [],
+    "evidence": [
+      "collect_sprites",
+      "step_counter"
+    ],
     "data_keys": [
       "StepCounter"
     ],

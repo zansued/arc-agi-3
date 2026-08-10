@@ -103,6 +103,12 @@ def analyze_game(game_id: str) -> dict:
     data_keys = _extract_data_keys(code)
     names = _extract_sprite_names(code)
     actions = _extract_actions(code)
+    # Se o jogo declara available_actions, use-as como fonte autoritativa
+    avail = re.search(r"available_actions\s*=\s*\[([^\]]*)\]", code)
+    if avail:
+        avail_ids = [int(x) for x in re.findall(r"\d+", avail.group(1))]
+        if avail_ids:
+            actions = [f"ACTION{a}" for a in avail_ids]
     tags = _extract_tags(code)
 
     scores = {}
@@ -193,6 +199,22 @@ def analyze_game(game_id: str) -> dict:
         scores["match"] = scores.get("match", 0) + 4
         evidence.append("color_morph_target")
  
+    # 5.8 Paint por clique (ft09): ACTION6 + selecao de sprite + remap ciclico de paleta
+    # Ex: color_remap(...) dentro de get_sprite_at(...) com clique coordenado.
+    if set(actions) <= {"ACTION6"} and "color_remap" in lower and "get_sprite_at" in lower:
+        scores["paint"] = scores.get("paint", 0) + 6
+        evidence.append("paint_click_remap")
+
+    # 5.9 Navegacao com coleta (wa30): move sprite + ACTION5 remove/interage com sprites
+    # Ex: get_sprites_by_tag("geezpjgiyd") + remove_sprite + StepCounter como recurso.
+    elif actions and set(actions) <= {"ACTION1", "ACTION2", "ACTION3", "ACTION4", "ACTION5"}:
+        if "remove_sprite" in lower and "get_sprites_by_tag" in lower:
+            scores["navigation"] = scores.get("navigation", 0) + 5
+            evidence.append("collect_sprites")
+        if "StepCounter" in data_keys or "StepCounter" in lower:
+            scores["navigation"] = scores.get("navigation", 0) + 2
+            evidence.append("step_counter")
+
     # 6. Decisão
     if not scores:
         best, conf = ("unknown", 0.0)
