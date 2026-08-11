@@ -472,6 +472,33 @@ def build_user_hint(game_id: str, level: int = 1) -> str:
             "and use the collect/interact action on collectible sprites to remove them. "
             "Collect everything within the step budget to win."
         ),
+        "tn36": (
+            "[MECHANICS HINT] The game is 'program': level data contains 'Programs', 'Rotations', 'Positions'. "
+            "Try clicking buttons/configurations systematically; after each action check whether the target state changed. "
+            "Look for the success-check method and verify after every action."
+        ),
+        "su15": (
+            "[MECHANICS HINT] The game is a 'tangram' with multiple small sprites. "
+            "Data keys: x, y, steps. Try CLICK at row,col coordinates to place/rotate pieces; "
+            "verify the step counter and win/lose after each action."
+        ),
+        "lp85": (
+            "[MECHANICS HINT] The game is a 'tangram' with a StepCounter. "
+            "Sprites include a sys_click target; try CLICK on panel positions to place pieces. "
+            "Use level_name to identify which level you are on."
+        ),
+        "sc25": (
+            "[MECHANICS HINT] The game is a 'match': data keys include efvw, rpjr, slfh, x, y. "
+            "Use KEYBOARD_ACTION and CLICK. Try selecting pairs of matching sprites by row,col."
+        ),
+        "s5i5": (
+            "[MECHANICS HINT] The game is a 'tangram': data includes Children and StepCounter. "
+            "Sprites are numbered pieces (tags like 0001..., 0064...); try CLICK to select and assemble the target shape."
+        ),
+        "vc33": (
+            "[MECHANICS HINT] The game is 'physics': data includes Gravity and StepCounter. "
+            "Sprites are numbered pieces (tags like 0001..., 0004...); try CLICK to place/stack pieces so they stay stable once gravity applies."
+        ),
     }
     if game_id in hints:
         parts.append(hints[game_id])
