@@ -132,6 +132,10 @@ class MechanicsToolAgent(ToolAgent):
         self._user_hint = str(kwargs.pop("user_hint", "") or "").strip()
         super().__init__(*args, **kwargs)
 
+    def set_user_hint(self, hint: str) -> None:
+        """Atualiza a dica injetada no user prompt (hint dinâmica por nível)."""
+        self._user_hint = str(hint or "").strip()
+
     def _build_system_prompt(self, *, tool_output_tokens: int) -> str:
         base = super()._build_system_prompt(tool_output_tokens=tool_output_tokens)
         if self._mechanics_context:
@@ -426,8 +430,24 @@ def build_mechanics_context(game_id: str) -> str:
         return f"(mecânica indisponível: {exc})"
 
 
-def build_user_hint(game_id: str) -> str:
-    """Dica de vitória específica por jogo injetada no user prompt."""
+PATTERN_MEMORY_PATH = WORKDIR / "v58_playtest" / "pattern_memory.json"
+
+
+def _load_pattern_memory() -> dict:
+    """Carrega pattern_memory.json (soluções vencedoras conhecidas) com segurança."""
+    try:
+        if PATTERN_MEMORY_PATH.exists():
+            return json.loads(PATTERN_MEMORY_PATH.read_text())
+    except Exception:
+        pass
+    return {}
+
+
+def build_user_hint(game_id: str, level: int = 1) -> str:
+    """Dica de vitória específica por jogo/nível, integrando PatternMemory."""
+    parts: list[str] = []
+
+    # 1. Dicas estáticas por mecânica conhecida
     hints = {
         "sp80": (
             "[KNOWN WINNING SEQUENCE - Level 1] "
@@ -443,8 +463,44 @@ def build_user_hint(game_id: str) -> str:
             "[MECHANICS HINT] The game is a 'match': find pairs of identical colored objects and select them. "
             "Use CLICK on two matching sprites (row,col) to remove/target them."
         ),
+        "ft09": (
+            "[MECHANICS HINT] The game is 'paint by clicking': CLICK on a sprite cycles its palette color. "
+            "Click sprites until their center color matches the target. Experiment per level."
+        ),
+        "wa30": (
+            "[MECHANICS HINT] The game is 'navigation + collect': use direction actions to move your sprite, "
+            "and use the collect/interact action on collectible sprites to remove them. "
+            "Collect everything within the step budget to win."
+        ),
     }
-    return hints.get(game_id, "")
+    if game_id in hints:
+        parts.append(hints[game_id])
+
+    # 2. PatternMemory — soluções vencedoras conhecidas por jogo/nível
+    pm = _load_pattern_memory()
+    solutions = pm.get("solutions", [])
+    game_solutions = [s for s in solutions if s.get("game") == game_id]
+    for sol in game_solutions:
+        sol_level = int(sol.get("level", 0) or 0)
+        if sol_level and sol_level != level:
+            continue
+        steps = sol.get("steps")
+        method = sol.get("method", "")
+        parts.append(
+            f"[PATTERN MEMORY] Known win for {game_id} Level {sol_level}: "
+            f"state={sol.get('state')}, steps={steps}, method={method}. "
+            "Use this as prior knowledge to prioritize efficient actions."
+        )
+    # Dica geral por mecânica do catálogo quando houver solução padrão
+    patterns = pm.get("patterns", {})
+    if game_id in patterns and game_id not in hints:
+        pat = patterns[game_id]
+        parts.append(
+            f"[PATTERN] '{game_id}' was solved before as '{pat.get('pattern')}' "
+            f"({pat.get('levels_solved')} levels solved): {pat.get('description', '')}"
+        )
+
+    return "\n\n".join(parts)
 
 
 def solve_game(
@@ -506,14 +562,23 @@ def solve_game(
             timeout=180,
             save_request_logs=False,
             mechanics_context=mechanics,
-            user_hint=build_user_hint(game_id),
+            user_hint=build_user_hint(game_id, level=1),
         )
 
         analysis_step = 0
         stop = False
+        last_hint_level = -1
         while not stop and backend._steps < max_actions and analysis_step < max_analysis_steps:
             analysis_step += 1
             backend._write_runtime_state(state_path)
+
+            # Hint dinâmica por nível: atualiza quando o agente avança de nível
+            current_level = backend._current_level()
+            if current_level != last_hint_level:
+                agent.set_user_hint(build_user_hint(game_id, level=current_level))
+                last_hint_level = current_level
+                if verbose:
+                    print(f"  -> hint atualizada para level={current_level}")
 
             if verbose:
                 print(f"  [step {backend._steps} / analysis {analysis_step}] levels={backend._levels_completed()} state={backend._last_state}")
